@@ -14,7 +14,7 @@ import lombok.Setter;
 public class Weather {
     @Id
     @Column(name = "weather_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "weather_name", nullable = false, length = 10)
     private String weatherName;

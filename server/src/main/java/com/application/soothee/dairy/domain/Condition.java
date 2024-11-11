@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Condition {
     @Id
     @Column(name = "cond_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "cond_name", nullable = false, length = 10)
     private String condName;

@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Dairy extends BaseEntity {
     @Id
     @Column(name = "dairy_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)

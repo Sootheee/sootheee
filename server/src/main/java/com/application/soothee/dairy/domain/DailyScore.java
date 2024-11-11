@@ -14,7 +14,7 @@ import lombok.Setter;
 public class DailyScore {
     @Id
     @Column(name = "daily_score_no", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "daily_score_icon", nullable = false)
     private String dailyScoreIcon;

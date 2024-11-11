@@ -12,7 +12,7 @@ public class ConditionType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cond_type_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "cond_type_name", nullable = false, length = 10)
     private String condTypeName;
