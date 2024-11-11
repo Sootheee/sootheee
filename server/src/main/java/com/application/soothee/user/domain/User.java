@@ -1,4 +1,4 @@
-package com.application.soothee.member.domain;
+package com.application.soothee.user.domain;
 
 import com.application.soothee.common.Entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -7,8 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.Instant;
 
 @Getter
 @Setter

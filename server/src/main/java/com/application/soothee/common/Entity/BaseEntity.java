@@ -1,6 +1,6 @@
 package com.application.soothee.common.Entity;
 
-import com.application.soothee.member.domain.User;
+import com.application.soothee.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

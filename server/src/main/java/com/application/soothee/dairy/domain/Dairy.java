@@ -1,7 +1,7 @@
 package com.application.soothee.dairy.domain;
 
 import com.application.soothee.common.Entity.BaseEntity;
-import com.application.soothee.member.domain.User;
+import com.application.soothee.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
