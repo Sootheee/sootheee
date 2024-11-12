@@ -1,17 +1,17 @@
-package com.application.soothee.dairy.domain;
+package com.application.soothee.dairy.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "weather")
-public class Weather {
+public class WeatherEntity {
+    protected WeatherEntity() {}
+
     @Id
     @Column(name = "weather_id", nullable = false)
     private Long id;
@@ -21,5 +21,4 @@ public class Weather {
 
     @Column(name = "weather_icon", nullable = false)
     private String weatherIcon;
-
 }

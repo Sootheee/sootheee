@@ -1,14 +1,14 @@
-package com.application.soothee.dairy.domain;
+package com.application.soothee.dairy.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "conditions")
-public class Condition {
+public class ConditionEntity {
+    protected ConditionEntity() {}
+
     @Id
     @Column(name = "cond_id", nullable = false)
     private Long id;
@@ -18,7 +18,7 @@ public class Condition {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cond_type_id", nullable = false)
-    private ConditionType condType;
+    private ConditionTypeEntity condType;
 
     @Column(name = "cond_value", nullable = false)
     private Integer condValue;

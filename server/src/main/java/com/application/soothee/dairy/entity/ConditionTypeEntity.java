@@ -1,14 +1,14 @@
-package com.application.soothee.dairy.domain;
+package com.application.soothee.dairy.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "condition_type")
-public class ConditionType {
+public class ConditionTypeEntity {
+    protected ConditionTypeEntity() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cond_type_id", nullable = false)

@@ -1,30 +1,30 @@
-package com.application.soothee.dairy.domain;
+package com.application.soothee.dairy.entity;
 
-import com.application.soothee.common.Entity.BaseEntity;
-import com.application.soothee.user.domain.User;
+import com.application.soothee.common.entity.TimeEntity;
+import com.application.soothee.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "dairy")
-public class Dairy extends BaseEntity {
+public class DairyEntity extends TimeEntity {
+    protected DairyEntity() {}
+
     @Id
     @Column(name = "dairy_id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity userEntity;
 
     @Column(name = "score", nullable = false)
     private Float score;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cond_id", nullable = false)
-    private Condition cond;
+    private ConditionEntity cond;
 
     @Column(name = "content", length = 600)
     private String content;

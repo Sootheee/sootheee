@@ -1,21 +1,21 @@
-package com.application.soothee.user.domain;
+package com.application.soothee.user.entity;
 
-import com.application.soothee.common.Entity.BaseEntity;
+import com.application.soothee.common.entity.TimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "user")
-public class User extends BaseEntity {
+public class UserEntity extends TimeEntity {
+    protected UserEntity() {}
+
     @Id
     @Column(name = "user_id", nullable = false)
-    private Long user_id;
+    private Long id;
 
     @Column(name = "email", nullable = false)
     private String email;
