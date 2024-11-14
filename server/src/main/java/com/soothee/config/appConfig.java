@@ -1,4 +1,4 @@
-package com.application.soothee.config;
+package com.soothee.config;
 
 import org.springframework.context.annotation.Configuration;
 

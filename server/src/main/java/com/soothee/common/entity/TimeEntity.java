@@ -1,4 +1,4 @@
-package com.application.soothee.common.entity;
+package com.soothee.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
