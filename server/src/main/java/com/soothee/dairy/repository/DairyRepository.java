@@ -1,6 +1,6 @@
-package com.application.soothee.dairy.repository;
+package com.soothee.dairy.repository;
 
-import com.application.soothee.dairy.domain.Dairy;
+import com.soothee.dairy.domain.Dairy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
