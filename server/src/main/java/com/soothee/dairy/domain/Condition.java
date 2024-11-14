@@ -1,16 +1,17 @@
-package com.application.soothee.dairy.entity;
+package com.soothee.dairy.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "conditions")
-public class ConditionEntity {
-    protected ConditionEntity() {}
-
+public class Condition {
     @Id
-    @Column(name = "cond_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "cond_name", nullable = false, length = 10)
@@ -18,7 +19,7 @@ public class ConditionEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cond_type_id", nullable = false)
-    private ConditionTypeEntity condType;
+    private ConditionType condType;
 
     @Column(name = "cond_value", nullable = false)
     private Integer condValue;

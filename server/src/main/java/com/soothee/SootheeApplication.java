@@ -1,4 +1,4 @@
-package com.application.soothee;
+package com.soothee;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
