@@ -1,4 +1,4 @@
-package com.application.soothee;
+package com.soothee;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
