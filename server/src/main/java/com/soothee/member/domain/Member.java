@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
+import org.thymeleaf.util.StringUtils;
 
 @Getter
 @Entity
@@ -24,11 +25,11 @@ public class Member extends TimeEntity {
     @Column(name = "member_name", nullable = false)
     private String memberName;
 
-    @Column(name = "isDelete", nullable = false, length = 1)
+    @Column(name = "is_delete", nullable = false, length = 1)
     private String isDelete;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "snsType", nullable = false)
+    @Column(name = "sns_type", nullable = false)
     private SnsType snsType;
 
     @Builder
@@ -43,8 +44,14 @@ public class Member extends TimeEntity {
         this.snsType = snsType;
     }
 
-    public void updateEmail(String email){
+    public void updateMember(Member member) {
         //todo email 형식 검사
         this.email = email;
+    }
+
+    public void deleteMember(Member member) {
+        if (StringUtils.equals(member.getId(), this.getId())) {
+            this.isDelete = "Y";
+        }
     }
 }

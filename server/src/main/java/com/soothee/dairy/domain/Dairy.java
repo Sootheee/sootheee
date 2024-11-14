@@ -2,10 +2,13 @@ package com.soothee.dairy.domain;
 
 import com.soothee.common.domain.TimeEntity;
 import com.soothee.member.domain.Member;
+import com.soothee.reference.domain.Condition;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.thymeleaf.util.StringUtils;
 
 @Getter
 @Entity
@@ -38,4 +41,29 @@ public class Dairy extends TimeEntity {
 
     @Column(name = "learn")
     private String learn;
+
+    @Column(name = "is_delete")
+    private String isDelete;
+
+    @Builder
+    public Dairy(Member member, Float score, Condition cond, String content, String hope, String thank, String learn) {
+        this.member = member;
+        this.score = score;
+        this.cond = cond;
+        this.content = content;
+        this.hope = hope;
+        this.thank = thank;
+        this.learn = learn;
+        this.isDelete = "N";
+    }
+
+    public void updateDairy(Dairy dairy) {
+
+    }
+
+    public void deleteDairy(Dairy dairy) {
+        if (StringUtils.equals(dairy.getId(), this.getId())) {
+            this.isDelete = "Y";
+        }
+    }
 }
