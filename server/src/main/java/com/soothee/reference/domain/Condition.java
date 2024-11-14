@@ -1,4 +1,4 @@
-package com.soothee.dairy.domain;
+package com.soothee.reference.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
