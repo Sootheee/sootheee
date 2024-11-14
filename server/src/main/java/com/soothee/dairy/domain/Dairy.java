@@ -1,30 +1,31 @@
-package com.application.soothee.dairy.entity;
+package com.soothee.dairy.domain;
 
-import com.application.soothee.common.entity.TimeEntity;
-import com.application.soothee.user.entity.UserEntity;
+import com.soothee.common.domain.TimeEntity;
+import com.soothee.member.domain.Member;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "dairy")
-public class DairyEntity extends TimeEntity {
-    protected DairyEntity() {}
-
+public class Dairy extends TimeEntity {
     @Id
-    @Column(name = "dairy_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity userEntity;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(name = "score", nullable = false)
     private Float score;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cond_id", nullable = false)
-    private ConditionEntity cond;
+    private Condition cond;
 
     @Column(name = "content", length = 600)
     private String content;

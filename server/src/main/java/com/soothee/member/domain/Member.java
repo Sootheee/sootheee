@@ -1,7 +1,7 @@
-package com.soothee.member.entity;
+package com.soothee.member.domain;
 
 import com.soothee.common.constants.SnsType;
-import com.soothee.common.entity.TimeEntity;
+import com.soothee.common.domain.TimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
-public class MemberEntity extends TimeEntity {
+public class Member extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -32,12 +32,14 @@ public class MemberEntity extends TimeEntity {
     private SnsType snsType;
 
     @Builder
-    public MemberEntity(String email, String memberName, String isDelete, SnsType snsType) {
+    public Member(String email, String memberName, SnsType snsType) {
         Assert.notNull(email, "email은 필수입니다.");
+        Assert.notNull(memberName, "닉네임은 필수입니다.");
+        Assert.notNull(snsType, "SNS타입은 필수입니다.");
         //todo assertion
         this.email = email;
         this.memberName = memberName;
-        this.isDelete = isDelete;
+        this.isDelete = "N";
         this.snsType = snsType;
     }
 

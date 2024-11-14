@@ -1,7 +1,7 @@
 package com.soothee;
 
 import com.soothee.common.constants.SnsType;
-import com.soothee.member.entity.MemberEntity;
+import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -23,13 +23,12 @@ public class TestDBTest {
 
     private String memberName = "사용자0";
     private String email = "abc@def.com";
-    private String isDelete = "N";
     private SnsType snsType = SnsType.KAKAOTALK;
 
     @Test
     void 테스트디비에서_회원조회_성공하기() {
         //given
-        MemberEntity member = memberRepository.findByMemberName(memberName);
+        Member member = memberRepository.findByMemberName(memberName);
         //when
         String email = member.getEmail();
         //then
@@ -38,10 +37,9 @@ public class TestDBTest {
 
     @BeforeEach
     void insertDefaultMember() {
-        MemberEntity member = MemberEntity.builder()
+        Member member = Member.builder()
                 .memberName(memberName)
                 .email(email)
-                .isDelete(isDelete)
                 .snsType(snsType).build();
         memberRepository.save(member);
     }
