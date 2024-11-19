@@ -3,10 +3,10 @@ CREATE TABLE member
     member_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     member_name VARCHAR(255) NOT NULL,
-    isDelete VARCHAR(1) NOT NULL,
+    is_delete VARCHAR(1) NOT NULL,
     reg_date DATETIME NOT NULL,
     mod_date DATETIME NOT NULL,
-    snsType VARCHAR(255) NOT NULL
+    sns_type VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE weather
@@ -16,20 +16,21 @@ CREATE TABLE weather
     weather_icon VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE condition_type
+(
+    cond_type_id INT AUTO_INCREMENT PRIMARY KEY,
+    cond_type_name VARCHAR(10) NOT NULL,
+    cond_type_value INT NOT NULL
+);
+
 CREATE TABLE conditions
 (
     cond_id INT AUTO_INCREMENT PRIMARY KEY,
     cond_name VARCHAR(10) NOT NULL,
     cond_type_id INT NOT NULL,
     cond_value INT NOT NULL,
+    cond_icon VARCHAR(255) NOT NULL,
     FOREIGN KEY (cond_type_id) REFERENCES condition_type(cond_type_id)
-);
-
-CREATE TABLE condition_type
-(
-    cond_type_id INT AUTO_INCREMENT PRIMARY KEY,
-    cond_type_name VARCHAR(10) NOT NULL,
-    cond_type_value INT NOT NULL
 );
 
 CREATE TABLE dairy
@@ -42,6 +43,7 @@ CREATE TABLE dairy
     hope VARCHAR(255) NULL,
     thank VARCHAR(255) NULL,
     learn VARCHAR(255) NULL,
+    is_delete VARCHAR(1) NOT NULL,
     reg_date DATETIME NOT NULL,
     mod_date DATETIME NOT NULL,
     FOREIGN KEY (member_id) REFERENCES member(member_id),
@@ -50,6 +52,10 @@ CREATE TABLE dairy
 
 CREATE TABLE daily_score
 (
-    daily_score_no INT PRIMARY KEY,
+    daily_score_no INT AUTO_INCREMENT PRIMARY KEY,
+    daily_score INT NOT NULL,
     daily_score_icon VARCHAR(255) NOT NULL
 );
+
+drop table member, weather, conditions, condition_type, daily_score, dairy;
+drop table daily_score;
