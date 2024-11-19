@@ -6,7 +6,9 @@ CREATE TABLE member
     is_delete VARCHAR(1) NOT NULL,
     reg_date DATETIME NOT NULL,
     mod_date DATETIME NOT NULL,
-    sns_type VARCHAR(255) NOT NULL
+    sns_type VARCHAR(255) NOT NULL,
+    oauth2_client_id VARCHAR(255) NOT NULL,
+    role VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE weather
