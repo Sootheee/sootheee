@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class appConfig {
+
+    /** Swagger 회원 API 명세서 */
     @Bean
     public GroupedOpenApi memberGroupedOpenApi() {
         return GroupedOpenApi.builder()
@@ -18,6 +20,7 @@ public class appConfig {
                             .build();
     }
 
+    /** Swagger 다이어리 API 명세서 */
     @Bean
     public GroupedOpenApi dairyGroupedOpenApi() {
         return GroupedOpenApi.builder()

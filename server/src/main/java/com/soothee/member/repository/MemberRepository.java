@@ -6,5 +6,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
+    /**
+     * 회원 닉네임으로 회원 조회
+     * @param memberName String : 조회할 회원 닉네임
+     * @return Member : 해당 회원
+     */
     Member findByMemberName(String memberName);
 }
