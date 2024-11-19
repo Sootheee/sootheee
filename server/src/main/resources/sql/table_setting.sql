@@ -1,8 +1,8 @@
-CREATE TABLE user
+CREATE TABLE member
 (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    member_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
-    user_name VARCHAR(255) NOT NULL,
+    member_name VARCHAR(255) NOT NULL,
     isDelete VARCHAR(1) NOT NULL,
     reg_date DATETIME NOT NULL,
     mod_date DATETIME NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE condition_type
 CREATE TABLE dairy
 (
     dairy_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    member_id INT NOT NULL,
     score FLOAT NOT NULL,
     cond_id INT NOT NULL,
     content VARCHAR(600) NULL,
@@ -44,7 +44,7 @@ CREATE TABLE dairy
     learn VARCHAR(255) NULL,
     reg_date DATETIME NOT NULL,
     mod_date DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(user_id),
+    FOREIGN KEY (member_id) REFERENCES member(member_id),
     FOREIGN KEY (cond_id) REFERENCES conditions(cond_id)
 );
 
