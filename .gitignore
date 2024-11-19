@@ -4,6 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+aserver/src/main/resources/pplication-oauth2.properties
 
 ### STS ###
 .apt_generated
@@ -35,3 +36,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+server/src/main/resources/application-oauth2.properties
