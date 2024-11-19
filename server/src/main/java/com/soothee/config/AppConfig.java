@@ -14,8 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @ConfigurationProperties(prefix = "oauth2")
-public class appConfig {
-
+public class AppConfig {
     private String baseLoginUri;
 
     /** Spring-Security 설정 */
