@@ -10,19 +10,25 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@ConfigurationProperties(prefix = "oauth2")
-public class AppConfig {
-    private String baseLoginUri;
+public class AppConfig implements WebMvcConfigurer {
+
+    /** Front-Server & Back-Server 간 CORS 설정 */
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins(ConstUrl.getFrontUrl());
+    }
 
     /** Spring-Security 설정 */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests((requests) -> requests.requestMatchers("/dd").permitAll()
                                                                 .anyRequest().authenticated())
-                    .oauth2Login((configurer) -> configurer.redirectionEndpoint((endpoint) -> endpoint.baseUri(baseLoginUri))
+                    .oauth2Login((configurer) -> configurer.redirectionEndpoint((endpoint) -> endpoint.baseUri(ConstUrl.getBaseLoginUrl()))
                                                             .defaultSuccessUrl("/home"))
                     .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                     .csrf(AbstractHttpConfigurer::disable)
