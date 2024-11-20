@@ -38,3 +38,7 @@ out/
 .vscode/
 
 server/src/main/resources/application-oauth2.properties
+
+server/src/main/resources/application-dev.properties
+
+server/src/main/resources/application-prod.properties
