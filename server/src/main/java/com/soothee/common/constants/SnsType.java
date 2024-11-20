@@ -1,8 +1,5 @@
 package com.soothee.common.constants;
 
-import lombok.Getter;
-
-@Getter
 public enum SnsType {
     KAKAOTALK("kakao"), GOOGLE("google");
 
@@ -10,5 +7,9 @@ public enum SnsType {
 
     SnsType(String snsType) {
         this.snsType = snsType;
+    }
+
+    public String toString(){
+        return snsType;
     }
 }
