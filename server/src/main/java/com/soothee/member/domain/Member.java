@@ -62,7 +62,8 @@ public class Member extends TimeEntity {
     }
 
     /**
-     * 회원 정보 수정
+     * 회원 정보 수정</hr>
+     *
      * @param member Member 해당 멤버
      */
     public void updateMember(Member member) {
@@ -71,7 +72,8 @@ public class Member extends TimeEntity {
     }
 
     /**
-     * 회원 삭제
+     * 회원 삭제</hr>
+     *
      * @param member Member 해당 맴버
      */
     public void deleteMember(Member member) {

@@ -67,7 +67,8 @@ public class Dairy extends TimeEntity {
     }
 
     /**
-     * 다이어리 수정
+     * 다이어리 수정</hr>
+     *
      * @param dairy Dairy : 해당 다이어리
      */
     public void updateDairy(Dairy dairy) {
@@ -75,7 +76,8 @@ public class Dairy extends TimeEntity {
     }
 
     /**
-     * 다이어리 삭제
+     * 다이어리 삭제</hr>
+     *
      * @param dairy Dairy : 해당 다이어리
      */
     public void deleteDairy(Dairy dairy) {
