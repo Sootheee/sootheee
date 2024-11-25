@@ -1,13 +1,14 @@
 package com.soothee.common.exception;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class MyExceptionHandler {
+
     @ExceptionHandler(MyException.class)
-    protected ResponseEntity<ErrorDTO> handleCustom400Exception(MyException ex) {
-        return ErrorDTO.toResponseEntity(ex);
+    protected ResponseEntity<ExceptionResponse> handleCustom400Exception(MyException ex) {
+        return ExceptionResponse.toResponseEntity(ex);
     }
 }

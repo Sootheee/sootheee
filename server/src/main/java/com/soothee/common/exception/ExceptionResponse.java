@@ -6,18 +6,17 @@ import org.springframework.http.ResponseEntity;
 
 @Builder
 @Data
-public class ErrorDTO {
+public class ExceptionResponse {
     private String msg;
     private String detail;
 
-
-    public static ResponseEntity<ErrorDTO> toResponseEntity(MyException ex) {
+    public static ResponseEntity<ExceptionResponse> toResponseEntity(MyException ex) {
         MyErrorMsg errorMsg = ex.getErrorMsg();
         String detail = ex.getDetail();
 
         return ResponseEntity
                 .status(ex.getStatus())
-                .body(ErrorDTO.builder()
+                .body(ExceptionResponse.builder()
                         .msg(errorMsg.toString())
                         .detail(detail)
                         .build());
