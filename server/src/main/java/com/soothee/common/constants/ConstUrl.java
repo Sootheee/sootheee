@@ -1,27 +1,32 @@
 package com.soothee.common.constants;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@Getter
+@RequiredArgsConstructor
 @ConfigurationProperties(prefix = "soothee")
 public class ConstUrl {
     /** Front Server Base URL */
-    public static String FRONT_URL;
+    private String frontUrl;
     /** OAuth2 로그인 Base URL */
-    public static String BASE_LOGIN_URL;
+    private String loginBaseUrl;
     /** 온보딩 페이지 URL */
-    public static String ONBOARDING_URL;
+    private String onboardingUrl;
     /** 로그인 페이지 URL */
-    public static String LOGIN_PAGE_URL;
+    private String loginPageUrl;
     /** 로그인 성공 URL */
-    public static String LOGIN_SUCCESS_URL;
+    private String loginSuccessUrl;
     /** 홈 URL */
-    public static String HOMEPAGE_URL;
+    private String homepageUrl;
     /** Front CSS Path */
-    public static String RESOURCE_CSS;
+    private String resourceCss;
     /** Front JS Path */
-    public static String RESOURCE_JS;
+    private String resourceJs;
     /** Front IMAGE Path */
-    public static String RESOURCE_IMAGE;
+    private String resourceImage;
 }
