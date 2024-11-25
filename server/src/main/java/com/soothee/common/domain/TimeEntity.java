@@ -16,9 +16,11 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(value = {AuditingEntityListener.class})
 public abstract class TimeEntity {
+    /** 등록일자 */
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime reg_date;
+    /** 수정일자 */
     @LastModifiedDate
     private LocalDateTime mod_date;
 }

@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest
@@ -28,7 +30,8 @@ public class TestDBTest {
     @Test
     void 테스트디비에서_회원조회_성공하기() {
         //given
-        Member member = memberRepository.findByMemberName(memberName);
+        Optional<Member> optional = memberRepository.findByMemberName(memberName);
+        Member member = optional.get();
         //when
         String email = member.getEmail();
         //then
