@@ -28,7 +28,7 @@ public class AppConfig implements WebMvcConfigurer {
     /** Spring-Security 인증/인가 제외 설정 */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers("/error",
+        return web -> web.ignoring().requestMatchers("/error/**", "/status",
                                                     "/favicon.ico",
                                                     ConstUrl.RESOURCE_CSS,
                                                     ConstUrl.RESOURCE_JS,
