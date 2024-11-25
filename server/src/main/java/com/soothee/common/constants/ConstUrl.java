@@ -1,27 +1,31 @@
 package com.soothee.common.constants;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-@Configuration
-@ConfigurationProperties(prefix = "soothee")
+@Getter
+@RequiredArgsConstructor
+@Component
 public class ConstUrl {
     /** Front Server Base URL */
-    public static String FRONT_URL;
+    @Value("${soothee.front.url}")
+    private String FRONT_URL;
     /** OAuth2 로그인 Base URL */
-    public static String BASE_LOGIN_URL;
-    /** 온보딩 페이지 URL */
-    public static String ONBOARDING_URL;
+    private final String LOGIN_BASE_URL = "/login/oauth2/callback/";
     /** 로그인 페이지 URL */
-    public static String LOGIN_PAGE_URL;
+    private final String LOGIN_PAGE_URL = "/login";
     /** 로그인 성공 URL */
-    public static String LOGIN_SUCCESS_URL;
+    private final String LOGIN_SUCCESS_URL = "/auth/success";
+    /** 온보딩 페이지 URL */
+    private final String ONBOARDING_URL = "/onBoarding";
     /** 홈 URL */
-    public static String HOMEPAGE_URL;
+    private final String HOMEPAGE_URL = "/home";
     /** Front CSS Path */
-    public static String RESOURCE_CSS;
+    private final String CSS = "/css";
     /** Front JS Path */
-    public static String RESOURCE_JS;
+    private final String JS = "/js";
     /** Front IMAGE Path */
-    public static String RESOURCE_IMAGE;
+    private final String IMAGE = "/images";
 }

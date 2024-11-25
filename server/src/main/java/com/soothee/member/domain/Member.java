@@ -64,21 +64,16 @@ public class Member extends TimeEntity {
     /**
      * 회원 정보 수정</hr>
      *
-     * @param member Member 해당 멤버
+     * @param memberName String: 바꿀 회원 닉네임
      */
-    public void updateMember(Member member) {
-        //todo email 형식 검사
-        this.email = email;
+    public void updateMember(String memberName) {
+        this.memberName = memberName;
     }
 
     /**
      * 회원 삭제</hr>
-     *
-     * @param member Member 해당 맴버
      */
-    public void deleteMember(Member member) {
-        if (StringUtils.equals(member.getId(), this.getId())) {
-            this.isDelete = "Y";
-        }
+    public void deleteMember() {
+        this.isDelete = "Y";
     }
 }
