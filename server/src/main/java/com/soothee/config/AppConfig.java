@@ -1,39 +1,54 @@
 package com.soothee.config;
 
+import com.soothee.common.constants.ConstUrl;
 import io.swagger.v3.oas.models.info.Info;
 import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 public class AppConfig implements WebMvcConfigurer {
-
     /** Front-Server & Back-Server 간 CORS 설정 */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowedOrigins(ConstUrl.getFrontUrl());
     }
 
+    /** Spring-Security 인증/인가 제외 설정 */
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers("/error",
+                                                    "/favicon.ico",
+                                                    ConstUrl.getResourceCss(),
+                                                    ConstUrl.getResourceJs(),
+                                                    ConstUrl.getResourceImage());
+    }
+
     /** Spring-Security 설정 */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests((requests) -> requests.requestMatchers("/dd").permitAll()
+        return http.csrf(AbstractHttpConfigurer::disable)
+                    .httpBasic(AbstractHttpConfigurer::disable)
+                    .formLogin(AbstractHttpConfigurer::disable)
+                    .logout(AbstractHttpConfigurer::disable)
+                    .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                    .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher(ConstUrl.getLoginPageUrl()),
+                                                                                    new AntPathRequestMatcher(ConstUrl.getOnboardingUrl())).permitAll()
                                                                 .anyRequest().authenticated())
                     .oauth2Login((configurer) -> configurer.redirectionEndpoint((endpoint) -> endpoint.baseUri(ConstUrl.getBaseLoginUrl()))
-                                                            .defaultSuccessUrl("/home"))
-                    .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                    .csrf(AbstractHttpConfigurer::disable)
-                    .formLogin(AbstractHttpConfigurer::disable)
-                    .build();
+                                                            .defaultSuccessUrl(ConstUrl.getHomePageUrl())).build();
     }
 
     /** Swagger 회원 API 명세서 */
