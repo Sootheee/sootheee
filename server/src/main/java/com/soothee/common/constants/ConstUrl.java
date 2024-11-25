@@ -14,8 +14,16 @@ public class ConstUrl {
     private static String ONBOARDING_URL;
     /** 로그인 페이지 URL */
     private static String LOGIN_PAGE_URL;
+    /** 로그인 성공 URL */
+    private static String LOGIN_SUCCESS_URL;
     /** 홈 URL */
     private static String HOME_PAGE_URL;
+    /** Front CSS Path */
+    private static String RESOURCE_CSS;
+    /** Front JS Path */
+    private static String RESOURCE_JS;
+    /** Front IMAGE Path */
+    private static String RESOURCE_IMAGE;
 
     public static String getFrontUrl() {
         return FRONT_URL;
@@ -33,7 +41,24 @@ public class ConstUrl {
         return LOGIN_PAGE_URL;
     }
 
+    public static String getLoginSuccessUrl() {
+        return LOGIN_SUCCESS_URL;
+    }
+
     public static String getHomePageUrl() {
         return HOME_PAGE_URL;
     }
+
+    public static String getResourceCss() {
+        return RESOURCE_CSS;
+    }
+
+    public static String getResourceJs() {
+        return RESOURCE_JS;
+    }
+
+    public static String getResourceImage() {
+        return RESOURCE_IMAGE;
+    }
+
 }
