@@ -30,12 +30,12 @@ public class TestDBTest {
     @Test
     void 테스트디비에서_회원조회_성공하기() {
         //given
-        Optional<Member> optional = memberRepository.findByMemberName(memberName);
+        Optional<Member> optional = memberRepository.findByEmail(email);
         Member member = optional.get();
         //when
-        String email = member.getEmail();
+        String nickname = member.getEmail();
         //then
-        Assertions.assertThat(email).isEqualTo("abc@def.com");
+        Assertions.assertThat(nickname).isEqualTo(memberName);
     }
 
     @BeforeEach
