@@ -6,7 +6,6 @@ import com.soothee.member.domain.Member;
 import java.util.Optional;
 
 public interface MemberService {
-
     /** OAuth2 로그인 시, 받은 정보로 회원 조회</hr>
      *
      * @param oauth2ClientId String : OAuth2 로그인용 ID
@@ -20,4 +19,11 @@ public interface MemberService {
      * @param member Member : 가입할 회원의 정보
      */
     void saveMember(Member member);
+
+    /** 로그인한 아이디(이메일)로 회원 정보 조회</hr>
+     *
+     * @param loginId String : 로그인한 회원 이메일
+     * @return Member : 로그인한 회원의 정보
+     */
+    Member getMemberByEmail(String loginId);
 }

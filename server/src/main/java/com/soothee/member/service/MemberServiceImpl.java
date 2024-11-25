@@ -1,9 +1,12 @@
 package com.soothee.member.service;
 
 import com.soothee.common.constants.SnsType;
+import com.soothee.common.exception.MyErrorMsg;
+import com.soothee.common.exception.MyException;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,5 +34,16 @@ public class MemberServiceImpl implements MemberService {
      */
     public void saveMember(Member member) {
         memberRepository.save(member);
+    }
+
+    /** 로그인한 아이디(이메일)로 회원 정보 조회</hr>
+     *
+     * @param loginId String : 로그인한 회원 이메일
+     * @return Member : 로그인한 회원의 정보
+     */
+    @Override
+    public Member getMemberByEmail(String loginId) {
+        Optional<Member> optional =  memberRepository.findByEmail(loginId);
+        return optional.orElseThrow(() -> new MyException(HttpStatus.NOT_FOUND, MyErrorMsg.NOT_EXIST_MEMBER));
     }
 }
