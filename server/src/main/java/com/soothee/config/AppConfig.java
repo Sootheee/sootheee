@@ -22,7 +22,7 @@ public class AppConfig implements WebMvcConfigurer {
     /** Front-Server & Back-Server 간 CORS 설정 */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins(ConstUrl.getFrontUrl());
+        registry.addMapping("/**").allowedOrigins(ConstUrl.FRONT_URL);
     }
 
     /** Spring-Security 인증/인가 제외 설정 */
@@ -30,9 +30,9 @@ public class AppConfig implements WebMvcConfigurer {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers("/error",
                                                     "/favicon.ico",
-                                                    ConstUrl.getResourceCss(),
-                                                    ConstUrl.getResourceJs(),
-                                                    ConstUrl.getResourceImage());
+                                                    ConstUrl.RESOURCE_CSS,
+                                                    ConstUrl.RESOURCE_JS,
+                                                    ConstUrl.RESOURCE_IMAGE);
     }
 
     /** Spring-Security 설정 */
@@ -44,11 +44,11 @@ public class AppConfig implements WebMvcConfigurer {
                     .logout(AbstractHttpConfigurer::disable)
                     .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                     .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher(ConstUrl.getLoginPageUrl()),
-                                                                                    new AntPathRequestMatcher(ConstUrl.getOnboardingUrl())).permitAll()
+                    .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher(ConstUrl.LOGIN_PAGE_URL),
+                                                                                    new AntPathRequestMatcher(ConstUrl.ONBOARDING_URL)).permitAll()
                                                                 .anyRequest().authenticated())
-                    .oauth2Login((configurer) -> configurer.redirectionEndpoint((endpoint) -> endpoint.baseUri(ConstUrl.getBaseLoginUrl()))
-                                                            .defaultSuccessUrl(ConstUrl.getHomePageUrl())).build();
+                    .oauth2Login((configurer) -> configurer.redirectionEndpoint((endpoint) -> endpoint.baseUri(ConstUrl.BASE_LOGIN_URL))
+                                                            .defaultSuccessUrl(ConstUrl.HOMEPAGE_URL)).build();
     }
 
     /** Swagger 회원 API 명세서 */
