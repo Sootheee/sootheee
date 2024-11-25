@@ -1,13 +1,12 @@
 package com.soothee.common.constants;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum SnsType {
     KAKAOTALK("kakao"), GOOGLE("google");
 
     private final String snsType;
-
-    SnsType(String snsType) {
-        this.snsType = snsType;
-    }
 
     public String toString(){
         return snsType;
