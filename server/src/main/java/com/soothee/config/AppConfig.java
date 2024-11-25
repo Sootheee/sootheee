@@ -44,11 +44,20 @@ public class AppConfig implements WebMvcConfigurer {
                     .logout(AbstractHttpConfigurer::disable)
                     .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                     .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher(ConstUrl.LOGIN_PAGE_URL),
-                                                                                    new AntPathRequestMatcher(ConstUrl.ONBOARDING_URL)).permitAll()
+                    .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher("/login"),
+                                                                                    new AntPathRequestMatcher("/onBoarding"),
+                                                                                    new AntPathRequestMatcher("/error/**"),
+                                                                                    new AntPathRequestMatcher("/status"),
+                                                                                    new AntPathRequestMatcher("/css"),
+                                                                                    new AntPathRequestMatcher("/js"),
+                                                                                    new AntPathRequestMatcher("/images"),
+                                                                                    new AntPathRequestMatcher("/swagger-ui/**"),
+                                                                                    new AntPathRequestMatcher("/api"),
+                                                                                    new AntPathRequestMatcher("/v3/**"),
+                                                                                    new AntPathRequestMatcher("/docs")).permitAll()
                                                                 .anyRequest().authenticated())
-                    .oauth2Login((configurer) -> configurer.redirectionEndpoint((endpoint) -> endpoint.baseUri(ConstUrl.BASE_LOGIN_URL))
-                                                            .defaultSuccessUrl(ConstUrl.HOMEPAGE_URL)).build();
+                    .oauth2Login((configurer) -> configurer.redirectionEndpoint((endpoint) -> endpoint.baseUri("/login/oauth2/callback/"))
+                                                            .defaultSuccessUrl("/home")).build();
     }
 
     /** Swagger 회원 API 명세서 */
