@@ -9,6 +9,9 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.*;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -18,10 +21,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -68,7 +75,8 @@ public class AppConfig implements WebMvcConfigurer {
                                             .invalidateHttpSession(true)
                                             .deleteCookies("JSESSIONID"))
                     .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                    .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                            .invalidSessionUrl("/login?error=session-expired"))
                     .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher("/login"),
                                                                                     new AntPathRequestMatcher("/onBoarding"),
                                                                                     new AntPathRequestMatcher("/error"),
@@ -81,7 +89,7 @@ public class AppConfig implements WebMvcConfigurer {
                                                                                     new AntPathRequestMatcher("/v3"),
                                                                                     new AntPathRequestMatcher("/docs")).hasAnyAuthority(Role.ADMIN.getAuth())
                                                                     .anyRequest().authenticated())
-                    .oauth2Login((configurer) -> configurer.redirectionEndpoint((endpoint) -> endpoint.baseUri("/login/oauth2/callback/"))
+                    .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login?error=session-expired")))
                                                             .defaultSuccessUrl("/home")).build();
     }
 
