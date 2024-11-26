@@ -90,7 +90,10 @@ public class AppConfig implements WebMvcConfigurer {
                                                                                     new AntPathRequestMatcher("/docs")).hasAnyAuthority(Role.ADMIN.getAuth())
                                                                     .anyRequest().authenticated())
                     .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login?error=session-expired")))
-                                                            .defaultSuccessUrl("/home")).build();
+                    .oauth2Login((configurer) -> configurer.loginPage("/login")
+                                                            .redirectionEndpoint((endpoint) -> endpoint.baseUri("/login/oauth2/callback/"))
+                                                            .defaultSuccessUrl("/home")
+                                                            .failureUrl("/login?error=login-failed")).build();
     }
 
     /** Swagger 회원 API 명세서 */
