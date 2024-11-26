@@ -64,7 +64,9 @@ public class AppConfig implements WebMvcConfigurer {
         return http.csrf(AbstractHttpConfigurer::disable)
                     .httpBasic(AbstractHttpConfigurer::disable)
                     .formLogin(AbstractHttpConfigurer::disable)
-                    .logout(AbstractHttpConfigurer::disable)
+                    .logout(logout -> logout.logoutSuccessUrl("/onBoarding")
+                                            .invalidateHttpSession(true)
+                                            .deleteCookies("JSESSIONID"))
                     .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                     .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher("/login"),
