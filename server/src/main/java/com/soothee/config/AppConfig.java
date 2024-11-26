@@ -1,6 +1,7 @@
 package com.soothee.config;
 
 import com.soothee.common.constants.ConstUrl;
+import com.soothee.common.constants.Role;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -68,16 +69,16 @@ public class AppConfig implements WebMvcConfigurer {
                     .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher("/login"),
                                                                                     new AntPathRequestMatcher("/onBoarding"),
-                                                                                    new AntPathRequestMatcher("/error/**"),
+                                                                                    new AntPathRequestMatcher("/error"),
                                                                                     new AntPathRequestMatcher("/status"),
                                                                                     new AntPathRequestMatcher("/css"),
                                                                                     new AntPathRequestMatcher("/js"),
-                                                                                    new AntPathRequestMatcher("/images"),
-                                                                                    new AntPathRequestMatcher("/swagger-ui/**"),
+                                                                                    new AntPathRequestMatcher("/images")).permitAll()
+                                                                    .requestMatchers(new AntPathRequestMatcher("/swagger-ui"),
                                                                                     new AntPathRequestMatcher("/api"),
-                                                                                    new AntPathRequestMatcher("/v3/**"),
-                                                                                    new AntPathRequestMatcher("/docs")).permitAll()
-                                                                .anyRequest().authenticated())
+                                                                                    new AntPathRequestMatcher("/v3"),
+                                                                                    new AntPathRequestMatcher("/docs")).hasAnyAuthority(Role.ADMIN.getAuth())
+                                                                    .anyRequest().authenticated())
                     .oauth2Login((configurer) -> configurer.redirectionEndpoint((endpoint) -> endpoint.baseUri("/login/oauth2/callback/"))
                                                             .defaultSuccessUrl("/home")).build();
     }

@@ -23,8 +23,7 @@ public class DelegatingOAuth2Service extends DefaultOAuth2UserService {
      * @return OAuth2User : 요청한 회원 정보
      */
     public OAuth2User loadUserFromParent(OAuth2UserRequest request) {
-        return loadUser(request);
-        // 안되면 return super.loadUser(request);로 변경
+        return super.loadUser(request);
     }
 
     /** 각 SNS 로그인 서비스의 지원 여부 확인 후, OAuth2 로그인 요청한 회원 정보 로드</hr>

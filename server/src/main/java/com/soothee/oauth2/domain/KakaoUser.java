@@ -19,7 +19,6 @@ public class KakaoUser {
     public Member toMember() {
         return Member.builder()
                     .email(this.getEmail())
-                    .role(Role.USER)
                     .memberName(this.getNickName())
                     .snsType(SnsType.KAKAOTALK)
                     .oauth2ClientId(oauth2User.getName())
