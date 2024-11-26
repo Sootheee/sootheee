@@ -1,15 +1,16 @@
 package com.soothee.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.soothee.common.constants.Role;
 import com.soothee.common.constants.SnsType;
 import com.soothee.common.domain.TimeEntity;
+import com.soothee.common.exception.MyErrorMsg;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
-import org.thymeleaf.util.StringUtils;
 
 @Getter
 @Entity
@@ -28,6 +29,10 @@ public class Member extends TimeEntity {
     /** 회원 닉네임 */
     @Column(name = "member_name", nullable = false)
     private String memberName;
+
+    /** 다크 모드 */
+    @Column(name = "is_dark", nullable = false)
+    private String isDark;
 
     /** 소프트 삭제 */
     @Column(name = "is_delete", nullable = false, length = 1)
@@ -48,26 +53,34 @@ public class Member extends TimeEntity {
     private Role role;
 
     @Builder
-    public Member(String email, String memberName, SnsType snsType, String oauth2ClientId, Role role) {
-        Assert.notNull(email, "email은 필수입니다.");
-        Assert.notNull(memberName, "닉네임은 필수입니다.");
-        Assert.notNull(snsType, "SNS타입은 필수입니다.");
-        //todo assertion
+    public Member(String email, String memberName, SnsType snsType, String oauth2ClientId) {
+        Assert.notNull(email, MyErrorMsg.NULL_VALUE.makeValue("아이디(이메일) "));
+        Assert.notNull(memberName, MyErrorMsg.NULL_VALUE.makeValue("닉네임 "));
+        Assert.notNull(snsType, MyErrorMsg.NULL_VALUE.makeValue("SNS 타입 "));
+        Assert.notNull(oauth2ClientId, MyErrorMsg.NULL_VALUE.makeValue("OAuth2 구분 "));
         this.email = email;
         this.memberName = memberName;
+        this.isDark = "N";
         this.isDelete = "N";
         this.snsType = snsType;
         this.oauth2ClientId = oauth2ClientId;
-        this.role = role;
+        this.role = Role.USER;
     }
 
-    /**
-     * 회원 정보 수정</hr>
+    /** 회원 정보 수정</hr>
      *
      * @param memberName String: 바꿀 회원 닉네임
      */
-    public void updateMember(String memberName) {
+    public void updateMemberName(String memberName) {
         this.memberName = memberName;
+    }
+
+    /** 회원 화면 모드 수정</hr>
+     *
+     * @param isDark String: 바꿀 화면 모드가 다크모드면 Y 아니면 N
+     */
+    public void updateDarkModeYN(String isDark) {
+        this.isDark = isDark;
     }
 
     /**

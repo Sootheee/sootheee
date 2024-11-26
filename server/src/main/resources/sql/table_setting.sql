@@ -3,6 +3,7 @@ CREATE TABLE member
     member_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     member_name VARCHAR(255) NOT NULL,
+    is_dark VARCHAR(1) NOT NULL,
     is_delete VARCHAR(1) NOT NULL,
     reg_date DATETIME NOT NULL,
     mod_date DATETIME NOT NULL,
