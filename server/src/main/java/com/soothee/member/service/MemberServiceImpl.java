@@ -6,12 +6,12 @@ import com.soothee.common.exception.MyException;
 import com.soothee.member.domain.Member;
 import com.soothee.member.dto.UpdateMemberDTO;
 import com.soothee.member.repository.MemberRepository;
+import com.soothee.oauth2.domain.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -46,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public void updateMember(Member loginMember, UpdateMemberDTO updateInfo) {
-        loginMember.updateMember(updateInfo.getMemberName());
+        loginMember.updateMemberName(updateInfo.getMemberName());
     }
 
     /** 회원 탈퇴</hr>
@@ -61,13 +61,13 @@ public class MemberServiceImpl implements MemberService {
     /**
      * 현재 로그인한 회원 정보 가져오기</hr>
      *
-     * @param principal Principal : 현재 로그인 계정 정보
+     * @param loginAccount AuthenticatedUser : 현재 로그인 계정 정보
      * @return Member: 로그인한 회원의 정보
      */
     @Override
-    public Member getLoginMember(Principal principal) {
-        String loginId = principal.getName();
-        Optional<Member> optional =  memberRepository.findByEmail(loginId);
+    public Member getLoginMember(AuthenticatedUser loginAccount) {
+        String oauth2Id = loginAccount.getName();
+        Optional<Member> optional =  memberRepository.findByOauth2ClientId(oauth2Id);
         return optional.orElseThrow(() -> new MyException(HttpStatus.NOT_FOUND, MyErrorMsg.NOT_EXIST_MEMBER));
     }
 

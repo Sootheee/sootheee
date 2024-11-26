@@ -4,6 +4,7 @@ import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.member.domain.Member;
 import com.soothee.member.dto.UpdateMemberDTO;
 import com.soothee.member.service.MemberService;
+import com.soothee.oauth2.domain.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,8 +38,8 @@ public class MemberController {
         @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "404", description = "회원 정보 없음", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> updateMemberName(Principal principal) {
-        Member loginMember = memberService.getLoginMember(principal);
+    public ResponseEntity<?> updateMemberName(@AuthenticationPrincipal AuthenticatedUser login) {
+        Member loginMember = memberService.getLoginMember(login);
         UpdateMemberDTO result = UpdateMemberDTO.builder()
                                                 .id(loginMember.getId())
                                                 .memberName(loginMember.getMemberName()).build();
@@ -55,8 +58,9 @@ public class MemberController {
             @Parameter(name = "id", description = "회원 고유일련번호", example = "1112"),
             @Parameter(name = "member_name", description = "회원이 입력한 새로운 닉네임", example = "사용자")
     })
-    public ResponseEntity<?> updateMemberName(@ModelAttribute UpdateMemberDTO updateInfo, Principal principal) {
-        Member loginMember = memberService.getLoginMember(principal);
+    public ResponseEntity<?> updateMemberName(@ModelAttribute UpdateMemberDTO updateInfo,
+                                              @AuthenticationPrincipal AuthenticatedUser login) {
+        Member loginMember = memberService.getLoginMember(login);
         if(memberService.isNotLoginMemberInfo(loginMember, updateInfo)) {
             return new ResponseEntity<String>(MyErrorMsg.MISS_MATCH_MEMBER.toString(), HttpStatus.BAD_REQUEST);
         }
@@ -71,8 +75,8 @@ public class MemberController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> deleteMember(Principal principal) {
-        Member loginMember =  memberService.getLoginMember(principal);
+    public ResponseEntity<?> deleteMember(@AuthenticationPrincipal AuthenticatedUser login) {
+        Member loginMember =  memberService.getLoginMember(login);
         memberService.deleteMember(loginMember);
         return new ResponseEntity<String>(HttpStatus.OK);
     }

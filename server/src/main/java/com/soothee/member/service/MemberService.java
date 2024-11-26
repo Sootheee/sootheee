@@ -3,6 +3,8 @@ package com.soothee.member.service;
 import com.soothee.common.constants.SnsType;
 import com.soothee.member.domain.Member;
 import com.soothee.member.dto.UpdateMemberDTO;
+import com.soothee.oauth2.domain.AuthenticatedUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -37,10 +39,10 @@ public interface MemberService {
 
     /** 현재 로그인한 회원 정보 가져오기</hr>
      *
-     * @param principal Principal : 현재 로그인 계정 정보
+     * @param loginMember AuthenticatedUser : 현재 로그인 계정 정보
      * @return Member: 로그인한 회원의 정보
      */
-    Member getLoginMember(Principal principal);
+    Member getLoginMember(AuthenticatedUser loginMember);
 
     /** 로그인한 회원의 정보와 입력된 회원의 정보가 일치하지 않는지 확인</hr>
      *
