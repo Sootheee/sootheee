@@ -1,24 +1,27 @@
 package com.soothee.member.controller;
 
-import com.soothee.common.exception.MyErrorMsg;
-import com.soothee.member.domain.Member;
-import com.soothee.member.dto.UpdateMemberDTO;
+import com.soothee.member.dto.AllMemberInfoDTO;
+import com.soothee.member.dto.NameMemberInfoDTO;
 import com.soothee.member.service.MemberService;
+import com.soothee.oauth2.domain.AuthenticatedUser;
+import io.micrometer.common.util.StringUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,53 +30,79 @@ import java.security.Principal;
 public class MemberController {
     private final MemberService memberService;
 
-    /** 회원 수정 페이지 조회 시, 필요한 정보 */
-    @GetMapping("/update")
-    @Operation(summary = "회원의 현재 닉네임", description = "회원 닉네임 변경 세팅 창에서 닉네임을 바꾸기 전에 현재 닉네임을 먼저 출력, 따로 파라미터를 넣지 않아도 현재 로그인한 계정 정보를 이용함",
-            security = @SecurityRequirement(name = "oauth2_auth"))
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "404", description = "회원 정보 없음", content = @Content(mediaType = "text/plain"))
+    /** 회원 정보 전송 */
+    @GetMapping("/info")
+    @Operation(summary = "회원 정보", description = "로그인한 계정 정보로 필요한 정보를 전달", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "type", description = "닉네임만 조회할 때 사용 || 없으면 모든 회원 정보 조회함", example = "/member/info?type=name", required = false, in = ParameterIn.QUERY)
     })
-    public ResponseEntity<?> updateMemberName(Principal principal) {
-        Member loginMember = memberService.getLoginMember(principal);
-        UpdateMemberDTO result = UpdateMemberDTO.builder()
-                                                .id(loginMember.getId())
-                                                .memberName(loginMember.getMemberName()).build();
-        return new ResponseEntity<UpdateMemberDTO>(result, HttpStatus.OK);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = AllMemberInfoDTO.class))),
+            @ApiResponse(responseCode = "206", description = "요청 성공", content = @Content(schema = @Schema(implementation = NameMemberInfoDTO.class))),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> sendMemberInfo(@RequestParam(value = "type", required = false) String type,
+                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        if (StringUtils.isNotBlank(type)) {
+            NameMemberInfoDTO result = memberService.getNicknameInfo(loginInfo);
+            return new ResponseEntity<NameMemberInfoDTO>(result, HttpStatus.PARTIAL_CONTENT);
+        }
+        AllMemberInfoDTO info = memberService.getAllMemberInfo(loginInfo);
+        return new ResponseEntity<AllMemberInfoDTO>(info, HttpStatus.OK);
+    }
+
+    /** 다크모드 수정 */
+    @PostMapping("/update/dark")
+    @Operation(summary = "화면 보기 모드 수정", description = "회원의 다크모드 업데이트", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "memberId", description = "수정할 회원의 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "isDark", description = "회원의 수정할 보기모드 || Y : dark mode / N : normal mode", example = "isDark=Y", required = true, in = ParameterIn.QUERY)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "로그인한 회원과 입력한 회원의 정보가 상이함", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> updateDarkMode(@RequestParam("memberId") Long memberId,
+                                            @RequestParam("isDark") String isDark,
+                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        memberService.updateDarkMode(loginInfo, memberId, isDark);
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
     /** 회원 정보(닉네임) 수정 */
-    @PostMapping("/update")
-    @Operation(summary = "회원 닉네임 수정", description = "회원이 입력한 닉네임으로 업데이트",
-            security = @SecurityRequirement(name = "oauth2_auth"))
+    @PostMapping("/update/name")
+    @Operation(summary = "회원 닉네임 수정", description = "회원이 입력한 닉네임으로 업데이트", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters({
+            @Parameter(name = "memberId", description = "회원 고유일련번호", example = "memberId=1112", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "name", description = "회원이 입력한 새로운 닉네임", example = "name=사용자", required = true, in = ParameterIn.QUERY),
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "400", description = "로그인한 회원과 입력한 회원의 정보가 상이함", content = @Content(mediaType = "text/plain"))
+            @ApiResponse(responseCode = "400", description = "로그인한 회원과 입력한 회원의 정보가 상이함", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
-    @Parameters({
-            @Parameter(name = "id", description = "회원 고유일련번호", example = "1112"),
-            @Parameter(name = "member_name", description = "회원이 입력한 새로운 닉네임", example = "사용자")
-    })
-    public ResponseEntity<?> updateMemberName(@ModelAttribute UpdateMemberDTO updateInfo, Principal principal) {
-        Member loginMember = memberService.getLoginMember(principal);
-        if(memberService.isNotLoginMemberInfo(loginMember, updateInfo)) {
-            return new ResponseEntity<String>(MyErrorMsg.MISS_MATCH_MEMBER.toString(), HttpStatus.BAD_REQUEST);
-        }
-        memberService.updateMember(loginMember, updateInfo);
+    public ResponseEntity<?> updateName(@RequestParam("memberId") Long memberId,
+                                              @RequestParam("name") String name,
+                                              @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        memberService.updateMember(loginInfo, memberId, name);
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 
     /** 회원 탈퇴 */
     @DeleteMapping("/delete")
-    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 시, 소프트 삭제, 따로 파라미터를 넣지 않아도 현재 로그인한 계정 정보를 이용함",
-            security = @SecurityRequirement(name = "oauth2_auth"))
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain"))
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 시, 소프트 삭제, 따로 파라미터를 넣지 않아도 현재 로그인한 계정 정보를 이용함", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "memberId", description = "탈퇴할 회원 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY)
     })
-    public ResponseEntity<?> deleteMember(Principal principal) {
-        Member loginMember =  memberService.getLoginMember(principal);
-        memberService.deleteMember(loginMember);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "로그인한 회원과 입력한 회원의 정보가 상이함", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> deleteMember(@RequestParam("memberId") Long memberId,
+                                          @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        memberService.deleteMember(loginInfo, memberId);
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 }

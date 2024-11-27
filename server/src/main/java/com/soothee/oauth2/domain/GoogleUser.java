@@ -19,8 +19,7 @@ public class GoogleUser {
     public Member toMember() {
         return Member.builder()
                     .email(this.getEmail())
-                    .role(Role.USER)
-                    .memberName(this.getNickName())
+                    .name(this.getNickName())
                     .snsType(SnsType.GOOGLE)
                     .oauth2ClientId(oauth2User.getName())
                     .build();

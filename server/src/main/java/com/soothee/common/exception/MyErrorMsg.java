@@ -13,4 +13,8 @@ public enum MyErrorMsg {
     public String toString() {
         return msg;
     }
+
+    public String makeValue(String msg){
+        return msg + NULL_VALUE.msg;
+    }
 }

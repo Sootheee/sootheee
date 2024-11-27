@@ -23,9 +23,10 @@ public class TestDBTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    private String memberName = "사용자0";
+    private String name = "사용자0";
     private String email = "abc@def.com";
     private SnsType snsType = SnsType.KAKAOTALK;
+    private String oauth2ClientId = "111111";
 
     @Test
     void 테스트디비에서_회원조회_성공하기() {
@@ -33,16 +34,17 @@ public class TestDBTest {
         Optional<Member> optional = memberRepository.findByEmail(email);
         Member member = optional.get();
         //when
-        String nickname = member.getEmail();
+        String nickname = member.getName();
         //then
-        Assertions.assertThat(nickname).isEqualTo(memberName);
+        Assertions.assertThat(nickname).isEqualTo(name);
     }
 
     @BeforeEach
     void insertDefaultMember() {
         Member member = Member.builder()
-                .memberName(memberName)
+                .name(name)
                 .email(email)
+                .oauth2ClientId(oauth2ClientId)
                 .snsType(snsType).build();
         memberRepository.save(member);
     }
