@@ -1,17 +1,14 @@
 package com.soothee.config;
 
 import com.soothee.common.constants.ConstUrl;
-import com.soothee.common.constants.Role;
+import com.soothee.oauth2.filter.JwtAuthenticationFilter;
+import com.soothee.oauth2.provider.JwtTokenProvider;
+import com.soothee.oauth2.service.CustomOAuth2UserService;
+import com.soothee.oauth2.service.DelegatingOAuth2Service;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.*;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -19,16 +16,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -58,43 +53,53 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AppConfig implements WebMvcConfigurer {
     private final ConstUrl constUrl;
+    private final DelegatingOAuth2Service delegatingOAuth2Service;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     /** Front-Server & Back-Server 간 CORS 설정 */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins(constUrl.getFRONT_URL());
+        registry.addMapping("/**")
+                .allowedOrigins(constUrl.getFRONT_URL())
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowCredentials(true);
     }
 
     /** Spring-Security 설정 */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
-                    .httpBasic(AbstractHttpConfigurer::disable)
-                    .formLogin(AbstractHttpConfigurer::disable)
-                    .logout(logout -> logout.logoutSuccessUrl("/onBoarding")
-                                            .invalidateHttpSession(true)
-                                            .deleteCookies("JSESSIONID"))
-                    .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                            .invalidSessionUrl("/login?error=session-expired"))
-                    .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher("/login"),
-                                                                                    new AntPathRequestMatcher("/onBoarding"),
-                                                                                    new AntPathRequestMatcher("/error"),
-                                                                                    new AntPathRequestMatcher("/status"),
-                                                                                    new AntPathRequestMatcher("/css"),
-                                                                                    new AntPathRequestMatcher("/js"),
-                                                                                    new AntPathRequestMatcher("/images")).permitAll()
-                                                                    .requestMatchers(new AntPathRequestMatcher("/swagger-ui"),
+                    .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher("/swagger-ui/**"),
                                                                                     new AntPathRequestMatcher("/api"),
-                                                                                    new AntPathRequestMatcher("/v3"),
-                                                                                    new AntPathRequestMatcher("/docs")).hasAnyAuthority(Role.ADMIN.getAuth())
+                                                                                    new AntPathRequestMatcher("/v3/**"),
+                                                                                    new AntPathRequestMatcher("/docs")).permitAll()
                                                                     .anyRequest().authenticated())
                     .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login?error=session-expired")))
-                    .oauth2Login((configurer) -> configurer.loginPage("/login")
-                                                            .redirectionEndpoint((endpoint) -> endpoint.baseUri("/login/oauth2/callback/"))
-                                                            .defaultSuccessUrl("/home")
-                                                            .failureUrl("/login?error=login-failed")).build();
+                    .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(user -> user.userService(delegatingOAuth2Service))
+                                                                            .defaultSuccessUrl("/home", true)
+                                                    .successHandler((request, response, authentication) -> {
+                                                        OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
+                                                        String jwt = jwtTokenProvider.generateToken(token.getName());
+                                                        response.setContentType("application/json");
+                                                        response.getWriter().write("{\"accessToken\": \"" + jwt + "\"}");
+                                                    })
+                                )
+                    .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
+
+    private JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        authoritiesConverter.setAuthorityPrefix("ROLE_");
+        authoritiesConverter.setAuthoritiesClaimName("roles");
+
+        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
+        authenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
+
+        return authenticationConverter;
+    }
+
 
     /** Swagger 회원 API 명세서 */
     @Bean
