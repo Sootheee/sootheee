@@ -3,7 +3,6 @@ package com.soothee.config;
 import com.soothee.common.constants.ConstUrl;
 import com.soothee.oauth2.filter.JwtAuthenticationFilter;
 import com.soothee.oauth2.provider.JwtTokenProvider;
-import com.soothee.oauth2.service.CustomOAuth2UserService;
 import com.soothee.oauth2.service.DelegatingOAuth2Service;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;

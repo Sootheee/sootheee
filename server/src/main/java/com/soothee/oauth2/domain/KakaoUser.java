@@ -1,6 +1,5 @@
 package com.soothee.oauth2.domain;
 
-import com.soothee.common.constants.Role;
 import com.soothee.common.constants.SnsType;
 import com.soothee.member.domain.Member;
 import lombok.RequiredArgsConstructor;

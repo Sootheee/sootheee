@@ -5,7 +5,6 @@ import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.common.exception.MyException;
 import com.soothee.member.domain.Member;
 import com.soothee.member.dto.AllMemberInfoDTO;
-import com.soothee.member.dto.MemberDTO;
 import com.soothee.member.dto.NameMemberInfoDTO;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.oauth2.domain.AuthenticatedUser;
