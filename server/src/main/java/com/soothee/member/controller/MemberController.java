@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,7 +84,7 @@ public class MemberController {
     public ResponseEntity<?> updateName(@RequestParam("memberId") Long memberId,
                                               @RequestParam("name") String name,
                                               @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        memberService.updateMember(loginInfo, memberId, name);
+        memberService.updateName(loginInfo, memberId, name);
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 
