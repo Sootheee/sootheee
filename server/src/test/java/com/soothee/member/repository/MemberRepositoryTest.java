@@ -23,9 +23,8 @@ class MemberRepositoryTest {
     @BeforeEach
     void setUp() {
         Member member = Member.builder()
-                            .role(Role.USER)
                             .email("abc@abc.com")
-                            .memberName("사용자")
+                            .name("사용자")
                             .snsType(SnsType.KAKAOTALK)
                             .oauth2ClientId("111")
                             .build();
@@ -38,7 +37,7 @@ class MemberRepositoryTest {
         //when
         Optional<Member> optional = memberRepository.findByEmail("abc@abc.com");
         Member findMember = optional.orElseGet(() -> Member.builder().build());
-        String expectedMemberName = findMember.getMemberName();
+        String expectedMemberName = findMember.getName();
         //then
         Assertions.assertThat(expectedMemberName).isEqualTo("사용자");
 
@@ -50,7 +49,7 @@ class MemberRepositoryTest {
         //when
         Optional<Member> optional = memberRepository.findByOauth2ClientIdAndSnsType("111", SnsType.KAKAOTALK);
         Member findMember = optional.orElseGet(() -> Member.builder().build());
-        String expectedMemberName = findMember.getMemberName();
+        String expectedMemberName = findMember.getName();
         //then
         Assertions.assertThat(expectedMemberName).isEqualTo("사용자");
     }

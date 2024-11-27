@@ -1,6 +1,5 @@
 package com.soothee.member.domain;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.soothee.common.constants.Role;
 import com.soothee.common.constants.SnsType;
 import com.soothee.common.domain.TimeEntity;
@@ -27,8 +26,8 @@ public class Member extends TimeEntity {
     private String email;
 
     /** 회원 닉네임 */
-    @Column(name = "member_name", nullable = false)
-    private String memberName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     /** 다크 모드 */
     @Column(name = "is_dark", nullable = false)
@@ -53,13 +52,13 @@ public class Member extends TimeEntity {
     private Role role;
 
     @Builder
-    public Member(String email, String memberName, SnsType snsType, String oauth2ClientId) {
+    public Member(String email, String name, SnsType snsType, String oauth2ClientId) {
         Assert.notNull(email, MyErrorMsg.NULL_VALUE.makeValue("아이디(이메일) "));
-        Assert.notNull(memberName, MyErrorMsg.NULL_VALUE.makeValue("닉네임 "));
+        Assert.notNull(name, MyErrorMsg.NULL_VALUE.makeValue("닉네임 "));
         Assert.notNull(snsType, MyErrorMsg.NULL_VALUE.makeValue("SNS 타입 "));
         Assert.notNull(oauth2ClientId, MyErrorMsg.NULL_VALUE.makeValue("OAuth2 구분 "));
         this.email = email;
-        this.memberName = memberName;
+        this.name = name;
         this.isDark = "N";
         this.isDelete = "N";
         this.snsType = snsType;
@@ -69,10 +68,10 @@ public class Member extends TimeEntity {
 
     /** 회원 정보 수정</hr>
      *
-     * @param memberName String: 바꿀 회원 닉네임
+     * @param updateName String: 바꿀 회원 닉네임
      */
-    public void updateMemberName(String memberName) {
-        this.memberName = memberName;
+    public void updateName(String updateName) {
+        this.name = updateName;
     }
 
     /** 회원 화면 모드 수정</hr>

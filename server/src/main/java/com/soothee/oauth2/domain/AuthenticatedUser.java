@@ -66,7 +66,7 @@ public class AuthenticatedUser implements Principal, OAuth2User {
                                 .oauth2Id(member.getOauth2ClientId())
                                 .role(member.getRole().getAuth())
                                 .email(member.getEmail())
-                                .memberName(member.getMemberName())
+                                .memberName(member.getName())
                                 .attributes(oauth2User.getAttributes())
                                 .build();
     }

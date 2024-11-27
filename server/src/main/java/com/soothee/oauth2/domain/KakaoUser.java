@@ -19,7 +19,7 @@ public class KakaoUser {
     public Member toMember() {
         return Member.builder()
                     .email(this.getEmail())
-                    .memberName(this.getNickName())
+                    .name(this.getNickName())
                     .snsType(SnsType.KAKAOTALK)
                     .oauth2ClientId(oauth2User.getName())
                     .build();
