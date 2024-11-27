@@ -38,8 +38,8 @@ CREATE TABLE dairy
 (
     dairy_id INT AUTO_INCREMENT PRIMARY KEY,
     member_id INT NOT NULL,
+    weather_id INT NOT NULL,
     score FLOAT NOT NULL,
-    cond_id INT NOT NULL,
     content VARCHAR(600) NULL,
     hope VARCHAR(255) NULL,
     thank VARCHAR(255) NULL,
@@ -48,7 +48,7 @@ CREATE TABLE dairy
     reg_date DATETIME NOT NULL,
     mod_date DATETIME NOT NULL,
     FOREIGN KEY (member_id) REFERENCES member(member_id),
-    FOREIGN KEY (cond_id) REFERENCES conditions(cond_id)
+    FOREIGN KEY (weather_id) REFERENCES weather(weather_id)
 );
 
 CREATE TABLE daily_score
@@ -57,5 +57,15 @@ CREATE TABLE daily_score
     daily_score INT NOT NULL
 );
 
-drop table member, weather, conditions, condition_type, daily_score, dairy;
+CREATE TABLE dairy_condition
+(
+    dairy_condition_id INT AUTO_INCREMENT PRIMARY KEY,
+    dairy_id INT NOT NULL,
+    cond_id INT NOT NULL,
+    is_delete VARCHAR(1) NOT NULL,
+    FOREIGN KEY (dairy_id) REFERENCES dairy(dairy_id),
+    FOREIGN KEY (cond_id) REFERENCES conditions(cond_id)
+);
+
+drop table member, dairy, dairy_condition, weather, conditions, condition_type, daily_score;
 drop table daily_score;

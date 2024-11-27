@@ -31,8 +31,4 @@ public class Condition {
     /** 컨디션 부여 점수 */
     @Column(name = "cond_value", nullable = false)
     private Integer condValue;
-
-    /** 컨디션 아이콘 Path */
-    @Column(name = "cond_icon", nullable = false)
-    private String condIcon;
 }
