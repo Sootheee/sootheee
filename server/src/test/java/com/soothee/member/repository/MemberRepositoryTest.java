@@ -1,61 +1,76 @@
 package com.soothee.member.repository;
 
-import com.soothee.common.constants.Role;
 import com.soothee.common.constants.SnsType;
 import com.soothee.member.domain.Member;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.Optional;
 
-@ExtendWith(SpringExtension.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@TestPropertySource("classpath:application-test.properties")
 @DataJpaTest
 class MemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
+    private final String NAME = "사용자0";
+    private final String EMAIL = "abc@def.com";
+    private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
+    private final String OAUTH2_CLIENT_ID = "111111";
+    private Member member;
 
     @BeforeEach
     void setUp() {
-        Member member = Member.builder()
-                            .email("abc@abc.com")
-                            .name("사용자")
-                            .snsType(SnsType.KAKAOTALK)
-                            .oauth2ClientId("111")
-                            .build();
+        member = Member.builder()
+                .name(NAME)
+                .email(EMAIL)
+                .oauth2ClientId(OAUTH2_CLIENT_ID)
+                .snsType(SNS_TYPE).build();
         memberRepository.save(member);
     }
 
     @Test
+    @DisplayName("email로 member 조회")
     void findByEmail() {
-        //given - setUp()
+        //given
         //when
-        Optional<Member> optional = memberRepository.findByEmail("abc@abc.com");
-        Member findMember = optional.orElseGet(() -> Member.builder().build());
-        String expectedMemberName = findMember.getName();
+        Optional<Member> optional = memberRepository.findByEmail(EMAIL);
+        Member mem1 = optional.orElseThrow(NullPointerException::new);
         //then
-        Assertions.assertThat(expectedMemberName).isEqualTo("사용자");
-
+        Assertions.assertThat(mem1.getName()).isEqualTo(NAME);
     }
 
     @Test
+    @DisplayName("oauth2ClientId와 SnsType으로 member 조회")
     void findByOauth2ClientIdAndSnsType() {
-        //given - setUp()
+        //given
         //when
-        Optional<Member> optional = memberRepository.findByOauth2ClientIdAndSnsType("111", SnsType.KAKAOTALK);
-        Member findMember = optional.orElseGet(() -> Member.builder().build());
-        String expectedMemberName = findMember.getName();
+        Optional<Member> optional = memberRepository.findByOauth2ClientIdAndSnsType(OAUTH2_CLIENT_ID, SNS_TYPE);
+        Member mem1 = optional.orElseThrow(NullPointerException::new);
         //then
-        Assertions.assertThat(expectedMemberName).isEqualTo("사용자");
+        Assertions.assertThat(mem1.getName()).isEqualTo(NAME);
+    }
+
+    @Test
+    @DisplayName("oauth2ClientId로 member 조회")
+    void findByOauth2ClientId() {
+        //given
+        //when
+        Optional<Member> optional = memberRepository.findByOauth2ClientId(OAUTH2_CLIENT_ID);
+        Member mem1 = optional.orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(mem1.getName()).isEqualTo(NAME);
     }
 
     @AfterEach
     void tearDown() {
-
+        memberRepository.delete(member);
     }
 }
