@@ -2,15 +2,15 @@ package com.soothee.member.service;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.member.domain.Member;
-import com.soothee.member.dto.UpdateMemberDTO;
+import com.soothee.member.dto.AllMemberInfoDTO;
+import com.soothee.member.dto.NameMemberInfoDTO;
 import com.soothee.oauth2.domain.AuthenticatedUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.security.Principal;
 import java.util.Optional;
 
 public interface MemberService {
-    /** OAuth2 로그인 시, 받은 정보로 회원 조회</hr>
+    /**
+     * OAuth2 로그인 시, 받은 정보로 회원 조회</hr>
      *
      * @param oauth2ClientId String : OAuth2 로그인용 ID
      * @param snsType SnsType : OAuth2 로그인한 SNS 종류(GOOGLE or KAKAO)
@@ -18,37 +18,53 @@ public interface MemberService {
      */
     Optional<Member> getMemberForOAuth2(String oauth2ClientId, SnsType snsType);
 
-    /** 회원 가입</hr>
+    /**
+     * 회원 가입</hr>
      *
      * @param member Member : 가입할 회원의 정보
      */
     void saveMember(Member member);
 
-    /** 회원 닉네임 수정</hr>
+    /**
+     * 회원 닉네임 수정</hr>
      *
-     * @param loginMember Member : 현재 로그인한 회원 정보
-     * @param updateInfo UpdateMemberDTO: 수정할 회원의 정보
+     * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
+     * @param memberId Long : 입력한 회원 일련번호
+     * @param updateMode String : 변경할 모드
      */
-    void updateMember(Member loginMember, UpdateMemberDTO updateInfo);
+    void updateMember(AuthenticatedUser loginInfo, Long memberId, String updateMode);
 
-    /** 회원 탈퇴</hr>
+    /**
+     * 회원 다크모드 수정</hr>
      *
-     * @param loginMember Member : 현재 로그인한 회원 정보
+     * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
+     * @param memberId Long : 입력한 회원 일련번호
+     * @param updateMode String : 변경할 모드
      */
-    void deleteMember(Member loginMember);
+    void updateDarkMode(AuthenticatedUser loginInfo, Long memberId, String updateMode);
 
-    /** 현재 로그인한 회원 정보 가져오기</hr>
+    /**
+     * 회원 탈퇴</hr>
      *
-     * @param loginMember AuthenticatedUser : 현재 로그인 계정 정보
-     * @return Member: 로그인한 회원의 정보
+     * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
+     * @param memberId Long : 입력한 회원 일련번호
      */
-    Member getLoginMember(AuthenticatedUser loginMember);
+    void deleteMember(AuthenticatedUser loginInfo, Long memberId);
 
-    /** 로그인한 회원의 정보와 입력된 회원의 정보가 일치하지 않는지 확인</hr>
+    /**
+     * 마이페이지에 보여질 회원의 정보 조회</hr>
      *
-     * @param loginInfo Member : 로그인한 회원 정보
-     * @param inputInfo UpdateMemberDTO : 입력한 회원 정보
-     * @return 일치하면 false, 아니면 true
+     * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
+     * @return AllMemberInfo : 회원의 모든 정보
      */
-    boolean isNotLoginMemberInfo(Member loginInfo, UpdateMemberDTO inputInfo);
+    AllMemberInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo);
+
+    /**
+     * 회원의 닉네임만 조회</hr>
+     *
+     * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
+     * @return NameMemberInfoDTO : 회원 일련번호와 닉네임 정보
+     */
+    NameMemberInfoDTO getNicknameInfo(AuthenticatedUser loginInfo);
+
 }
