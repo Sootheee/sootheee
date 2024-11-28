@@ -54,7 +54,7 @@ public class MemberServiceImpl implements MemberService {
      * @param updateName String : 변경할 닉네임
      */
     @Override
-    public void updateMember(AuthenticatedUser loginInfo, Long memberId, String updateName) {
+    public void updateName(AuthenticatedUser loginInfo, Long memberId, String updateName) {
         Member loginMember = this.getLoginMember(loginInfo);
         if(this.isNotLoginMemberInfo(loginMember, memberId)) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
@@ -94,7 +94,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
-     * 마이페이지에 보여질 회원의 정보 조회</hr>
+     * 로그인한 회원의 모든 정보 조회</hr>
      *
      * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
      * @return AllMemberInfo : 회원의 모든 정보
@@ -109,7 +109,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
-     * 회원의 닉네임만 조회</hr>
+     * 로그인한 회원의 닉네임만 조회</hr>
      *
      * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
      * @return NameMemberInfoDTO : 회원 일련번호와 닉네임 정보

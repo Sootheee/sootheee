@@ -84,7 +84,7 @@ public class MemberController {
     public ResponseEntity<?> updateName(@RequestParam("memberId") Long memberId,
                                               @RequestParam("name") String name,
                                               @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        memberService.updateMember(loginInfo, memberId, name);
+        memberService.updateName(loginInfo, memberId, name);
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 

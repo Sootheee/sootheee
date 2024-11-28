@@ -1,26 +1,23 @@
-package com.soothee.member.repository;
+package com.soothee.member.domain;
 
 import com.soothee.common.constants.SnsType;
-import com.soothee.member.domain.Member;
+import com.soothee.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
-@ExtendWith(SpringExtension.class)
-@DataJpaTest
-class MemberRepositoryTest {
+@SpringBootTest
+@Transactional
+class MemberTest {
     @Autowired
     private MemberRepository memberRepository;
     private final String NAME = "사용자0";
@@ -40,36 +37,47 @@ class MemberRepositoryTest {
     }
 
     @Test
-    @DisplayName("email로 member 조회")
-    void findByEmail() {
+    @DisplayName("회원 닉네임 수정 성공")
+    void updateName() {
         //given
+        String newName = "수정한이름";
+        Member mem1 = memberRepository.getReferenceById(member.getId());
+
         //when
-        Optional<Member> optional = memberRepository.findByEmail(EMAIL);
-        Member mem1 = optional.orElseThrow(NullPointerException::new);
+        mem1.updateName(newName);
+
         //then
-        Assertions.assertThat(mem1.getName()).isEqualTo(NAME);
+        Member mem2 = memberRepository.getReferenceById(member.getId());
+        Assertions.assertThat(newName).isEqualTo(mem2.getName());
     }
 
     @Test
-    @DisplayName("oauth2ClientId와 SnsType으로 member 조회")
-    void findByOauth2ClientIdAndSnsType() {
+    @DisplayName("회원 다크모드 수정 성공")
+    void updateDarkModeYN() {
         //given
+        String isDarkY = "Y";
+        Member mem1 = memberRepository.getReferenceById(member.getId());
+
         //when
-        Optional<Member> optional = memberRepository.findByOauth2ClientIdAndSnsType(OAUTH2_CLIENT_ID, SNS_TYPE);
-        Member mem1 = optional.orElseThrow(NullPointerException::new);
+        mem1.updateDarkModeYN(isDarkY);
+
         //then
-        Assertions.assertThat(mem1.getName()).isEqualTo(NAME);
+        Member mem2 = memberRepository.getReferenceById(member.getId());
+        Assertions.assertThat(isDarkY).isEqualTo(mem2.getIsDark());
     }
 
     @Test
-    @DisplayName("oauth2ClientId로 member 조회")
-    void findByOauth2ClientId() {
+    @DisplayName("회원 삭제 성공")
+    void deleteMember() {
         //given
+        Member mem1 = memberRepository.getReferenceById(member.getId());
+
         //when
-        Optional<Member> optional = memberRepository.findByOauth2ClientId(OAUTH2_CLIENT_ID);
-        Member mem1 = optional.orElseThrow(NullPointerException::new);
+        mem1.deleteMember();
+
         //then
-        Assertions.assertThat(mem1.getName()).isEqualTo(NAME);
+        Member mem2 = memberRepository.getReferenceById(member.getId());
+        Assertions.assertThat("Y").isEqualTo(mem2.getIsDelete());
     }
 
     @AfterEach
