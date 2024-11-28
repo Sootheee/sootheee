@@ -48,13 +48,13 @@ class MemberTest {
     void updateName() {
         //given
         String newName = "수정한이름";
-        Member mem1 = memberRepository.findByMemberId(member.getMemberId());
+        Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
 
         //when
         mem1.updateName(newName);
 
         //then
-        Member mem2 = memberRepository.findByMemberId(member.getMemberId());
+        Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         Assertions.assertThat(newName).isEqualTo(mem2.getName());
     }
 
@@ -63,13 +63,13 @@ class MemberTest {
     void updateDarkModeYN() {
         //given
         String isDarkY = "Y";
-        Member mem1 = memberRepository.findByMemberId(member.getMemberId());
+        Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
 
         //when
         mem1.updateDarkModeYN(isDarkY);
 
         //then
-        Member mem2 = memberRepository.findByMemberId(member.getMemberId());
+        Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         Assertions.assertThat(isDarkY).isEqualTo(mem2.getIsDark());
     }
 
@@ -77,13 +77,13 @@ class MemberTest {
     @DisplayName("회원 삭제 성공")
     void deleteMember() {
         //given
-        Member mem1 = memberRepository.findByMemberId(member.getMemberId());
+        Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
 
         //when
         mem1.deleteMember();
 
         //then
-        Member mem2 = memberRepository.findByMemberId(member.getMemberId());
+        Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         Assertions.assertThat("Y").isEqualTo(mem2.getIsDelete());
     }
 

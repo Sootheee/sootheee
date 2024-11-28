@@ -27,8 +27,15 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     /** 인증 회원 식별자로 회원
      *
-     * @param oauth2ClientId
-     * @return
+     * @param oauth2ClientId String : 인증 회원 식별자
+     * @return Optional<Member> : 조회한 회원(Null 가능)
      */
     Optional<Member> findByOauth2ClientId(String oauth2ClientId);
+
+    /** 회원 일련번호로 회원 조회
+     *
+     * @param memberId Long : 조회할 회원 일련번호
+     * @return Member : 조회한 회원
+     */
+    Optional<Member> findByMemberId(Long memberId);
 }
