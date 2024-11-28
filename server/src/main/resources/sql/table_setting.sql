@@ -69,6 +69,3 @@ CREATE TABLE dairy_condition
     FOREIGN KEY (dairy_id) REFERENCES dairy(dairy_id),
     FOREIGN KEY (cond_id) REFERENCES conditions(cond_id)
 );
-
-drop table member, dairy, dairy_condition, weather, conditions, condition_type, daily_score;
-drop table daily_score;
