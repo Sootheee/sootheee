@@ -9,15 +9,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "dairy")
 public class Dairy extends TimeEntity {
-    /** 다이어리 일련번호 */
+    /** 일기 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    /** 일기 날짜 */
+    @Column(name = "date", nullable = false)
+    private LocalDateTime date;
 
     /** 등록 회원 */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -54,8 +60,9 @@ public class Dairy extends TimeEntity {
     private String isDelete;
 
     @Builder
-    public Dairy(Member member, Weather weather, Float score, String content, String hope, String thank, String learn) {
+    public Dairy(Member member, LocalDateTime date, Weather weather, Float score, String content, String hope, String thank, String learn) {
         this.member = member;
+        this.date = date;
         this.weather = weather;
         this.score = score;
         this.content = content;
@@ -66,7 +73,7 @@ public class Dairy extends TimeEntity {
     }
 
     /**
-     * 다이어리 수정</hr>
+     * 일기 수정</hr>
      *
      * @param dairy Dairy : 해당 다이어리
      */
@@ -79,7 +86,7 @@ public class Dairy extends TimeEntity {
         this.learn = dairy.getLearn();
     }
 
-    /** 다이어리 삭제 */
+    /** 일기 삭제 */
     public void deleteDairy() {
         this.isDelete = "Y";
     }

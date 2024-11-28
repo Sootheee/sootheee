@@ -37,6 +37,7 @@ CREATE TABLE conditions
 CREATE TABLE dairy
 (
     dairy_id INT AUTO_INCREMENT PRIMARY KEY,
+    date DATETIME NOT NULL,
     member_id INT NOT NULL,
     weather_id INT NOT NULL,
     score FLOAT NOT NULL,
