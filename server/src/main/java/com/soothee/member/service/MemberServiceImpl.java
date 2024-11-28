@@ -103,7 +103,7 @@ public class MemberServiceImpl implements MemberService {
     public AllMemberInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo) {
         Member loginMember = this.getLoginMember(loginInfo);
         return AllMemberInfoDTO.builder()
-                .id(loginMember.getId())
+                .memberId(loginMember.getMemberId())
                 .email(loginMember.getEmail())
                 .isDark(loginMember.getIsDark()).build();
     }
@@ -118,7 +118,7 @@ public class MemberServiceImpl implements MemberService {
     public NameMemberInfoDTO getNicknameInfo(AuthenticatedUser loginInfo) {
         Member loginMember = this.getLoginMember(loginInfo);
         return NameMemberInfoDTO.builder()
-                .id(loginMember.getId())
+                .memberId(loginMember.getMemberId())
                 .name(loginMember.getName()).build();
     }
 
@@ -143,6 +143,6 @@ public class MemberServiceImpl implements MemberService {
      * @return 일치하면 false, 아니면 true
      */
     private boolean isNotLoginMemberInfo(Member loginInfo, Long inputMemberId) {
-        return !Objects.equals(loginInfo.getId(), inputMemberId);
+        return !Objects.equals(loginInfo.getMemberId(), inputMemberId);
     }
 }

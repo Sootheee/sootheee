@@ -2,11 +2,9 @@ package com.soothee.dairy.service;
 
 import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.common.exception.MyException;
-import com.soothee.dairy.domain.Dairy;
 import com.soothee.dairy.dto.MonthlyDairyScoreDTO;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
-import com.soothee.member.dto.MemberDTO;
 import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +32,7 @@ public class DairyServiceImpl implements DairyService {
     @Override
     public List<MonthlyDairyScoreDTO> getAllDairyMonthly(AuthenticatedUser loginInfo, Integer year, Integer month) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        Optional<List<MonthlyDairyScoreDTO>> optional = dairyRepository.findByMemberIdAndDate(loginMember.getId(), year, month);
+        Optional<List<MonthlyDairyScoreDTO>> optional = dairyRepository.findByMemberIdAndDate(loginMember.getMemberId(), year, month);
         return optional.orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
     }
 

@@ -19,7 +19,7 @@ public class Member extends TimeEntity {
     /** 회원 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long memberId;
 
     /** 회원 이메일 */
     @Column(name = "email", nullable = false)

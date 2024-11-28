@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Entity
@@ -19,11 +19,11 @@ public class Dairy extends TimeEntity {
     /** 일기 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long dairyId;
 
     /** 일기 날짜 */
     @Column(name = "date", nullable = false)
-    private LocalDateTime date;
+    private LocalDate date;
 
     /** 등록 회원 */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -37,7 +37,7 @@ public class Dairy extends TimeEntity {
 
     /** 오늘의 점수 */
     @Column(name = "score", nullable = false)
-    private Float score;
+    private Double score;
 
     /** 하루 요약 */
     @Column(name = "content", length = 600)
@@ -60,7 +60,7 @@ public class Dairy extends TimeEntity {
     private String isDelete;
 
     @Builder
-    public Dairy(Member member, LocalDateTime date, Weather weather, Float score, String content, String hope, String thank, String learn) {
+    public Dairy(Member member, LocalDate date, Weather weather, Double score, String content, String hope, String thank, String learn) {
         this.member = member;
         this.date = date;
         this.weather = weather;

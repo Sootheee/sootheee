@@ -17,7 +17,7 @@ public class DailyScore {
     /** 점수 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long dailyScoreId;
 
     /** 오늘의 점수 */
     @Column(name = "daily_score", nullable = false)

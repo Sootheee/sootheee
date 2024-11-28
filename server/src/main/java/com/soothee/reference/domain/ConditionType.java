@@ -17,7 +17,7 @@ public class ConditionType {
     /** 컨디션 타입 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long condTypeId;
 
     /** 컨디션 타입 */
     @Column(name = "cond_type_name", nullable = false, length = 10)

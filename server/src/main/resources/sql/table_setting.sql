@@ -37,10 +37,10 @@ CREATE TABLE conditions
 CREATE TABLE dairy
 (
     dairy_id INT AUTO_INCREMENT PRIMARY KEY,
-    date DATETIME NOT NULL,
+    date DATE NOT NULL,
     member_id INT NOT NULL,
     weather_id INT NOT NULL,
-    score FLOAT NOT NULL,
+    score DOUBLE NOT NULL,
     content VARCHAR(600) NULL,
     hope VARCHAR(255) NULL,
     thank VARCHAR(255) NULL,
@@ -60,10 +60,12 @@ CREATE TABLE daily_score
 
 CREATE TABLE dairy_condition
 (
-    dairy_condition_id INT AUTO_INCREMENT PRIMARY KEY,
+    dairy_cond_id INT AUTO_INCREMENT PRIMARY KEY,
     dairy_id INT NOT NULL,
     cond_id INT NOT NULL,
     is_delete VARCHAR(1) NOT NULL,
+    reg_date DATETIME NOT NULL,
+    mod_date DATETIME NOT NULL,
     FOREIGN KEY (dairy_id) REFERENCES dairy(dairy_id),
     FOREIGN KEY (cond_id) REFERENCES conditions(cond_id)
 );

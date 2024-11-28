@@ -13,7 +13,7 @@ import lombok.*;
 public class NameMemberInfoDTO implements MemberDTO {
     @Schema(description = "회원 일련번호")
     @NotEmpty(message = "회원 일련번호가 없습니다.")
-    private Long id;
+    private Long memberId;
 
     @Schema(description = "회원 닉네임")
     @NotEmpty(message = "회원 닉네임이 없습니다.")

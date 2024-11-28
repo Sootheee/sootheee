@@ -15,7 +15,7 @@ public class DairyCondition {
     /** 다이어리-콘텐츠 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long dairyCondId;
 
     /** 해당 다이어리 일련번호 */
     @ManyToOne(fetch = FetchType.LAZY)
