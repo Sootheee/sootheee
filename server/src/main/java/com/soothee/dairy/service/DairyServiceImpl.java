@@ -21,6 +21,7 @@ import java.util.Optional;
 public class DairyServiceImpl implements DairyService {
     private final DairyRepository dairyRepository;
     private final MemberService memberService;
+
     /**
      * 지정한 달에 작성한 모든 일기의 오늘의 점수 리스트 조회</hr>
      *

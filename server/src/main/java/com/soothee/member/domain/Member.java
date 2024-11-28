@@ -66,7 +66,8 @@ public class Member extends TimeEntity {
         this.role = Role.USER;
     }
 
-    /** 회원 정보 수정</hr>
+    /**
+     * 회원 정보 수정</hr>
      *
      * @param updateName String: 바꿀 회원 닉네임
      */
@@ -74,7 +75,8 @@ public class Member extends TimeEntity {
         this.name = updateName;
     }
 
-    /** 회원 화면 모드 수정</hr>
+    /**
+     * 회원 화면 모드 수정</hr>
      *
      * @param isDark String: 바꿀 화면 모드가 다크모드면 Y 아니면 N
      */

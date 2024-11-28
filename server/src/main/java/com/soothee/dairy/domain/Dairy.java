@@ -86,7 +86,9 @@ public class Dairy extends TimeEntity {
         this.learn = dairy.getLearn();
     }
 
-    /** 일기 삭제 */
+    /**
+     * 일기 삭제</hr>
+     * */
     public void deleteDairy() {
         this.isDelete = "Y";
     }

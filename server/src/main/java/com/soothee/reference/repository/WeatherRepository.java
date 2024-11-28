@@ -9,7 +9,8 @@ import java.util.Optional;
 @Repository
 public interface WeatherRepository extends JpaRepository<Weather, Long> {
     /**
-     * 날씨 일련번호로 날씨 조회
+     * 날씨 일련번호로 날씨 조회</hr>
+     *
      * @param weatherId Long : 날씨 일련번호
      * @return Optional<Weather> : 날씨 조회 (null 가능)
      */
