@@ -22,35 +22,35 @@ import java.util.Optional;
 public class TestDBTest {
     @Autowired
     private MemberRepository memberRepository;
-
-    private String name = "사용자0";
-    private String email = "abc@def.com";
-    private SnsType snsType = SnsType.KAKAOTALK;
-    private String oauth2ClientId = "111111";
+    private final String NAME = "사용자0";
+    private final String EMAIL = "abc@def.com";
+    private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
+    private final String OAUTH2_CLIENT_ID = "111111";
+    private Member member;
 
     @Test
     void 테스트디비에서_회원조회_성공하기() {
         //given
-        Optional<Member> optional = memberRepository.findByEmail(email);
+        Optional<Member> optional = memberRepository.findByEmail(EMAIL);
         Member member = optional.get();
         //when
         String nickname = member.getName();
         //then
-        Assertions.assertThat(nickname).isEqualTo(name);
+        Assertions.assertThat(nickname).isEqualTo(NAME);
     }
 
     @BeforeEach
     void insertDefaultMember() {
-        Member member = Member.builder()
-                .name(name)
-                .email(email)
-                .oauth2ClientId(oauth2ClientId)
-                .snsType(snsType).build();
+        member = Member.builder()
+                .name(NAME)
+                .email(EMAIL)
+                .oauth2ClientId(OAUTH2_CLIENT_ID)
+                .snsType(SNS_TYPE).build();
         memberRepository.save(member);
     }
 
     @AfterEach
     void deleteDefaultMember() {
-        memberRepository.deleteAll();
+        memberRepository.delete(member);
     }
 }
