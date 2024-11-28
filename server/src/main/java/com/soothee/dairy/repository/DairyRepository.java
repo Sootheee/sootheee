@@ -22,7 +22,7 @@ public interface DairyRepository extends JpaRepository<Dairy, Long> {
      */
     @Query(value = "SELECT new com.soothee.dairy.dto.MonthlyDairyScoreDTO(d.dairyId, d.date, d.score)" +
             "FROM Dairy d " +
-            "WHERE d.member = :member_id " +
+            "WHERE d.member.memberId = :member_id " +
             "AND YEAR(d.date) = :year " +
             "AND MONTH(d.date) = :month")
     Optional<List<MonthlyDairyScoreDTO>> findByMemberIdAndDate(@Param("member_id") Long memberId,
