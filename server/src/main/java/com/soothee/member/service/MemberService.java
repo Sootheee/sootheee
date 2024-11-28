@@ -67,4 +67,11 @@ public interface MemberService {
      */
     NameMemberInfoDTO getNicknameInfo(AuthenticatedUser loginInfo);
 
+    /**
+     * 현재 로그인한 회원 정보 가져오기</hr>
+     *
+     * @param loginInfo AuthenticatedUser : 현재 로그인 계정 정보
+     * @return Member: 로그인한 회원의 정보
+     */
+    Member getLoginMember(AuthenticatedUser loginInfo);
 }

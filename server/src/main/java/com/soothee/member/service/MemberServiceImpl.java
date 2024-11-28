@@ -128,10 +128,11 @@ public class MemberServiceImpl implements MemberService {
      * @param loginInfo AuthenticatedUser : 현재 로그인 계정 정보
      * @return Member: 로그인한 회원의 정보
      */
-    private Member getLoginMember(AuthenticatedUser loginInfo) {
+    @Override
+    public Member getLoginMember(AuthenticatedUser loginInfo) {
         String oauth2Id = loginInfo.getName();
         Optional<Member> optional =  memberRepository.findByOauth2ClientId(oauth2Id);
-        return optional.orElseThrow(() -> new MyException(HttpStatus.FORBIDDEN, MyErrorMsg.NOT_EXIST_MEMBER));
+        return optional.orElseThrow(() -> new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.NOT_EXIST_MEMBER));
     }
 
     /**
