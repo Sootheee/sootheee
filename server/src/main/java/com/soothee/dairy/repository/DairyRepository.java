@@ -1,7 +1,7 @@
 package com.soothee.dairy.repository;
 
 import com.soothee.dairy.domain.Dairy;
-import com.soothee.dairy.dto.MonthlyDairyScoreDTO;
+import com.soothee.dairy.dto.DairyScoresDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,16 +18,16 @@ public interface DairyRepository extends JpaRepository<Dairy, Long> {
      * @param memberId Long : 로그인한 계정 일련번호
      * @param year Integer : 지정한 년도
      * @param month Integer : 지정한 월
-     * @return Optional<List<MonthlyDairyScoreDTO>> : 조회된 (일기 일련번호, 일기 날짜, 오늘의 점수) 정보 리스트 (null 가능)
+     * @return Optional<List<DairyScoresDTO>> : 조회된 (일기 일련번호, 일기 날짜, 오늘의 점수) 정보 리스트 (null 가능)
      */
-    @Query(value = "SELECT new com.soothee.dairy.dto.MonthlyDairyScoreDTO(d.dairyId, d.date, d.score)" +
+    @Query(value = "SELECT new com.soothee.dairy.dto.DairyScoresDTO(d.dairyId, d.date, d.score)" +
             "FROM Dairy d " +
             "WHERE d.member.memberId = :member_id " +
             "AND YEAR(d.date) = :year " +
             "AND MONTH(d.date) = :month")
-    Optional<List<MonthlyDairyScoreDTO>> findByMemberIdAndDate(@Param("member_id") Long memberId,
-                                                               @Param("year") Integer year,
-                                                               @Param("month") Integer month);
+    Optional<List<DairyScoresDTO>> findByMemberIdAndDate(@Param("member_id") Long memberId,
+                                                         @Param("year") Integer year,
+                                                         @Param("month") Integer month);
 
     /**
      * 회원 일련번호로 회원이 작성한 모든 일기 조회</hr>

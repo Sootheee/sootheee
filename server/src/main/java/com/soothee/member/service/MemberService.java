@@ -2,8 +2,8 @@ package com.soothee.member.service;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.member.domain.Member;
-import com.soothee.member.dto.AllMemberInfoDTO;
-import com.soothee.member.dto.NameMemberInfoDTO;
+import com.soothee.member.dto.MemberAllInfoDTO;
+import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 
 import java.util.Optional;
@@ -55,17 +55,17 @@ public interface MemberService {
      * 로그인한 회원의 모든 정보 조회</hr>
      *
      * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
-     * @return AllMemberInfo : 회원의 모든 정보
+     * @return MemberAllInfoDTO : 회원의 모든 정보
      */
-    AllMemberInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo);
+    MemberAllInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo);
 
     /**
      * 로그인한 회원의 닉네임만 조회</hr>
      *
      * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
-     * @return NameMemberInfoDTO : 회원 일련번호와 닉네임 정보
+     * @return MemberNameDTO : 회원 일련번호와 닉네임 정보
      */
-    NameMemberInfoDTO getNicknameInfo(AuthenticatedUser loginInfo);
+    MemberNameDTO getNicknameInfo(AuthenticatedUser loginInfo);
 
     /**
      * 현재 로그인한 회원 정보 가져오기</hr>

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @Schema(description = "해당 월에 작성한 모든 일기의 오늘의 점수 정보")
-public class MonthlyDairyScoreDTO {
+public class DairyScoresDTO {
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
     @Schema(description = "일기 일련번호")
     private Long dairyId;

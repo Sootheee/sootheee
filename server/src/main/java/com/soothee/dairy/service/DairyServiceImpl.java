@@ -2,7 +2,7 @@ package com.soothee.dairy.service;
 
 import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.common.exception.MyException;
-import com.soothee.dairy.dto.MonthlyDairyScoreDTO;
+import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
 import com.soothee.member.service.MemberService;
@@ -28,12 +28,12 @@ public class DairyServiceImpl implements DairyService {
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
      * @param year      Integer : 지정한 년도
      * @param month     Integer : 지정한 달
-     * @return List<MonthlyDairyScoreDTO> : 일기 일련번호와 날짜, 오늘의 점수 리스트
+     * @return List<DairyScoresDTO> : 일기 일련번호와 날짜, 오늘의 점수 리스트
      */
     @Override
-    public List<MonthlyDairyScoreDTO> getAllDairyMonthly(AuthenticatedUser loginInfo, Integer year, Integer month) {
+    public List<DairyScoresDTO> getAllDairyMonthly(AuthenticatedUser loginInfo, Integer year, Integer month) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        Optional<List<MonthlyDairyScoreDTO>> optional = dairyRepository.findByMemberIdAndDate(loginMember.getMemberId(), year, month);
+        Optional<List<DairyScoresDTO>> optional = dairyRepository.findByMemberIdAndDate(loginMember.getMemberId(), year, month);
         return optional.orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
     }
 

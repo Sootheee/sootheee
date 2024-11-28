@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Schema(description = "로그인한 회원의 모든 정보 DTO")
-public class AllMemberInfoDTO implements MemberDTO {
+public class MemberAllInfoDTO implements MemberDTO {
     @NotEmpty(message = "회원 일련번호가 없습니다.")
     @Schema(description = "회원 일련번호")
     private Long memberId;

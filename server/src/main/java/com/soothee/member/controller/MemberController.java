@@ -1,7 +1,7 @@
 package com.soothee.member.controller;
 
-import com.soothee.member.dto.AllMemberInfoDTO;
-import com.soothee.member.dto.NameMemberInfoDTO;
+import com.soothee.member.dto.MemberAllInfoDTO;
+import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import io.micrometer.common.util.StringUtils;
@@ -36,22 +36,22 @@ public class MemberController {
             @Parameter(name = "type", description = "닉네임만 조회할 때 사용 || 없으면 회원의 모든 정보 조회함", example = "/member/info?type=name", required = false, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = AllMemberInfoDTO.class))),
-            @ApiResponse(responseCode = "206", description = "요청 성공", content = @Content(schema = @Schema(implementation = NameMemberInfoDTO.class))),
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = MemberAllInfoDTO.class))),
+            @ApiResponse(responseCode = "206", description = "요청 성공", content = @Content(schema = @Schema(implementation = MemberNameDTO.class))),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> sendMemberInfo(@RequestParam(value = "type", required = false) String type,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         if (StringUtils.isNotBlank(type)) {
-            NameMemberInfoDTO result = memberService.getNicknameInfo(loginInfo);
-            return new ResponseEntity<NameMemberInfoDTO>(result, HttpStatus.PARTIAL_CONTENT);
+            MemberNameDTO result = memberService.getNicknameInfo(loginInfo);
+            return new ResponseEntity<MemberNameDTO>(result, HttpStatus.PARTIAL_CONTENT);
         }
-        AllMemberInfoDTO info = memberService.getAllMemberInfo(loginInfo);
-        return new ResponseEntity<AllMemberInfoDTO>(info, HttpStatus.OK);
+        MemberAllInfoDTO info = memberService.getAllMemberInfo(loginInfo);
+        return new ResponseEntity<MemberAllInfoDTO>(info, HttpStatus.OK);
     }
 
     /** 다크모드 수정 */
-    @PostMapping("/update/dark")
+    @PutMapping("/update/dark")
     @Operation(summary = "화면 보기 모드 수정", description = "회원의 다크모드 업데이트", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
             @Parameter(name = "memberId", description = "수정할 회원의 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY),
@@ -70,7 +70,7 @@ public class MemberController {
     }
 
     /** 회원 정보(닉네임) 수정 */
-    @PostMapping("/update/name")
+    @PutMapping("/update/name")
     @Operation(summary = "회원 닉네임 수정", description = "회원이 입력한 닉네임으로 업데이트", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters({
             @Parameter(name = "memberId", description = "회원 고유일련번호", example = "memberId=1112", required = true, in = ParameterIn.QUERY),
