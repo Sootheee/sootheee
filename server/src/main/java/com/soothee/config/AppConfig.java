@@ -1,5 +1,6 @@
 package com.soothee.config;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.soothee.common.constants.ConstUrl;
 import com.soothee.oauth2.filter.JwtAuthenticationFilter;
 import com.soothee.oauth2.provider.JwtTokenProvider;
@@ -8,6 +9,8 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -55,6 +58,14 @@ public class AppConfig implements WebMvcConfigurer {
     private final DelegatingOAuth2Service delegatingOAuth2Service;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    /** QueryDSL 설정 */
+    @PersistenceContext
+    private EntityManager entityManager;
+    @Bean
+    public JPAQueryFactory jpaQueryFactory(){
+        return new JPAQueryFactory(entityManager);
+    }
 
     /** Front-Server & Back-Server 간 CORS 설정 */
     @Override
