@@ -1,5 +1,6 @@
 package com.soothee.dairy.domain;
 
+import com.soothee.common.domain.TimeEntity;
 import com.soothee.reference.domain.Condition;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "dairy_condition")
-public class DairyCondition {
+public class DairyCondition extends TimeEntity {
     /** 다이어리-콘텐츠 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,7 +44,7 @@ public class DairyCondition {
         this.isDelete = "Y";
     }
 
-    public static DairyCondition of (Dairy dairy, Condition condition) {
+    public static DairyCondition of(Dairy dairy, Condition condition) {
         return DairyCondition.builder()
                 .dairy(dairy)
                 .condition(condition)
