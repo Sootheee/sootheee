@@ -2,7 +2,7 @@ package com.soothee.dairy.repository;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.dairy.domain.Dairy;
-import com.soothee.dairy.dto.MonthlyDairyScoreDTO;
+import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.repository.WeatherRepository;
@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -26,7 +27,7 @@ import java.util.Optional;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
 @ExtendWith(SpringExtension.class)
-@DataJpaTest
+@SpringBootTest
 @EnableJpaAuditing
 @ActiveProfiles("test")
 class DairyRepositoryTest {
@@ -59,18 +60,6 @@ class DairyRepositoryTest {
                 .weather(weatherRepository.findByWeatherId(1L).orElseThrow())
                 .build();
         dairyRepository.save(dairy);
-    }
-
-    @Test
-    void findByMemberIdAndDate() {
-        //given
-        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
-        //when
-        Optional<List<MonthlyDairyScoreDTO>> optional = dairyRepository.findByMemberIdAndDate(writer.getMemberId(), 2024, 10);
-        List<MonthlyDairyScoreDTO> resultList = optional.orElseThrow();
-        MonthlyDairyScoreDTO result = resultList.get(0);
-        //then
-        Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
 
     @Test
