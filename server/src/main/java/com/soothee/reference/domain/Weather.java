@@ -17,13 +17,9 @@ public class Weather {
     /** 날씨 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long weatherId;
 
     /** 날씨 이름 */
     @Column(name = "weather_name", nullable = false, length = 10)
     private String weatherName;
-
-    /** 날씨 아이콘 Path */
-    @Column(name = "weather_icon", nullable = false)
-    private String weatherIcon;
 }

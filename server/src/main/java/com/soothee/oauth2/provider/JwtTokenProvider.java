@@ -1,6 +1,5 @@
 package com.soothee.oauth2.provider;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +8,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class JwtTokenProvider {

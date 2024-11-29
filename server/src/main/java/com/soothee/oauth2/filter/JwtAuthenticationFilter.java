@@ -1,8 +1,6 @@
 package com.soothee.oauth2.filter;
 
 import com.soothee.oauth2.provider.JwtTokenProvider;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -17,7 +17,7 @@ public class Condition {
     /** 컨디션 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long condId;
 
     /** 컨디션 */
     @Column(name = "cond_name", nullable = false, length = 10)
@@ -31,8 +31,4 @@ public class Condition {
     /** 컨디션 부여 점수 */
     @Column(name = "cond_value", nullable = false)
     private Integer condValue;
-
-    /** 컨디션 아이콘 Path */
-    @Column(name = "cond_icon", nullable = false)
-    private String condIcon;
 }

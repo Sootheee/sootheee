@@ -4,8 +4,8 @@ import com.soothee.common.constants.SnsType;
 import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.common.exception.MyException;
 import com.soothee.member.domain.Member;
-import com.soothee.member.dto.AllMemberInfoDTO;
-import com.soothee.member.dto.NameMemberInfoDTO;
+import com.soothee.member.dto.MemberInfoDTO;
+import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
@@ -97,29 +97,24 @@ public class MemberServiceImpl implements MemberService {
      * 로그인한 회원의 모든 정보 조회</hr>
      *
      * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
-     * @return AllMemberInfo : 회원의 모든 정보
+     * @return MemberInfoDTO : 회원의 모든 정보
      */
     @Override
-    public AllMemberInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo) {
+    public MemberInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo) {
         Member loginMember = this.getLoginMember(loginInfo);
-        return AllMemberInfoDTO.builder()
-                .id(loginMember.getId())
-                .email(loginMember.getEmail())
-                .isDark(loginMember.getIsDark()).build();
+        return MemberInfoDTO.fromMember(loginMember);
     }
 
     /**
      * 로그인한 회원의 닉네임만 조회</hr>
      *
      * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
-     * @return NameMemberInfoDTO : 회원 일련번호와 닉네임 정보
+     * @return MemberNameDTO : 회원 일련번호와 닉네임 정보
      */
     @Override
-    public NameMemberInfoDTO getNicknameInfo(AuthenticatedUser loginInfo) {
+    public MemberNameDTO getNicknameInfo(AuthenticatedUser loginInfo) {
         Member loginMember = this.getLoginMember(loginInfo);
-        return NameMemberInfoDTO.builder()
-                .id(loginMember.getId())
-                .name(loginMember.getName()).build();
+        return MemberNameDTO.fromMember(loginMember);
     }
 
     /**
@@ -128,10 +123,11 @@ public class MemberServiceImpl implements MemberService {
      * @param loginInfo AuthenticatedUser : 현재 로그인 계정 정보
      * @return Member: 로그인한 회원의 정보
      */
-    private Member getLoginMember(AuthenticatedUser loginInfo) {
+    @Override
+    public Member getLoginMember(AuthenticatedUser loginInfo) {
         String oauth2Id = loginInfo.getName();
         Optional<Member> optional =  memberRepository.findByOauth2ClientId(oauth2Id);
-        return optional.orElseThrow(() -> new MyException(HttpStatus.FORBIDDEN, MyErrorMsg.NOT_EXIST_MEMBER));
+        return optional.orElseThrow(() -> new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.NOT_EXIST_MEMBER));
     }
 
     /**
@@ -142,6 +138,6 @@ public class MemberServiceImpl implements MemberService {
      * @return 일치하면 false, 아니면 true
      */
     private boolean isNotLoginMemberInfo(Member loginInfo, Long inputMemberId) {
-        return !Objects.equals(loginInfo.getId(), inputMemberId);
+        return !Objects.equals(loginInfo.getMemberId(), inputMemberId);
     }
 }

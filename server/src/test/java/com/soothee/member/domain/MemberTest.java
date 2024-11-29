@@ -9,14 +9,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest
+@AutoConfigureDataJpa
 @Transactional
+@EnableJpaAuditing
+@ActiveProfiles("test")
 class MemberTest {
     @Autowired
     private MemberRepository memberRepository;
@@ -41,13 +48,13 @@ class MemberTest {
     void updateName() {
         //given
         String newName = "수정한이름";
-        Member mem1 = memberRepository.getReferenceById(member.getId());
+        Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
 
         //when
         mem1.updateName(newName);
 
         //then
-        Member mem2 = memberRepository.getReferenceById(member.getId());
+        Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         Assertions.assertThat(newName).isEqualTo(mem2.getName());
     }
 
@@ -56,13 +63,13 @@ class MemberTest {
     void updateDarkModeYN() {
         //given
         String isDarkY = "Y";
-        Member mem1 = memberRepository.getReferenceById(member.getId());
+        Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
 
         //when
         mem1.updateDarkModeYN(isDarkY);
 
         //then
-        Member mem2 = memberRepository.getReferenceById(member.getId());
+        Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         Assertions.assertThat(isDarkY).isEqualTo(mem2.getIsDark());
     }
 
@@ -70,13 +77,13 @@ class MemberTest {
     @DisplayName("회원 삭제 성공")
     void deleteMember() {
         //given
-        Member mem1 = memberRepository.getReferenceById(member.getId());
+        Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
 
         //when
         mem1.deleteMember();
 
         //then
-        Member mem2 = memberRepository.getReferenceById(member.getId());
+        Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         Assertions.assertThat("Y").isEqualTo(mem2.getIsDelete());
     }
 
