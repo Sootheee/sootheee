@@ -51,7 +51,7 @@ public class DairyController {
     }
 
     @PostMapping("/dairy")
-    @Operation(summary = "새 일기 등록", description = "로그인한 계정이 지정한 달에 작성한 모든 일기 일련번호와 각 오늘의 점수 정보 전달", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Operation(summary = "새 일기 등록", description = "로그인한 계정이 작성한 새 특정일자 일기 등록", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
             @Parameter(name = "date", description = "해당 날짜", example = "date=2024-10-11", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "weatherId", description = "날씨 일련번호", example = "weatherId=11", required = true, in = ParameterIn.QUERY),
