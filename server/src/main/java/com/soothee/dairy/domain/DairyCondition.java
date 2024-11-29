@@ -42,4 +42,11 @@ public class DairyCondition {
     public void deleteDairyCondition () {
         this.isDelete = "Y";
     }
+
+    public static DairyCondition of (Dairy dairy, Condition condition) {
+        return DairyCondition.builder()
+                .dairy(dairy)
+                .condition(condition)
+                .build();
+    }
 }
