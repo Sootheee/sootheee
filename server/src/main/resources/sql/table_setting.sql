@@ -52,12 +52,6 @@ CREATE TABLE dairy
     FOREIGN KEY (weather_id) REFERENCES weather(weather_id)
 );
 
-CREATE TABLE daily_score
-(
-    daily_score_no INT AUTO_INCREMENT PRIMARY KEY,
-    daily_score INT NOT NULL
-);
-
 CREATE TABLE dairy_condition
 (
     dairy_cond_id INT AUTO_INCREMENT PRIMARY KEY,
