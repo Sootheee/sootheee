@@ -1,5 +1,6 @@
 package com.soothee.dairy.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Setter
 @Getter
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor = @__(@QueryProjection))
 @Schema(description = "해당 월에 작성한 모든 일기의 오늘의 점수 정보")
 public class DairyScoresDTO {
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
