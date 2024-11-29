@@ -4,7 +4,7 @@ import com.soothee.common.constants.SnsType;
 import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.common.exception.MyException;
 import com.soothee.member.domain.Member;
-import com.soothee.member.dto.MemberAllInfoDTO;
+import com.soothee.member.dto.MemberInfoDTO;
 import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.oauth2.domain.AuthenticatedUser;
@@ -97,15 +97,12 @@ public class MemberServiceImpl implements MemberService {
      * 로그인한 회원의 모든 정보 조회</hr>
      *
      * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
-     * @return MemberAllInfoDTO : 회원의 모든 정보
+     * @return MemberInfoDTO : 회원의 모든 정보
      */
     @Override
-    public MemberAllInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo) {
+    public MemberInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo) {
         Member loginMember = this.getLoginMember(loginInfo);
-        return MemberAllInfoDTO.builder()
-                .memberId(loginMember.getMemberId())
-                .email(loginMember.getEmail())
-                .isDark(loginMember.getIsDark()).build();
+        return MemberInfoDTO.fromMember(loginMember);
     }
 
     /**
@@ -117,9 +114,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberNameDTO getNicknameInfo(AuthenticatedUser loginInfo) {
         Member loginMember = this.getLoginMember(loginInfo);
-        return MemberNameDTO.builder()
-                .memberId(loginMember.getMemberId())
-                .name(loginMember.getName()).build();
+        return MemberNameDTO.fromMember(loginMember);
     }
 
     /**

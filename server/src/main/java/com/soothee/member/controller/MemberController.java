@@ -1,6 +1,6 @@
 package com.soothee.member.controller;
 
-import com.soothee.member.dto.MemberAllInfoDTO;
+import com.soothee.member.dto.MemberInfoDTO;
 import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
@@ -36,7 +36,7 @@ public class MemberController {
             @Parameter(name = "type", description = "닉네임만 조회할 때 사용 || 없으면 회원의 모든 정보 조회함", example = "/member/info?type=name", required = false, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = MemberAllInfoDTO.class))),
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = MemberInfoDTO.class))),
             @ApiResponse(responseCode = "206", description = "요청 성공", content = @Content(schema = @Schema(implementation = MemberNameDTO.class))),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
@@ -46,8 +46,8 @@ public class MemberController {
             MemberNameDTO result = memberService.getNicknameInfo(loginInfo);
             return new ResponseEntity<MemberNameDTO>(result, HttpStatus.PARTIAL_CONTENT);
         }
-        MemberAllInfoDTO info = memberService.getAllMemberInfo(loginInfo);
-        return new ResponseEntity<MemberAllInfoDTO>(info, HttpStatus.OK);
+        MemberInfoDTO info = memberService.getAllMemberInfo(loginInfo);
+        return new ResponseEntity<MemberInfoDTO>(info, HttpStatus.OK);
     }
 
     /** 다크모드 수정 */

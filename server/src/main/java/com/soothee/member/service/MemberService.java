@@ -2,7 +2,7 @@ package com.soothee.member.service;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.member.domain.Member;
-import com.soothee.member.dto.MemberAllInfoDTO;
+import com.soothee.member.dto.MemberInfoDTO;
 import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 
@@ -55,9 +55,9 @@ public interface MemberService {
      * 로그인한 회원의 모든 정보 조회</hr>
      *
      * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
-     * @return MemberAllInfoDTO : 회원의 모든 정보
+     * @return MemberInfoDTO : 회원의 모든 정보
      */
-    MemberAllInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo);
+    MemberInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo);
 
     /**
      * 로그인한 회원의 닉네임만 조회</hr>
