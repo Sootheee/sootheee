@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
@@ -63,11 +62,11 @@ class DairyRepositoryQdslImplTest {
     }
 
     @Test
-    void findByMemberIdAndDate() {
+    void findByMemberIdYearMonth() {
         //given
         Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        Optional<List<DairyScoresDTO>> optional = dairyRepository.findByMemberIdAndDate(writer.getMemberId(), 2024, 10);
+        Optional<List<DairyScoresDTO>> optional = dairyRepository.findByMemberIdYearMonth(writer.getMemberId(), 2024, 10);
         List<DairyScoresDTO> resultList = optional.orElseThrow();
         DairyScoresDTO result = resultList.get(0);
         //then

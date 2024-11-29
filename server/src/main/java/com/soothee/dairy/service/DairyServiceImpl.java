@@ -39,7 +39,7 @@ public class DairyServiceImpl implements DairyService {
     @Override
     public List<DairyScoresDTO> getAllDairyMonthly(AuthenticatedUser loginInfo, Integer year, Integer month) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        Optional<List<DairyScoresDTO>> optional = dairyRepository.findByMemberIdAndDate(loginMember.getMemberId(), year, month);
+        Optional<List<DairyScoresDTO>> optional = dairyRepository.findByMemberIdYearMonth(loginMember.getMemberId(), year, month);
         return optional.orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
     }
 

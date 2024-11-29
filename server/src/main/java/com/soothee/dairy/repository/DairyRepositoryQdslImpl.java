@@ -25,9 +25,9 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
      * @param month Integer : 지정한 월
      * @return Optional<List<DairyScoresDTO>> : 조회된 (일기 일련번호, 일기 날짜, 오늘의 점수) 정보 리스트 (null 가능)
      */
-    public Optional<List<DairyScoresDTO>> findByMemberIdAndDate(@Param("member_id") Long memberId,
-                                                         @Param("year") Integer year,
-                                                         @Param("month") Integer month) {
+    public Optional<List<DairyScoresDTO>> findByMemberIdYearMonth(@Param("member_id") Long memberId,
+                                                                  @Param("year") Integer year,
+                                                                  @Param("month") Integer month) {
         return Optional.of(queryFactory.select(new QDairyScoresDTO(dairy.dairyId, dairy.date, dairy.score))
                 .from(dairy)
                 .where(dairy.member.memberId.eq(memberId),
