@@ -32,6 +32,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                 .from(dairy)
                 .where(dairy.member.memberId.eq(memberId),
                         dairy.date.year().eq(year),
-                        dairy.date.month().eq(month)).fetch());
+                        dairy.date.month().eq(month),
+                        dairy.isDelete.eq("N")).fetch());
     }
 }

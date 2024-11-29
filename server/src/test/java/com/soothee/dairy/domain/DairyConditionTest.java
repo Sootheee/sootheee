@@ -77,8 +77,8 @@ class DairyConditionTest {
     void deleteDairyCondition() {
         //given
         Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
-        Dairy savedDairy = dairyRepository.findByMemberMemberId(savedmember.getMemberId()).orElseThrow().get(0);
-        Optional<List<DairyCondition>> optionalDairyCondition = dairyConditionRepository.findByDairyDairyId(savedDairy.getDairyId());
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
+        Optional<List<DairyCondition>> optionalDairyCondition = dairyConditionRepository.findByDairyDairyIdAndIsDelete(savedDairy.getDairyId(), "N");
         List<DairyCondition> dairyConditionList = optionalDairyCondition.orElseThrow();
         DairyCondition savedDairyCondition = dairyConditionList.get(0);
         //when

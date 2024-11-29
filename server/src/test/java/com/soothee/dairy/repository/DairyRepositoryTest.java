@@ -2,7 +2,6 @@ package com.soothee.dairy.repository;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.dairy.domain.Dairy;
-import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.repository.WeatherRepository;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
@@ -63,11 +61,11 @@ class DairyRepositoryTest {
     }
 
     @Test
-    void findByMemberMemberId() {
+    void findByMemberMemberIdAndIsDelete() {
         //given
         Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        Optional<List<Dairy>> optional = dairyRepository.findByMemberMemberId(writer.getMemberId());
+        Optional<List<Dairy>> optional = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N");
         List<Dairy> resultList = optional.orElseThrow();
         Dairy result = resultList.get(0);
         //then

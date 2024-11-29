@@ -10,33 +10,35 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
     /**
-     * 회원 이메일로 회원 조회</hr>
+     * 인증 회원 식별자와 SNS 종류로 회원 조회</hr>
      *
+     * @param oauth2ClientId String : 인증 회원 식별자
+     * @param snsType SnsType : KAKAOTALK or GOOGLE
+     * @param isDelete String : "Y" 탈퇴 회원 제외
+     * @return Optional<Member> : 조회한 회원(Null 가능)
+     */
+    Optional<Member> findByOauth2ClientIdAndSnsTypeAndIsDelete(String oauth2ClientId, SnsType snsType, String isDelete);
+
+    /**
+     * 인증 회원 식별자로 회원</hr>
+     *
+     * @param oauth2ClientId String : 인증 회원 식별자
+     * @param isDelete String : "Y" 탈퇴 회원 제외
+     * @return Optional<Member> : 조회한 회원(Null 가능)
+     */
+    Optional<Member> findByOauth2ClientIdAndIsDelete(String oauth2ClientId, String isDelete);
+
+    /**
+     * 회원 이메일로 회원 조회</hr>
+     * 테스트용 메서드
      * @param email String : 조회할 회원 이메일
      * @return Optional<Member> : 조회한 회원(Null 가능)
      */
     Optional<Member> findByEmail(String email);
 
     /**
-     * 인증 회원 식별자와 SNS 종류로 회원 조회</hr>
-     *
-     * @param oauth2ClientId String : 인증 회원 식별자
-     * @param snsType SnsType : KAKAOTALK or GOOGLE
-     * @return Optional<Member> : 조회한 회원(Null 가능)
-     */
-    Optional<Member> findByOauth2ClientIdAndSnsType(String oauth2ClientId, SnsType snsType);
-
-    /**
-     * 인증 회원 식별자로 회원</hr>
-     *
-     * @param oauth2ClientId String : 인증 회원 식별자
-     * @return Optional<Member> : 조회한 회원(Null 가능)
-     */
-    Optional<Member> findByOauth2ClientId(String oauth2ClientId);
-
-    /**
      * 회원 일련번호로 회원 조회</hr>
-     *
+     * 테스트용 메소드
      * @param memberId Long : 조회할 회원 일련번호
      * @return Optional<Member> : 조회한 회원(Null 가능)
      */

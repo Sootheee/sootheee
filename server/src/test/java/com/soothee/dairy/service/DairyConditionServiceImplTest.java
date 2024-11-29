@@ -7,7 +7,6 @@ import com.soothee.dairy.repository.DairyConditionRepository;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
-import com.soothee.reference.domain.Condition;
 import com.soothee.reference.domain.Weather;
 import com.soothee.reference.repository.ConditionRepository;
 import com.soothee.reference.repository.WeatherRepository;
@@ -27,8 +26,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
@@ -89,8 +86,8 @@ class DairyConditionServiceImplTest {
         dairyConditionService.saveConditions(condIds, dairy);
         //then
         Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
-        Dairy savedDairy = dairyRepository.findByMemberMemberId(savedmember.getMemberId()).orElseThrow().get(0);
-        Optional<List<DairyCondition>> optionalDairyCondition = dairyConditionRepository.findByDairyDairyId(savedDairy.getDairyId());
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
+        Optional<List<DairyCondition>> optionalDairyCondition = dairyConditionRepository.findByDairyDairyIdAndIsDelete(savedDairy.getDairyId(), "N");
         List<DairyCondition> dairyConditionList = optionalDairyCondition.orElseThrow();
         Assertions.assertThat(dairyConditionList.size()).isEqualTo(3);
     }

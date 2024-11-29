@@ -3,7 +3,6 @@ package com.soothee.dairy.repository;
 import com.soothee.common.constants.SnsType;
 import com.soothee.dairy.domain.Dairy;
 import com.soothee.dairy.domain.DairyCondition;
-import com.soothee.dairy.service.DairyConditionServiceImpl;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.domain.Condition;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
@@ -77,12 +75,12 @@ class DairyConditionRepositoryTest {
         dairyConditionRepository.save(dairyCondition);
     }
     @Test
-    void findByDairyDairyId() {
+    void findByDairyDairyIdAndIsDelete() {
         //given
         Member savedMember = memberRepository.findByEmail(EMAIL).orElseThrow();
-        Dairy savedDairy = dairyRepository.findByMemberMemberId(savedMember.getMemberId()).orElseThrow().get(0);
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedMember.getMemberId(), "N").orElseThrow().get(0);
         //when
-        Optional<List<DairyCondition>> optional = dairyConditionRepository.findByDairyDairyId(savedDairy.getDairyId());
+        Optional<List<DairyCondition>> optional = dairyConditionRepository.findByDairyDairyIdAndIsDelete(savedDairy.getDairyId(), "N");
         List<DairyCondition> dairyConditionList = optional.orElseThrow();
         DairyCondition dairyCondition = dairyConditionList.get(0);
         //then

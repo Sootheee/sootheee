@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
@@ -65,7 +64,7 @@ class DairyTest {
     @Test
     void updateDairy() {
         //given
-        List<Dairy> savedDairyList = dairyRepository.findByMemberMemberId(member.getMemberId()).orElseThrow();
+        List<Dairy> savedDairyList = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow();
         Dairy savedDairy = savedDairyList.get(0);
         Dairy newDairy = Dairy.builder().member(member)
                 .date(LocalDate.of(2024,10,10))
@@ -82,7 +81,7 @@ class DairyTest {
     @Test
     void deleteDairy() {
         //given
-        List<Dairy> savedDairyList = dairyRepository.findByMemberMemberId(member.getMemberId()).orElseThrow();
+        List<Dairy> savedDairyList = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow();
         Dairy savedDairy = savedDairyList.get(0);
         //when
         savedDairy.deleteDairy();
