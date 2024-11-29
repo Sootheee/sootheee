@@ -1,9 +1,8 @@
-package com.soothee.dairy.repository;
+package com.soothee.dairy.domain;
 
 import com.soothee.common.constants.SnsType;
-import com.soothee.dairy.domain.Dairy;
-import com.soothee.dairy.domain.DairyCondition;
-import com.soothee.dairy.service.DairyConditionServiceImpl;
+import com.soothee.dairy.repository.DairyConditionRepository;
+import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.domain.Condition;
@@ -14,15 +13,13 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,11 +27,11 @@ import java.util.Optional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
-class DairyConditionRepositoryTest {
+class DairyConditionTest {
     @Autowired
     private DairyConditionRepository dairyConditionRepository;
     @Autowired
@@ -52,7 +49,6 @@ class DairyConditionRepositoryTest {
     private Member member;
     private Dairy dairy;
     private DairyCondition dairyCondition;
-    private Condition condition;
 
     @BeforeEach
     void setUp() {
@@ -72,26 +68,28 @@ class DairyConditionRepositoryTest {
                 .weather(weather)
                 .build();
         dairyRepository.save(dairy);
-        condition = conditionRepository.findByCondId(1L).orElseThrow();
+        Condition condition = conditionRepository.getReferenceById(1L);
         dairyCondition = DairyCondition.of(dairy, condition);
         dairyConditionRepository.save(dairyCondition);
     }
+
     @Test
-    void findByDairyDairyId() {
+    void deleteDairyCondition() {
         //given
-        Member savedMember = memberRepository.findByEmail(EMAIL).orElseThrow();
-        Dairy savedDairy = dairyRepository.findByMemberMemberId(savedMember.getMemberId()).orElseThrow().get(0);
+        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
+        Dairy savedDairy = dairyRepository.findByMemberMemberId(savedmember.getMemberId()).orElseThrow().get(0);
+        Optional<List<DairyCondition>> optionalDairyCondition = dairyConditionRepository.findByDairyDairyId(savedDairy.getDairyId());
+        List<DairyCondition> dairyConditionList = optionalDairyCondition.orElseThrow();
+        DairyCondition savedDairyCondition = dairyConditionList.get(0);
         //when
-        Optional<List<DairyCondition>> optional = dairyConditionRepository.findByDairyDairyId(savedDairy.getDairyId());
-        List<DairyCondition> dairyConditionList = optional.orElseThrow();
-        DairyCondition dairyCondition = dairyConditionList.get(0);
+        savedDairyCondition.deleteDairyCondition();
         //then
-        Assertions.assertThat(dairyCondition.getCondition().getCondId()).isEqualTo(1L);
+        Assertions.assertThat(savedDairyCondition.getIsDelete()).isEqualTo("Y");
     }
 
     @AfterEach
     void tearDown() {
-        dairyConditionRepository.deleteAll();
+        dairyConditionRepository.delete(dairyCondition);
         dairyRepository.delete(dairy);
         memberRepository.delete(member);
     }
