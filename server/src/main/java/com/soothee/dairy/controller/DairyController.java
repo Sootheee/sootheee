@@ -15,11 +15,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -67,8 +69,12 @@ public class DairyController {
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> registerDairy(@ModelAttribute DairyRegisterDTO inputInfo,
+    public ResponseEntity<?> registerDairy(@ModelAttribute @Valid DairyRegisterDTO inputInfo,
+                                           BindingResult bindingResult,
                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+        }
         dairyService.registerDairy(loginInfo, inputInfo);
         return new ResponseEntity<>(HttpStatus.OK);
     }
