@@ -21,4 +21,12 @@ public interface DairyConditionService {
      * @return List<Long> : 해당 일기의 다수의 컨디션 일련번호 리스트
      */
     List<Long> getConditionsIdListByDairy(Long dairyId);
+
+    /**
+     * 해당 일기의 컨디션 리스트 업데이트</hr>
+     *
+     * @param curDairy Dairy : 조회할 일기 일련번호
+     * @param inputCondIds List<Long> : 업데이트될 컨디션 리스트
+     */
+    void updateConditions(Dairy curDairy, List<Long> inputCondIds);
 }

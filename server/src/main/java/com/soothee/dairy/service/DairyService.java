@@ -48,4 +48,15 @@ public interface DairyService {
      * @param inputInfo DairyRegisterDTO : 등록할 일기 정보
      */
     void registerDairy(AuthenticatedUser loginInfo, DairyRegisterDTO inputInfo);
+
+    /**
+     * 기존 일기 수정</hr>
+     * 1. path의 일련번호와 query의 일련번호가 다르면 수정 불가
+     * 2. 기존 dairy의 date와 query의 date가 다르면 수정 불가
+     *
+     * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
+     * @param dairyId Long : 수정할 일기 일련번호
+     * @param inputInfo
+     */
+    void modifyDairy(AuthenticatedUser loginInfo, Long dairyId, DairyDTO inputInfo);
 }

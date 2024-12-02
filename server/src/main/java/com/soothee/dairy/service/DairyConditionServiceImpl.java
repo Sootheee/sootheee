@@ -60,4 +60,41 @@ public class DairyConditionServiceImpl implements DairyConditionService{
         }
         return conditionIdList;
     }
+
+    /**
+     * 해당 일기의 컨디션 리스트 업데이트</hr>
+     *
+     * @param curDairy Dairy : 조회할 일기 일련번호
+     * @param inputCondIds List<Long> : 업데이트될 컨디션 리스트
+     */
+    @Override
+    public void updateConditions(Dairy curDairy, List<Long> inputCondIds) {
+        /* 업데이트할 일기의 현재 컨디션 리스트 */
+        List<DairyCondition> curList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(curDairy.getDairyId(), "N")
+                .orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
+        int idx = 0;
+        for (DairyCondition curCond : curList) {
+            /* 현재 컨디션 리스트의 일기와 업데이트할 일기가 일치하지 않으면 Exception 발생 */
+            if (!Objects.equals(curCond.getDairy().getDairyId(), curDairy.getDairyId())) {
+                throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
+            }
+            /* 1. 현재 컨디션과 입력한 컨디션이 일치하고
+             * 2. 현재 컨디션의 순서와 입력한 컨디션의 순서가 일치하면 업데이트 하지 않음 */
+            if (Objects.equals(curCond.getCondition().getCondId(), inputCondIds.get((idx)))
+                && Objects.equals(curCond.getOrderNo(), idx)) {
+                continue;
+            }
+            /* 일기의 컨디션을 업데이트 하기 위해 기존의 컨디션은 소프트 삭제 처리 */
+            curCond.deleteDairyCondition();
+            Condition inputCond = conditionService.getConditionById(inputCondIds.get(idx));
+            /* 업데이트할 새 일기의 컨디션 생성 */
+            DairyCondition newDairyCondition = DairyCondition.builder()
+                                                                .dairy(curDairy)
+                                                                .condition(inputCond)
+                                                                .orderNo(idx++)
+                                                                .build();
+            /* 새 일기 컨디션 저장 */
+            dairyConditionRepository.save(newDairyCondition);
+        }
+    }
 }

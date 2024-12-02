@@ -115,4 +115,29 @@ public class DairyServiceImpl implements DairyService {
         dairyRepository.save(newDairy);
         dairyConditionService.saveConditions(inputInfo.getCondIdList(), newDairy);
     }
+
+    /**
+     * 기존 일기 수정</hr>
+     * 1. path의 일련번호와 query의 일련번호가 다르면 수정 불가
+     * 2. 기존 dairy의 date와 query의 date가 다르면 수정 불가
+     * 3. 현재 로그인한 계정이 기존 dairy의 등록자가 아닌경우 수정 불가
+     *
+     * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
+     * @param dairyId   Long : 수정할 일기 일련번호
+     * @param inputInfo DairyDTO : 수정할 일기 정보
+     */
+    @Override
+    public void modifyDairy(AuthenticatedUser loginInfo, Long dairyId, DairyDTO inputInfo) {
+        Member loginMember = memberService.getLoginMember(loginInfo);
+        Dairy dairy = dairyRepository.findByDairyId(inputInfo.getDairyId())
+                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
+        if (Objects.equals(dairyId, inputInfo.getDairyId())
+            || dairy.getDate().isEqual(inputInfo.getDate())
+            || Objects.equals(dairy.getMember().getMemberId(), loginMember.getMemberId())) {
+            throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
+        }
+        Weather weather = weatherService.getWeatherById(inputInfo.getWeatherId());
+        dairy.updateDairy(inputInfo, weather);
+        dairyConditionService.updateConditions(dairy, inputInfo.getCondIds());
+    }
 }
