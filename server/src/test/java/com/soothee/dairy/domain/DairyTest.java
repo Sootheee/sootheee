@@ -1,6 +1,7 @@
 package com.soothee.dairy.domain;
 
 import com.soothee.common.constants.SnsType;
+import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
@@ -72,15 +73,14 @@ class DairyTest {
         //given
         List<Dairy> savedDairyList = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow();
         Dairy savedDairy = savedDairyList.get(0);
-        Dairy newDairy = Dairy.builder()
-                                .member(member)
+        Weather weather = weatherRepository.findByWeatherId(1L).orElseThrow();
+        DairyDTO newDairy = DairyDTO.builder()
                                 .date(LocalDate.of(2024,10,10))
                                 .score(2.0)
-                                .weather(weatherRepository.findByWeatherId(1L).orElseThrow())
                                 .thank("thanks")
                                 .build();
         //when
-        savedDairy.updateDairy(newDairy);
+        savedDairy.updateDairy(newDairy, weather);
         //then
         Assertions.assertThat(dairy.getThank()).isEqualTo("thanks");
     }

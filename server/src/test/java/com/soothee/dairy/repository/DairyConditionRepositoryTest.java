@@ -64,14 +64,17 @@ class DairyConditionRepositoryTest {
         memberRepository.save(member);
 
         dairy = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,10))
-                .score(2.0)
-                .weather(weather)
-                .build();
+                    .member(member)
+                    .date(LocalDate.of(2024,10,10))
+                    .score(2.0)
+                    .weather(weather)
+                    .build();
         dairyRepository.save(dairy);
         condition = conditionRepository.findByCondId(1L).orElseThrow();
-        dairyCondition = DairyCondition.of(dairy, condition);
+        dairyCondition = DairyCondition.builder()
+                                        .dairy(dairy)
+                                        .condition(condition)
+                                        .build();
         dairyConditionRepository.save(dairyCondition);
     }
     @Test

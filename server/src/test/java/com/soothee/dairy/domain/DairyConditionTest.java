@@ -69,7 +69,10 @@ class DairyConditionTest {
                 .build();
         dairyRepository.save(dairy);
         Condition condition = conditionRepository.getReferenceById(1L);
-        dairyCondition = DairyCondition.of(dairy, condition);
+        dairyCondition = DairyCondition.builder()
+                                        .dairy(dairy)
+                                        .condition(condition)
+                                        .build();
         dairyConditionRepository.save(dairyCondition);
     }
 
