@@ -97,7 +97,7 @@ public class DairyController {
             @Parameter(name = "date", description = "해당 날짜", example = "date=2024-10-11", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "weatherId", description = "날씨 일련번호", example = "weatherId=11", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "score", description = "오늘의 점수", example = "score=3.2", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "condId", description = "다중 선택한 컨디션 일련번호 리스트", example = "condId=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "condIds", description = "다중 선택한 컨디션 일련번호 리스트", example = "condIds=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "content", description = "오늘의 요약", example = "content=개발을했다", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "hope", description = "바랐던 방향성", example = "hope=놀고싶다", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "thank", description = "감사한 일", example = "thank=점심을먹었다", required = false, in = ParameterIn.QUERY),
@@ -105,7 +105,7 @@ public class DairyController {
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "400", description = "일기 중복 등록 시도 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "요청 오류 || 일기 중복 등록 시도 오류", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
     })
@@ -123,10 +123,12 @@ public class DairyController {
     @PutMapping("/{dairy_id}")
     @Operation(summary = "일기 수정", description = "로그인한 계정이 작성한 새 특정일자 일기 등록", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "date", description = "해당 날짜", example = "date=2024-10-11", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "dairyId", description = "일기 일련번호 || path의 일련번호와 query의 일련번호가 다르면 수정 불가", example = "/dairy/1111", required = true, in = ParameterIn.PATH),
+            @Parameter(name = "dairyId", description = "일기 일련번호 || path의 일련번호와 query의 일련번호가 다르면 수정 불가", example = "dairyId=1111", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "date", description = "해당 날짜 || 기존 dairy의 date와 query의 date가 다르면 수정 불가", example = "date=2024-10-11", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "weatherId", description = "날씨 일련번호", example = "weatherId=11", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "score", description = "오늘의 점수", example = "score=3.2", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "condId", description = "다중 선택한 컨디션 일련번호 리스트", example = "condId=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "condIds", description = "다중 선택한 컨디션 일련번호 리스트", example = "condIds=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "content", description = "오늘의 요약", example = "content=개발을했다", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "hope", description = "바랐던 방향성", example = "hope=놀고싶다", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "thank", description = "감사한 일", example = "thank=점심을먹었다", required = false, in = ParameterIn.QUERY),
@@ -134,16 +136,19 @@ public class DairyController {
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "400", description = "일기 중복 등록 시도 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "204", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "요청 오류 || 주요 값이 일치하지 않음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> modifyDairy(@ModelAttribute @Valid DairyDTO inputInfo,
+    public ResponseEntity<?> modifyDairy(@PathVariable("dairy_id") Long dairyId,
+                                         @ModelAttribute @Valid DairyDTO inputInfo,
                                          BindingResult bindingResult,
                                          @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
         }
+        dairyService.modifyDairy(loginInfo, dairyId, inputInfo);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
