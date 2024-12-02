@@ -82,13 +82,25 @@ public class Dairy extends TimeEntity {
      * @param dairy DairyDTO : 입력된 수정할 일기 정보
      * @param weather Weather : 해당 일기 날씨 정보
      */
-    public void updateDairy(Dairy dairy) {
-        this.weather = dairy.getWeather();
-        this.score = dairy.getScore();
-        this.content = dairy.getContent();
-        this.hope = dairy.getHope();
-        this.thank = dairy.getThank();
-        this.learn = dairy.getLearn();
+    public void updateDairy(DairyDTO dairy, Weather weather) {
+        if (!Objects.equals(dairy.getWeatherId(), weather.getWeatherId())) {
+            this.weather = weather;
+        }
+        if (!Objects.equals(this.score, dairy.getScore())) {
+            this.score = dairy.getScore();
+        }
+        if (!StringUtils.equals(this.content, dairy.getContent())) {
+            this.content = dairy.getContent();
+        }
+        if (!StringUtils.equals(this.hope, dairy.getHope())) {
+            this.hope = dairy.getHope();
+        }
+        if (!StringUtils.equals(this.thank, dairy.getThank())) {
+            this.thank = dairy.getThank();
+        }
+        if (!StringUtils.equals(this.learn, dairy.getLearn())) {
+            this.learn = dairy.getLearn();
+        }
     }
 
     /** 일기 삭제 */
