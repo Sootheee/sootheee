@@ -91,6 +91,16 @@ class DairyRepositoryQdslImplTest {
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
 
+    @Test
+    void findByDiaryId() {
+        //given
+        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
+        //when
+        DairyDTO result = dairyRepository.findByDiaryId(writer.getMemberId(), dairy.getDairyId()).orElseThrow().get(0);
+        //then
+        Assertions.assertThat(result.getScore()).isEqualTo(2.0);
+    }
+
     @AfterEach
     void tearDown() {
         dairyRepository.delete(dairy);

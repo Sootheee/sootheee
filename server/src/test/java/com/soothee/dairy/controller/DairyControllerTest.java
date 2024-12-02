@@ -20,6 +20,11 @@ class DairyControllerTest {
 
     }
 
+    @Test
+    void registerDairy() {
+
+    }
+
     @AfterEach
     void tearDown() {
     }
