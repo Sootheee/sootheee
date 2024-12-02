@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Schema(description = "다이어리 등록에 사용되는 DTO")
 public class DairyRegisterDTO {
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotEmpty(message = "일기의 날짜가 없습니다.")
     @Schema(description = "해당 날짜")

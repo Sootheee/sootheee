@@ -9,11 +9,11 @@ import java.util.List;
 public interface DairyService {
     /**
      * 지정한 달에 작성한 모든 일기의 오늘의 점수 리스트 조회</hr>
-     *
+     * 삭제된 일기 제외
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
-     * @param year      Integer : 지정한 달
+     * @param year      Integer : 지정한 년도
      * @param month     Integer : 지정한 달
-     * @return List<DairyScoresDTO> : 일기 일련번호와 각 오늘의 점수 리스트
+     * @return List<DairyScoresDTO> : 일기 일련번호와 날짜, 오늘의 점수 리스트
      */
     List<DairyScoresDTO> getAllDairyMonthly(AuthenticatedUser loginInfo, Integer year, Integer month);
 

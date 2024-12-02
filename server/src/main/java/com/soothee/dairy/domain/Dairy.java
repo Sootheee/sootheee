@@ -1,11 +1,9 @@
 package com.soothee.dairy.domain;
 
 import com.soothee.common.domain.TimeEntity;
-import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
 import com.soothee.member.domain.Member;
 import com.soothee.reference.domain.Weather;
-import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Getter
 @Entity
@@ -78,7 +75,6 @@ public class Dairy extends TimeEntity {
 
     /**
      * 일기 수정</hr>
-     *
      * @param dairy Dairy : 해당 다이어리
      */
     public void updateDairy(Dairy dairy) {
@@ -90,15 +86,13 @@ public class Dairy extends TimeEntity {
         this.learn = dairy.getLearn();
     }
 
-    /**
-     * 일기 삭제</hr>
-     * */
+    /** 일기 삭제 */
     public void deleteDairy() {
         this.isDelete = "Y";
     }
 
     /** 다이어리 생성 */
-    public static Dairy of(DairyRegisterDTO inputInfo, Member member,Weather weather) {
+    public static Dairy of(DairyRegisterDTO inputInfo, Member member, Weather weather) {
         return Dairy.builder()
                 .date(inputInfo.getDate())
                 .member(member)
