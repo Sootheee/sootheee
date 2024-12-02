@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @Getter
 @AllArgsConstructor
-@Schema(description = "다이어리 등록에 사용되는 DTO")
+@Schema(description = "일기 등록에 사용되는 DTO")
 public class DairyRegisterDTO {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

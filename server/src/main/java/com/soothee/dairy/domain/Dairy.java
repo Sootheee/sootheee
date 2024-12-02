@@ -109,7 +109,7 @@ public class Dairy extends TimeEntity {
     }
 
     /**
-     * 다이어리 생성</hr>
+     * 일기 생성</hr>
      *
      * @param inputInfo DairyRegisterDTO : 입력된 등록할 일기 정보
      * @param member Member : 로그인한 계정 정보

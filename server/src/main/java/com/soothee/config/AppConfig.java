@@ -128,7 +128,7 @@ public class AppConfig implements WebMvcConfigurer {
                             .build();
     }
 
-    /** Swagger 다이어리 API 명세서 */
+    /** Swagger 일기 API 명세서 */
     @Bean
     public GroupedOpenApi dairyGroupedOpenApi() {
         return GroupedOpenApi.builder()
@@ -136,7 +136,7 @@ public class AppConfig implements WebMvcConfigurer {
                             .pathsToMatch("/dairy/**")
                             .addOpenApiCustomizer(openApi -> {
                                 openApi.setInfo(new io.swagger.v3.oas.models.info.Info().title("Dairy API")
-                                                                                        .description("다이어리 관련 처리")
+                                                                                        .description("일기 관련 처리")
                                                                                         .version("1.0.0"));
                                 openApi.addSecurityItem(
                                         new io.swagger.v3.oas.models.security.SecurityRequirement().addList("oauth2_auth")

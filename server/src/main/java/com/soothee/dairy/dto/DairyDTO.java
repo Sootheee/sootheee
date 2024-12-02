@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-@Schema(description = "다이어리 수정/조회에 사용되는 DTO")
+@Schema(description = "일기 수정/조회에 사용되는 DTO")
 public class DairyDTO {
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
     @Schema(description = "일기 일련번호")
@@ -34,7 +34,7 @@ public class DairyDTO {
     @Schema(description = "오늘의 점수")
     private Double score;
 
-    @Schema(description = "선택한 컨디션들")
+    @Schema(description = "선택한 컨디션들, 선택한 순서대로 전달됨")
     private List<Long> condIds;
 
     @Schema(description = "오늘의 요약")

@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "dairy_condition")
 public class DairyCondition extends TimeEntity {
-    /** 다이어리-콘텐츠 일련번호 */
+    /** 일기-콘텐츠 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long dairyCondId;
 
-    /** 해당 다이어리 일련번호 */
+    /** 해당 일기 일련번호 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dairy_id")
     private Dairy dairy;
@@ -44,7 +44,7 @@ public class DairyCondition extends TimeEntity {
         this.isDelete = "N";
     }
 
-    /** 다이어리 컨디션 변경 시, 소프트 삭제 된 후, 새로 생성 */
+    /** 일기 컨디션 변경 시, 소프트 삭제 된 후, 새로 생성 */
     public void deleteDairyCondition () {
         this.isDelete = "Y";
     }
