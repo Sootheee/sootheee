@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -30,11 +31,13 @@ public class DairyConditionServiceImpl implements DairyConditionService{
      */
     @Override
     public void saveConditions(List<Long> condIdList, Dairy newDairy) {
+        int idx = 0;
         for (Long condId : condIdList) {
             Condition condition = conditionService.getConditionById(condId);
             DairyCondition dairyCondition = DairyCondition.builder()
                                                         .dairy(newDairy)
                                                         .condition(condition)
+                                                        .orderNo(idx++)
                                                         .build();
             dairyConditionRepository.save(dairyCondition);
         }
@@ -49,7 +52,7 @@ public class DairyConditionServiceImpl implements DairyConditionService{
      */
     @Override
     public List<Long> getConditionsIdListByDairy(Long dairyId) {
-        List<DairyCondition> findList = dairyConditionRepository.findByDairyDairyIdAndIsDelete(dairyId, "N")
+        List<DairyCondition> findList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(dairyId, "N")
                 .orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
         List<Long> conditionIdList = new ArrayList<>();
         for (DairyCondition dairyCondition : findList) {
