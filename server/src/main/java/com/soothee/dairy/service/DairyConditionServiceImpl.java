@@ -32,7 +32,10 @@ public class DairyConditionServiceImpl implements DairyConditionService{
     public void saveConditions(List<Long> condIdList, Dairy newDairy) {
         for (Long condId : condIdList) {
             Condition condition = conditionService.getConditionById(condId);
-            DairyCondition dairyCondition = DairyCondition.of(newDairy, condition);
+            DairyCondition dairyCondition = DairyCondition.builder()
+                                                        .dairy(newDairy)
+                                                        .condition(condition)
+                                                        .build();
             dairyConditionRepository.save(dairyCondition);
         }
     }

@@ -43,11 +43,4 @@ public class DairyCondition extends TimeEntity {
     public void deleteDairyCondition () {
         this.isDelete = "Y";
     }
-
-    public static DairyCondition of(Dairy dairy, Condition condition) {
-        return DairyCondition.builder()
-                .dairy(dairy)
-                .condition(condition)
-                .build();
-    }
 }
