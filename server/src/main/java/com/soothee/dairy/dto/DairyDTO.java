@@ -3,7 +3,6 @@ package com.soothee.dairy.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-@AllArgsConstructor(onConstructor = @__(@QueryProjection))
 @Schema(description = "다이어리 수정/조회에 사용되는 DTO")
 public class DairyDTO {
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
@@ -49,4 +47,16 @@ public class DairyDTO {
 
     @Schema(description = "배운 일")
     private String learn;
+
+    @QueryProjection
+    public DairyDTO(Long dairyId, LocalDate date, Long weatherId, Double score, String content, String hope, String thank, String learn) {
+        this.dairyId = dairyId;
+        this.date = date;
+        this.weatherId = weatherId;
+        this.score = score;
+        this.content = content;
+        this.hope = hope;
+        this.thank = thank;
+        this.learn = learn;
+    }
 }

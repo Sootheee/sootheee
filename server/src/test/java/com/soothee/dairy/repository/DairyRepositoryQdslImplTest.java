@@ -2,9 +2,12 @@ package com.soothee.dairy.repository;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.dairy.domain.Dairy;
+import com.soothee.dairy.domain.DairyCondition;
+import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
+import com.soothee.reference.repository.ConditionRepository;
 import com.soothee.reference.repository.WeatherRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +21,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +33,7 @@ import java.util.Optional;
 @SpringBootTest
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Transactional
 class DairyRepositoryQdslImplTest {
     @Autowired
     private MemberRepository memberRepository;
@@ -36,6 +41,10 @@ class DairyRepositoryQdslImplTest {
     private DairyRepository dairyRepository;
     @Autowired
     private WeatherRepository weatherRepository;
+    @Autowired
+    private ConditionRepository conditionRepository;
+    @Autowired
+    private DairyConditionRepository dairyConditionDairyRepository;
     private final String NAME = "사용자0";
     private final String EMAIL = "abc@def.com";
     private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
@@ -53,7 +62,7 @@ class DairyRepositoryQdslImplTest {
         memberRepository.save(member);
 
         dairy = Dairy.builder()
-                .member(memberRepository.findByEmail(EMAIL).orElseThrow())
+                .member(member)
                 .date(LocalDate.of(2024,10,10))
                 .score(2.0)
                 .weather(weatherRepository.findByWeatherId(1L).orElseThrow())
@@ -67,8 +76,17 @@ class DairyRepositoryQdslImplTest {
         Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
         Optional<List<DairyScoresDTO>> optional = dairyRepository.findByMemberIdYearMonth(writer.getMemberId(), 2024, 10);
-        List<DairyScoresDTO> resultList = optional.orElseThrow();
-        DairyScoresDTO result = resultList.get(0);
+        DairyScoresDTO result = optional.orElseThrow().get(0);
+        //then
+        Assertions.assertThat(result.getScore()).isEqualTo(2.0);
+    }
+
+    @Test
+    void findByDate() {
+        //given
+        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
+        //when
+        DairyDTO result = dairyRepository.findByDate(writer.getMemberId(), LocalDate.of(2024, 10, 10)).orElseThrow().get(0);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }

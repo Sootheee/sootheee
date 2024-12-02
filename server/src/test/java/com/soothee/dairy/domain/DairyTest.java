@@ -4,7 +4,9 @@ import com.soothee.common.constants.SnsType;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
+import com.soothee.reference.domain.Condition;
 import com.soothee.reference.domain.Weather;
+import com.soothee.reference.repository.ConditionRepository;
 import com.soothee.reference.repository.WeatherRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -19,6 +21,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
@@ -40,24 +43,27 @@ class DairyTest {
     private final String OAUTH2_CLIENT_ID = "111111";
     private Member member;
     private Dairy dairy;
+    private Weather weather;
+    @Autowired
+    private ConditionRepository conditionRepository;
 
     @BeforeEach
     void setUp() {
-        Weather weather = weatherRepository.findByWeatherId(1L).orElseThrow();
+        weather = weatherRepository.findByWeatherId(1L).orElseThrow();
 
         member = Member.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .oauth2ClientId(OAUTH2_CLIENT_ID)
-                .snsType(SNS_TYPE).build();
+                        .name(NAME)
+                        .email(EMAIL)
+                        .oauth2ClientId(OAUTH2_CLIENT_ID)
+                        .snsType(SNS_TYPE).build();
         memberRepository.save(member);
 
         dairy = Dairy.builder()
-                .member(memberRepository.findByEmail(EMAIL).orElseThrow())
-                .date(LocalDate.of(2024,10,10))
-                .score(2.0)
-                .weather(weather)
-                .build();
+                    .member(member)
+                    .date(LocalDate.of(2024,10,10))
+                    .score(2.0)
+                    .weather(weather)
+                    .build();
         dairyRepository.save(dairy);
     }
 
@@ -66,12 +72,13 @@ class DairyTest {
         //given
         List<Dairy> savedDairyList = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow();
         Dairy savedDairy = savedDairyList.get(0);
-        Dairy newDairy = Dairy.builder().member(member)
-                .date(LocalDate.of(2024,10,10))
-                .score(2.0)
-                .weather(weatherRepository.findByWeatherId(1L).orElseThrow())
-                .thank("thanks")
-                .build();
+        Dairy newDairy = Dairy.builder()
+                                .member(member)
+                                .date(LocalDate.of(2024,10,10))
+                                .score(2.0)
+                                .weather(weatherRepository.findByWeatherId(1L).orElseThrow())
+                                .thank("thanks")
+                                .build();
         //when
         savedDairy.updateDairy(newDairy);
         //then

@@ -64,6 +64,10 @@ class DairyServiceImplTest {
     }
 
     @Test
+    void getDairyByDate() {
+        
+    }
+    @Test
     void registerDairy() {
     }
 

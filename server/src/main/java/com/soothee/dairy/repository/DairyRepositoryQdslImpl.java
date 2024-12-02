@@ -14,8 +14,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.querydsl.core.group.GroupBy.list;
-
 @Repository
 @RequiredArgsConstructor
 public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
@@ -60,13 +58,12 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                                     dairy.date,
                                                     dairy.weather.weatherId,
                                                     dairy.score,
-                                                    list(dairyCondition.condition.condId),
                                                     dairy.content,
                                                     dairy.hope,
                                                     dairy.thank,
                                                     dairy.learn))
                             .from(dairy)
-                            .join(dairyCondition.dairy, dairy)
+                            .leftJoin(dairyCondition).on(dairy.dairyId.eq(dairyCondition.dairy.dairyId))
                             .groupBy(dairy.dairyId)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.eq(date),

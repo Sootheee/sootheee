@@ -7,16 +7,20 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DairyControllerTest {
-
     @BeforeEach
     void setUp() {
     }
 
-    @AfterEach
-    void tearDown() {
+    @Test
+    void sendAllDairyMonthly() {
     }
 
     @Test
-    void sendAllDairyMonthly() {
+    void sendDairyByDate() {
+
+    }
+
+    @AfterEach
+    void tearDown() {
     }
 }

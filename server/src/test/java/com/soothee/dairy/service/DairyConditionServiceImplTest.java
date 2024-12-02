@@ -76,6 +76,22 @@ class DairyConditionServiceImplTest {
     }
 
     @Test
+    void getConditionsIdListByDairy() {
+        //given
+        condIds = new ArrayList<>();
+        condIds.add(1L);
+        condIds.add(2L);
+        condIds.add(3L);
+        dairyConditionService.saveConditions(condIds, dairy);
+        //when
+        List<Long> dairyConditionList = dairyConditionService.getConditionsIdListByDairy(dairy.getDairyId());
+        //then
+        Assertions.assertThat(dairyConditionList.get(0)).isEqualTo(1L);
+        Assertions.assertThat(dairyConditionList.get(1)).isEqualTo(2L);
+        Assertions.assertThat(dairyConditionList.get(2)).isEqualTo(3L);
+    }
+
+    @Test
     void saveConditions() {
         //given
         condIds = new ArrayList<>();

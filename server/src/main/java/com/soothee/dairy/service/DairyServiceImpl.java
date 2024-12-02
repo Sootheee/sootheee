@@ -57,7 +57,9 @@ public class DairyServiceImpl implements DairyService {
     public DairyDTO getDairyByDate(AuthenticatedUser loginInfo, LocalDate date) {
         Member loginMember = memberService.getLoginMember(loginInfo);
         Optional<List<DairyDTO>> dairyDTO = dairyRepository.findByDate(loginMember.getMemberId(), date);
-        return this.getOneDTOFromOptionalList(dairyDTO);
+        DairyDTO result = this.getOneDTOFromOptionalList(dairyDTO);
+        result.setCond(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
+        return result;
     }
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
     /**

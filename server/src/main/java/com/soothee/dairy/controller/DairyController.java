@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -52,7 +54,26 @@ public class DairyController {
         return new ResponseEntity<List<DairyScoresDTO>>(infos, HttpStatus.OK);
     }
 
-    @PostMapping("/dairy")
+    /** 일기 조회 - 날짜로 */
+    @GetMapping
+    @Operation(summary = "지정된 날짜로 일기 상세 정보 조회", description = "로그인한 계정이 지정한 날에 작성한 일기 모든 정보 전달", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "date", description = "조회할 날", example = "/dairy/calendar?date=2024-12-12", required = true, in = ParameterIn.QUERY)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = DairyScoresDTO.class))),
+            @ApiResponse(responseCode = "202", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "조회된 일기 1 개 초과", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> sendDairyByDate(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        DairyDTO findDairy = dairyService.getDairyByDate(loginInfo, date);
+        return new ResponseEntity<DairyDTO>(findDairy, HttpStatus.OK);
+    }
+
+    /** 일기 등록 */
+    @PostMapping
     @Operation(summary = "새 일기 등록", description = "로그인한 계정이 작성한 새 특정일자 일기 등록", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
             @Parameter(name = "date", description = "해당 날짜", example = "date=2024-10-11", required = true, in = ParameterIn.QUERY),
@@ -66,6 +87,7 @@ public class DairyController {
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "일기 중복 등록 시도 오류", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
     })
