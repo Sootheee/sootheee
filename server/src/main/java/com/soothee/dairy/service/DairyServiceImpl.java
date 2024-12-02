@@ -60,7 +60,7 @@ public class DairyServiceImpl implements DairyService {
         Member loginMember = memberService.getLoginMember(loginInfo);
         Optional<List<DairyDTO>> dairyDTO = dairyRepository.findByDate(loginMember.getMemberId(), date);
         DairyDTO result = this.getOneDTOFromOptionalList(dairyDTO);
-        result.setCond(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
+        result.setCondIds(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
         return result;
     }
 
@@ -77,7 +77,7 @@ public class DairyServiceImpl implements DairyService {
         Member loginMember = memberService.getLoginMember(loginInfo);
         Optional<List<DairyDTO>> dairyDTO = dairyRepository.findByDiaryId(loginMember.getMemberId(), dairyId);
         DairyDTO result = this.getOneDTOFromOptionalList(dairyDTO);
-        result.setCond(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
+        result.setCondIds(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
         return result;
     }
 
@@ -106,11 +106,11 @@ public class DairyServiceImpl implements DairyService {
     @Override
     public void registerDairy(AuthenticatedUser loginInfo, DairyRegisterDTO inputInfo) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        Weather weather = weatherService.getWeatherById(inputInfo.getWeatherId());
         /* 이미 등록된 일기가 있으면 Exception 발생 */
         if (Objects.nonNull(this.getDairyByDate(loginInfo, inputInfo.getDate()))) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.ALREADY_EXIST_DAIRY);
         }
+        Weather weather = weatherService.getWeatherById(inputInfo.getWeatherId());
         Dairy newDairy = Dairy.of(inputInfo,loginMember, weather);
         dairyRepository.save(newDairy);
         dairyConditionService.saveConditions(inputInfo.getCondIdList(), newDairy);

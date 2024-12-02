@@ -3,6 +3,7 @@ package com.soothee.dairy.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,7 +35,7 @@ public class DairyDTO {
     private Double score;
 
     @Schema(description = "선택한 컨디션들")
-    private List<Long> cond;
+    private List<Long> condIds;
 
     @Schema(description = "오늘의 요약")
     private String content;
@@ -48,6 +49,7 @@ public class DairyDTO {
     @Schema(description = "배운 일")
     private String learn;
 
+    @Builder
     @QueryProjection
     public DairyDTO(Long dairyId, LocalDate date, Long weatherId, Double score, String content, String hope, String thank, String learn) {
         this.dairyId = dairyId;

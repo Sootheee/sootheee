@@ -30,7 +30,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     /**
      * 회원 이메일로 회원 조회</hr>
-     * 테스트용 메서드
+     *
      * @param email String : 조회할 회원 이메일
      * @return Optional<Member> : 조회한 회원(Null 가능)
      */
@@ -38,7 +38,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     /**
      * 회원 일련번호로 회원 조회</hr>
-     * 테스트용 메소드
+     *
      * @param memberId Long : 조회할 회원 일련번호
      * @return Optional<Member> : 조회한 회원(Null 가능)
      */
