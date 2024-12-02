@@ -28,14 +28,19 @@ public class DairyCondition extends TimeEntity {
     @JoinColumn(name = "cond_id")
     private Condition condition;
 
+    /** 선택 순서 */
+    @Column(name = "order_no")
+    private Integer orderNo;
+
     /** 소프트 삭제 */
     @Column(name = "is_delete")
     private String isDelete;
 
     @Builder
-    public DairyCondition(Dairy dairy, Condition condition) {
+    public DairyCondition(Dairy dairy, Condition condition, Integer orderNo) {
         this.dairy = dairy;
         this.condition = condition;
+        this.orderNo = orderNo;
         this.isDelete = "N";
     }
 
