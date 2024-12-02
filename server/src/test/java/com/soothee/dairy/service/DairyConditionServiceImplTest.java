@@ -103,7 +103,7 @@ class DairyConditionServiceImplTest {
         //then
         Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
         Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
-        Optional<List<DairyCondition>> optionalDairyCondition = dairyConditionRepository.findByDairyDairyIdAndIsDelete(savedDairy.getDairyId(), "N");
+        Optional<List<DairyCondition>> optionalDairyCondition = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N");
         List<DairyCondition> dairyConditionList = optionalDairyCondition.orElseThrow();
         Assertions.assertThat(dairyConditionList.size()).isEqualTo(3);
     }

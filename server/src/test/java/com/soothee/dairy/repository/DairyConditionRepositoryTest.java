@@ -78,12 +78,12 @@ class DairyConditionRepositoryTest {
         dairyConditionRepository.save(dairyCondition);
     }
     @Test
-    void findByDairyDairyIdAndIsDelete() {
+    void findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc() {
         //given
         Member savedMember = memberRepository.findByEmail(EMAIL).orElseThrow();
         Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedMember.getMemberId(), "N").orElseThrow().get(0);
         //when
-        Optional<List<DairyCondition>> optional = dairyConditionRepository.findByDairyDairyIdAndIsDelete(savedDairy.getDairyId(), "N");
+        Optional<List<DairyCondition>> optional = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N");
         List<DairyCondition> dairyConditionList = optional.orElseThrow();
         DairyCondition dairyCondition = dairyConditionList.get(0);
         //then
