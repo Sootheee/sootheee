@@ -61,8 +61,23 @@ public class DairyServiceImpl implements DairyService {
         result.setCond(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
         return result;
     }
-     * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
+
     /**
+     * 해당 일기 일련번호 일기 조회</hr>
+     * 삭제된 일기 제외
+     * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
+     * @param dairyId   Long : 조회할 일기 일련번호
+     * @return DairyDTO : 조회한 일기 모든 정보
+     */
+    @Override
+    public DairyDTO getDairyByDairyId(AuthenticatedUser loginInfo, Long dairyId) {
+        Member loginMember = memberService.getLoginMember(loginInfo);
+        Optional<List<DairyDTO>> dairyDTO = dairyRepository.findByDiaryId(loginMember.getMemberId(), dairyId);
+        DairyDTO result = this.getOneDTOFromOptionalList(dairyDTO);
+        result.setCond(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
+        return result;
+    }
+
     /**
      * Optional로 둘러쌓인 DB 조회 결과 List의 유일한 객체 가져오기</hr>
      * 결과가 없거나, 중복된 결과가 있는 경우 Exception 발생

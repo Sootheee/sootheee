@@ -71,4 +71,33 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                     .fetch()
         );
     }
+
+    /**
+     * 로그인한 계정이 작성한 해당 일련번호의 일기 정보 조회</hr>
+     * 삭제한 일기 제외
+     *
+     * @param memberId Long : 로그인한 계정 일련번호
+     * @param dairyId  Long : 조회할 일기 일련번호
+     * @return Optional<List<DairyDTO>> : 조회된 일기 모든 정보 (null 가능)
+     */
+    @Override
+    public Optional<List<DairyDTO>> findByDiaryId(Long memberId, Long dairyId) {
+        return Optional.of(
+                queryFactory.select(new QDairyDTO(dairy.dairyId,
+                                                    dairy.date,
+                                                    dairy.weather.weatherId,
+                                                    dairy.score,
+                                                    dairy.content,
+                                                    dairy.hope,
+                                                    dairy.thank,
+                                                    dairy.learn))
+                            .from(dairy)
+                            .leftJoin(dairyCondition).on(dairy.dairyId.eq(dairyCondition.dairy.dairyId))
+                            .groupBy(dairy.dairyId)
+                            .where(dairy.member.memberId.eq(memberId),
+                                    dairy.dairyId.eq(dairyId),
+                                    dairy.isDelete.eq("N"))
+                            .fetch()
+        );
+    }
 }

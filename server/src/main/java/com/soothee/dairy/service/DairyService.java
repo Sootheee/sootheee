@@ -29,6 +29,15 @@ public interface DairyService {
     DairyDTO getDairyByDate(AuthenticatedUser loginInfo, LocalDate date);
 
     /**
+     * 해당 일기 일련번호 일기 조회</hr>
+     * 삭제된 일기 제외
+     * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
+     * @param dairyId   Long : 조회할 일기 일련번호
+     * @return DairyDTO : 조회한 일기 모든 정보
+     */
+    DairyDTO getDairyByDairyId(AuthenticatedUser loginInfo, Long dairyId);
+
+    /**
      * 새로운 일기 등록</hr>
      * 해당 일자에 이미 등록된 일기가 있으면 등록 불가
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보

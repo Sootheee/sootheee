@@ -72,6 +72,24 @@ public class DairyController {
         return new ResponseEntity<DairyDTO>(findDairy, HttpStatus.OK);
     }
 
+    /** 일기 조회 - 일기 일련번호로 */
+    @GetMapping("/{dairy_id}")
+    @Operation(summary = "지정된 일기 일련번호로 일기 상세 정보 조회", description = "로그인한 계정이 작성한 해당 일기 모든 정보 전달", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "date", description = "조회할 날", example = "/dairy/calendar/{dairy_id}", required = true, in = ParameterIn.PATH)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = DairyScoresDTO.class))),
+            @ApiResponse(responseCode = "202", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "조회된 일기 1 개 초과", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> sendDairyByDairyId(@PathVariable("dairy_id") Long dairyId,
+                                                @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        DairyDTO findDairy = dairyService.getDairyByDairyId(loginInfo, dairyId);
+        return new ResponseEntity<DairyDTO>(findDairy, HttpStatus.OK);
+    }
+
     /** 일기 등록 */
     @PostMapping
     @Operation(summary = "새 일기 등록", description = "로그인한 계정이 작성한 새 특정일자 일기 등록", security = @SecurityRequirement(name = "oauth2_auth"))
@@ -100,4 +118,34 @@ public class DairyController {
         dairyService.registerDairy(loginInfo, inputInfo);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    /** 일기 수정 */
+    @PutMapping("/{dairy_id}")
+    @Operation(summary = "일기 수정", description = "로그인한 계정이 작성한 새 특정일자 일기 등록", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "date", description = "해당 날짜", example = "date=2024-10-11", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "weatherId", description = "날씨 일련번호", example = "weatherId=11", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "score", description = "오늘의 점수", example = "score=3.2", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "condId", description = "다중 선택한 컨디션 일련번호 리스트", example = "condId=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "content", description = "오늘의 요약", example = "content=개발을했다", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "hope", description = "바랐던 방향성", example = "hope=놀고싶다", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "thank", description = "감사한 일", example = "thank=점심을먹었다", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "learn", description = "배운 일", example = "learn=사회는액팅이다", required = false, in = ParameterIn.QUERY)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "일기 중복 등록 시도 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> modifyDairy(@ModelAttribute @Valid DairyDTO inputInfo,
+                                         BindingResult bindingResult,
+                                         @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /** 일기 삭제 */
 }
