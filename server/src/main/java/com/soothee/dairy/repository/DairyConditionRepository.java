@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface DairyConditionRepository extends JpaRepository<DairyCondition, Long> {
     /**
-     * 다이어리 일련번호로 다이어리-컨디션 조회
+     * 다이어리 일련번호로 다이어리-컨디션 조회</hr>
      *
      * @param dairyId Long : 조회할 다이어리 일련번호
      * @param isDelete String : "Y" 삭제한 일기 제외

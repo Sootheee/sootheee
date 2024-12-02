@@ -40,6 +40,7 @@ public class DairyConditionServiceImpl implements DairyConditionService{
     /**
      * 해당 일기의 컨디션 리스트 조회</hr>
      * 삭제한 컨디션 제외
+     *
      * @param dairyId Long : 조회할 일기 일련번호
      * @return List<Long> : 해당 일기의 다수의 컨디션 일련번호 리스트
      */

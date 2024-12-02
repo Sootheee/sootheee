@@ -34,6 +34,7 @@ public class DairyServiceImpl implements DairyService {
     /**
      * 지정한 달에 작성한 모든 일기의 오늘의 점수 리스트 조회</hr>
      * 삭제된 일기 제외
+     *
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
      * @param year      Integer : 지정한 년도
      * @param month     Integer : 지정한 달
@@ -49,6 +50,7 @@ public class DairyServiceImpl implements DairyService {
     /**
      * 해당 날짜 일기 조회</hr>
      * 삭제된 일기 제외
+     *
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
      * @param date      LocalDate : 조회할 날짜
      * @return DairyDTO : 조회한 일기 모든 정보
@@ -65,6 +67,7 @@ public class DairyServiceImpl implements DairyService {
     /**
      * 해당 일기 일련번호 일기 조회</hr>
      * 삭제된 일기 제외
+     *
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
      * @param dairyId   Long : 조회할 일기 일련번호
      * @return DairyDTO : 조회한 일기 모든 정보
@@ -81,6 +84,7 @@ public class DairyServiceImpl implements DairyService {
     /**
      * Optional로 둘러쌓인 DB 조회 결과 List의 유일한 객체 가져오기</hr>
      * 결과가 없거나, 중복된 결과가 있는 경우 Exception 발생
+     *
      * @param dairyDTOList Optional<List<DairyDTO>> : DB 결과 List를 Optional로 감쌈
      * @return DairyDTO : 유일한 객체
      */
@@ -95,6 +99,7 @@ public class DairyServiceImpl implements DairyService {
     /**
      * 새로운 일기 등록</hr>
      * 해당 일자에 이미 등록된 일기가 있으면 등록 불가
+     *
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
      * @param inputInfo DairyRegisterDTO : 등록할 일기 정보
      */

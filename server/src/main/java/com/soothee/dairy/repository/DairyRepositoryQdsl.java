@@ -11,6 +11,7 @@ public interface DairyRepositoryQdsl {
     /**
      * 로그인한 계정이 지정한 년도-월에 작성한 일기 정보 조회</hr>
      * 삭제한 일기 제외
+     *
      * @param memberId Long : 로그인한 계정 일련번호
      * @param year Integer : 지정한 년도
      * @param month Integer : 지정한 월
@@ -21,6 +22,7 @@ public interface DairyRepositoryQdsl {
     /**
      * 로그인한 계정이 지정한 날에 작성한 일기 정보 조회</hr>
      * 삭제한 일기 제외
+     * 
      * @param memberId Long : 로그인한 계정 일련번호
      * @param date LocalDate : 지정한 날짜
      * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
