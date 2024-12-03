@@ -131,9 +131,9 @@ public class DairyServiceImpl implements DairyService {
         Member loginMember = memberService.getLoginMember(loginInfo);
         Dairy dairy = dairyRepository.findByDairyId(inputInfo.getDairyId())
                 .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
-        if (Objects.equals(dairyId, inputInfo.getDairyId())
-            || dairy.getDate().isEqual(inputInfo.getDate())
-            || Objects.equals(dairy.getMember().getMemberId(), loginMember.getMemberId())) {
+        if (!Objects.equals(dairyId, inputInfo.getDairyId())
+            || !dairy.getDate().isEqual(inputInfo.getDate())
+            || !Objects.equals(dairy.getMember().getMemberId(), loginMember.getMemberId())) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
         Weather weather = weatherService.getWeatherById(inputInfo.getWeatherId());
@@ -152,7 +152,7 @@ public class DairyServiceImpl implements DairyService {
         Member loginMember = memberService.getLoginMember(loginInfo);
         Dairy dairy = dairyRepository.findByDairyId(dairyId)
                 .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
-        if (Objects.equals(dairy.getMember().getMemberId(), loginMember.getMemberId())) {
+        if (!Objects.equals(dairy.getMember().getMemberId(), loginMember.getMemberId())) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
         dairyConditionService.deleteDairyConditionsOfDairy(dairy);
