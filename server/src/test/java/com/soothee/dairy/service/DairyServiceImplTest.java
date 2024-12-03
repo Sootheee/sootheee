@@ -79,6 +79,10 @@ class DairyServiceImplTest {
     void modifyDairy() {
     }
 
+    @Test
+    void deleteDairy() {
+    }
+
     @AfterEach
     void tearDown() {
         dairyRepository.delete(dairy);

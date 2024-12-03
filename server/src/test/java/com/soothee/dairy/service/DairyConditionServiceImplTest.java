@@ -208,6 +208,23 @@ class DairyConditionServiceImplTest {
         Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo(1L);
     }
 
+    @Test
+    void deleteDairyConditionsOfDairy() {
+        //given
+        condIds = new ArrayList<>();
+        condIds.add(1L);
+        condIds.add(2L);
+        condIds.add(3L);
+        dairyConditionService.saveConditions(condIds, dairy);
+        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
+        List<DairyCondition> savedDairyConditionList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
+        //when
+        dairyConditionService.deleteDairyConditionsOfDairy(savedDairy);
+        //then
+        Assertions.assertThat(dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow().size()).isEqualTo(0);
+    }
+
     @AfterEach
     void tearDown() {
         dairyConditionRepository.deleteAll();

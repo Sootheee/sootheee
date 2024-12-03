@@ -25,6 +25,10 @@ class DairyControllerTest {
     void modifyDairy() {
     }
 
+    @Test
+    void deleteDairy() {
+    }
+
     @AfterEach
     void tearDown() {
     }
