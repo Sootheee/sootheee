@@ -22,12 +22,12 @@ public interface DairyRepositoryQdsl {
     /**
      * 로그인한 계정이 지정한 날에 작성한 일기 정보 조회</hr>
      * 삭제한 일기 제외
-     * 
+     *
      * @param memberId Long : 로그인한 계정 일련번호
      * @param date LocalDate : 지정한 날짜
      * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
      */
-    Optional<List<DairyDTO>> findByDate(Long memberId, LocalDate date);
+    Optional<DairyDTO> findByDate(Long memberId, LocalDate date);
 
     /**
      * 로그인한 계정이 작성한 해당 일련번호의 일기 정보 조회</hr>
@@ -35,7 +35,7 @@ public interface DairyRepositoryQdsl {
      *
      * @param memberId Long : 로그인한 계정 일련번호
      * @param dairyId  Long : 조회할 일기 일련번호
-     * @return Optional<List<DairyDTO>> : 조회된 일기 모든 정보 (null 가능)
+     * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
      */
-    Optional<List<DairyDTO>> findByDiaryId(Long memberId, Long dairyId);
+    Optional<DairyDTO> findByDiaryId(Long memberId, Long dairyId);
 }

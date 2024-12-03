@@ -56,7 +56,7 @@ public interface DairyService {
      *
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
      * @param dairyId Long : 수정할 일기 일련번호
-     * @param inputInfo
+     * @param inputInfo DairyDTO : 수정할 일기 정보
      */
     void modifyDairy(AuthenticatedUser loginInfo, Long dairyId, DairyDTO inputInfo);
 

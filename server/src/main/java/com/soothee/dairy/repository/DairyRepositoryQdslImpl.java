@@ -52,8 +52,8 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
      * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
      */
     @Override
-    public Optional<List<DairyDTO>> findByDate(Long memberId, LocalDate date) {
-        return Optional.of(
+    public Optional<DairyDTO> findByDate(Long memberId, LocalDate date) {
+        return Optional.ofNullable(
                 queryFactory.select(new QDairyDTO(dairy.dairyId,
                                                     dairy.date,
                                                     dairy.weather.weatherId,
@@ -68,7 +68,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.eq(date),
                                     dairy.isDelete.eq("N"))
-                                    .fetch()
+                                    .fetchOne()
         );
     }
 
@@ -78,11 +78,11 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
      *
      * @param memberId Long : 로그인한 계정 일련번호
      * @param dairyId  Long : 조회할 일기 일련번호
-     * @return Optional<List<DairyDTO>> : 조회된 일기 모든 정보 (null 가능)
+     * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
      */
     @Override
-    public Optional<List<DairyDTO>> findByDiaryId(Long memberId, Long dairyId) {
-        return Optional.of(
+    public Optional<DairyDTO> findByDiaryId(Long memberId, Long dairyId) {
+        return Optional.ofNullable(
                 queryFactory.select(new QDairyDTO(dairy.dairyId,
                                                     dairy.date,
                                                     dairy.weather.weatherId,
@@ -97,7 +97,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.dairyId.eq(dairyId),
                                     dairy.isDelete.eq("N"))
-                            .fetch()
+                            .fetchOne()
         );
     }
 }

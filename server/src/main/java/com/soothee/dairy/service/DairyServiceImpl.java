@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -58,10 +57,10 @@ public class DairyServiceImpl implements DairyService {
     @Override
     public DairyDTO getDairyByDate(AuthenticatedUser loginInfo, LocalDate date) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        Optional<List<DairyDTO>> dairyDTO = dairyRepository.findByDate(loginMember.getMemberId(), date);
-        DairyDTO result = this.getOneDTOFromOptionalList(dairyDTO);
-        result.setCondIds(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
-        return result;
+        DairyDTO dairyDTO = dairyRepository.findByDate(loginMember.getMemberId(), date)
+                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
+        dairyDTO.setCondIds(dairyConditionService.getConditionsIdListByDairy(dairyDTO.getDairyId()));
+        return dairyDTO;
     }
 
     /**
@@ -75,25 +74,10 @@ public class DairyServiceImpl implements DairyService {
     @Override
     public DairyDTO getDairyByDairyId(AuthenticatedUser loginInfo, Long dairyId) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        Optional<List<DairyDTO>> dairyDTO = dairyRepository.findByDiaryId(loginMember.getMemberId(), dairyId);
-        DairyDTO result = this.getOneDTOFromOptionalList(dairyDTO);
-        result.setCondIds(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
-        return result;
-    }
-
-    /**
-     * Optional로 둘러쌓인 DB 조회 결과 List의 유일한 객체 가져오기</hr>
-     * 결과가 없거나, 중복된 결과가 있는 경우 Exception 발생
-     *
-     * @param dairyDTOList Optional<List<DairyDTO>> : DB 결과 List를 Optional로 감쌈
-     * @return DairyDTO : 유일한 객체
-     */
-    private DairyDTO getOneDTOFromOptionalList (Optional<List<DairyDTO>> dairyDTOList) {
-        List<DairyDTO> dairyDTO = dairyDTOList.orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
-        if (dairyDTO.size() > 1) {
-            throw new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.DUPLICATED_DAIRY);
-        }
-        return dairyDTO.get(0);
+        DairyDTO dairyDTO = dairyRepository.findByDiaryId(loginMember.getMemberId(), dairyId)
+                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
+        dairyDTO.setCondIds(dairyConditionService.getConditionsIdListByDairy(dairyDTO.getDairyId()));
+        return dairyDTO;
     }
 
     /**
