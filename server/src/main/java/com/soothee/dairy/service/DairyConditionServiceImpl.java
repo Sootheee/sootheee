@@ -72,29 +72,49 @@ public class DairyConditionServiceImpl implements DairyConditionService{
         /* 업데이트할 일기의 현재 컨디션 리스트 */
         List<DairyCondition> curList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(curDairy.getDairyId(), "N")
                 .orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
-        int idx = 0;
-        for (DairyCondition curCond : curList) {
+        int curSize = curList.size();
+        int inputSize = inputCondIds.size();
+        /* 현재 컨디션과 입력한 컨디션 비교 */
+        for (int i = 0; i < Math.min(curSize, inputSize); i++){
+            DairyCondition curCondition = curList.get(i);
             /* 현재 컨디션 리스트의 일기와 업데이트할 일기가 일치하지 않으면 Exception 발생 */
-            if (!Objects.equals(curCond.getDairy().getDairyId(), curDairy.getDairyId())) {
+            if (!Objects.equals(curCondition.getDairy().getDairyId(), curDairy.getDairyId())) {
                 throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
             }
-            /* 1. 현재 컨디션과 입력한 컨디션이 일치하고
-             * 2. 현재 컨디션의 순서와 입력한 컨디션의 순서가 일치하면 업데이트 하지 않음 */
-            if (Objects.equals(curCond.getCondition().getCondId(), inputCondIds.get((idx)))
-                && Objects.equals(curCond.getOrderNo(), idx)) {
-                continue;
+            /* 1. 현재 컨디션과 입력한 컨디션이 일치하지 않거나
+             * 2. 현재 컨디션의 순서와 입력한 컨디션의 순서가 일치하지 않으면
+             * -> 현재 컨디션을 소프트 삭제하고 새 컨디션을 저장 */
+            if (!Objects.equals(curCondition.getCondition().getCondId(), inputCondIds.get(i))
+                    || !Objects.equals(curCondition.getOrderNo(), i)) {
+                /* 일기의 컨디션을 업데이트 하기 위해 기존의 컨디션은 소프트 삭제 처리 */
+                curCondition.deleteDairyCondition();
+                /* 새 일기-컨디션 저장 */
+                this.saveNewDairyCondition(curDairy, inputCondIds.get(i), i);
             }
-            /* 일기의 컨디션을 업데이트 하기 위해 기존의 컨디션은 소프트 삭제 처리 */
-            curCond.deleteDairyCondition();
-            Condition inputCond = conditionService.getConditionById(inputCondIds.get(idx));
-            /* 업데이트할 새 일기의 컨디션 생성 */
-            DairyCondition newDairyCondition = DairyCondition.builder()
-                                                                .dairy(curDairy)
-                                                                .condition(inputCond)
-                                                                .orderNo(idx++)
-                                                                .build();
-            /* 새 일기 컨디션 저장 */
-            dairyConditionRepository.save(newDairyCondition);
         }
+        /* 현재 컨디션 갯수가 입력된 컨디션 갯수보다 많으면 -> 입력된 컨대션 갯수보다 많은 현재 컨디션은 삭제됨 */
+        if (curSize > inputSize) {
+            for (int i = inputSize; i < curSize; i++) {
+                curList.get(i).deleteDairyCondition();
+            }
+        }
+        /* 현재 컨디션 갯수보다 입력된 컨디션 갯수가 많으면 -> 초과로 입력된 컨디션 저장 */
+        if (curSize < inputSize) {
+            for (int i = curSize; i < inputSize; i++) {
+                /* 새 일기-컨디션 저장 */
+                this.saveNewDairyCondition(curDairy, inputCondIds.get(i), i);
+            }
+        }
+    }
+    private void saveNewDairyCondition(Dairy dairy, Long condId, int idx) {
+        Condition inputCond = conditionService.getConditionById(condId);
+        /* 새 일기의 컨디션 생성 */
+        DairyCondition newDairyCondition = DairyCondition.builder()
+                .dairy(dairy)
+                .condition(inputCond)
+                .orderNo(idx)
+                .build();
+        /* 새 일기 컨디션 저장 */
+        dairyConditionRepository.save(newDairyCondition);
     }
 }
