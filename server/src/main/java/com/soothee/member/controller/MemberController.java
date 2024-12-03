@@ -82,8 +82,8 @@ public class MemberController {
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> updateName(@RequestParam("memberId") Long memberId,
-                                              @RequestParam("name") String name,
-                                              @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+                                          @RequestParam("name") String name,
+                                          @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         memberService.updateName(loginInfo, memberId, name);
         return new ResponseEntity<String>(HttpStatus.OK);
     }

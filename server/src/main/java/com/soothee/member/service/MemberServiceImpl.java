@@ -33,7 +33,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public Optional<Member> getMemberForOAuth2(String oauth2ClientId, SnsType snsType) {
-        return memberRepository.findByOauth2ClientIdAndSnsType(oauth2ClientId, snsType);
+        return memberRepository.findByOauth2ClientIdAndSnsTypeAndIsDelete(oauth2ClientId, snsType, "N");
     }
 
     /**
@@ -126,7 +126,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getLoginMember(AuthenticatedUser loginInfo) {
         String oauth2Id = loginInfo.getName();
-        Optional<Member> optional =  memberRepository.findByOauth2ClientId(oauth2Id);
+        Optional<Member> optional =  memberRepository.findByOauth2ClientIdAndIsDelete(oauth2Id, "N");
         return optional.orElseThrow(() -> new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.NOT_EXIST_MEMBER));
     }
 

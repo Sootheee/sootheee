@@ -1,6 +1,6 @@
 package com.soothee.reference.repository;
 
-import com.soothee.reference.domain.Weather;
+import com.soothee.reference.domain.Condition;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,13 +12,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource("classpath:application-test.properties")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class WeatherRepositoryTest {
+class ConditionRepositoryTest {
     @Autowired
-    private WeatherRepository weatherRepository;
+    private ConditionRepository conditionRepository;
 
     @Test
-    void findByWeatherId() {
-        Weather weather = weatherRepository.findByWeatherId(1L).orElseThrow();
-        Assertions.assertThat(weather).isNotNull();
+    void findByCondId() {
+        Condition condition = conditionRepository.findByCondId(1L).orElseThrow();
+        Assertions.assertThat(condition).isNotNull();
     }
 }

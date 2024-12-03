@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -21,7 +21,7 @@ import java.util.Optional;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
 @ExtendWith(SpringExtension.class)
-@DataJpaTest
+@SpringBootTest
 @EnableJpaAuditing
 @ActiveProfiles("test")
 class MemberRepositoryTest {
@@ -56,10 +56,10 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("oauth2ClientId와 SnsType으로 member 조회")
-    void findByOauth2ClientIdAndSnsType() {
+    void findByOauth2ClientIdAndIsDeleteAndSnsTypeAndIsDelete() {
         //given
         //when
-        Optional<Member> optional = memberRepository.findByOauth2ClientIdAndSnsType(OAUTH2_CLIENT_ID, SNS_TYPE);
+        Optional<Member> optional = memberRepository.findByOauth2ClientIdAndSnsTypeAndIsDelete(OAUTH2_CLIENT_ID, SNS_TYPE, "N");
         Member mem1 = optional.orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(mem1.getName()).isEqualTo(NAME);
@@ -67,10 +67,10 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("oauth2ClientId로 member 조회")
-    void findByOauth2ClientId() {
+    void findByOauth2ClientIdAndIsDelete() {
         //given
         //when
-        Optional<Member> optional = memberRepository.findByOauth2ClientId(OAUTH2_CLIENT_ID);
+        Optional<Member> optional = memberRepository.findByOauth2ClientIdAndIsDelete(OAUTH2_CLIENT_ID, "N");
         Member mem1 = optional.orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(mem1.getName()).isEqualTo(NAME);

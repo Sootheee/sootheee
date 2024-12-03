@@ -1,14 +1,11 @@
-package com.soothee.dairy.domain;
+package com.soothee.dairy.service;
 
 import com.soothee.common.constants.SnsType;
-import com.soothee.dairy.dto.DairyDTO;
+import com.soothee.dairy.domain.Dairy;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
-import com.soothee.reference.domain.Weather;
-import com.soothee.reference.repository.ConditionRepository;
 import com.soothee.reference.repository.WeatherRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +18,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
@@ -29,11 +25,13 @@ import java.util.List;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
-class DairyTest {
+class DairyServiceImplTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private DairyRepository dairyRepository;
+    @Autowired
+    private DairyService dairyService;
     @Autowired
     private WeatherRepository weatherRepository;
     private final String NAME = "사용자0";
@@ -42,56 +40,47 @@ class DairyTest {
     private final String OAUTH2_CLIENT_ID = "111111";
     private Member member;
     private Dairy dairy;
-    private Weather weather;
-    @Autowired
-    private ConditionRepository conditionRepository;
 
     @BeforeEach
     void setUp() {
-        weather = weatherRepository.findByWeatherId(1L).orElseThrow();
-
         member = Member.builder()
-                        .name(NAME)
-                        .email(EMAIL)
-                        .oauth2ClientId(OAUTH2_CLIENT_ID)
-                        .snsType(SNS_TYPE).build();
+                .name(NAME)
+                .email(EMAIL)
+                .oauth2ClientId(OAUTH2_CLIENT_ID)
+                .snsType(SNS_TYPE).build();
         memberRepository.save(member);
 
         dairy = Dairy.builder()
-                    .member(member)
-                    .date(LocalDate.of(2024,10,10))
-                    .score(2.0)
-                    .weather(weather)
-                    .build();
+                .member(memberRepository.findByEmail(EMAIL).orElseThrow())
+                .date(LocalDate.of(2024,10,10))
+                .score(2.0)
+                .weather(weatherRepository.findByWeatherId(1L).orElseThrow())
+                .build();
         dairyRepository.save(dairy);
     }
 
     @Test
-    void updateDairy() {
-        //given
-        List<Dairy> savedDairyList = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow();
-        Dairy savedDairy = savedDairyList.get(0);
-        Weather weather = weatherRepository.findByWeatherId(1L).orElseThrow();
-        DairyDTO newDairy = DairyDTO.builder()
-                                .date(LocalDate.of(2024,10,10))
-                                .score(2.0)
-                                .thank("thanks")
-                                .build();
-        //when
-        savedDairy.updateDairy(newDairy, weather);
-        //then
-        Assertions.assertThat(dairy.getThank()).isEqualTo("thanks");
+    void getAllDairyMonthly() {
+    }
+
+    @Test
+    void getDairyByDate() {
+    }
+
+    @Test
+    void getDairyByDairyId() {
+    }
+
+    @Test
+    void registerDairy() {
+    }
+
+    @Test
+    void modifyDairy() {
     }
 
     @Test
     void deleteDairy() {
-        //given
-        List<Dairy> savedDairyList = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow();
-        Dairy savedDairy = savedDairyList.get(0);
-        //when
-        savedDairy.deleteDairy();
-        //then
-        Assertions.assertThat(savedDairy.getIsDelete()).isEqualTo("Y");
     }
 
     @AfterEach

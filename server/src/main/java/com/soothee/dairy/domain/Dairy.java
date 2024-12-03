@@ -1,6 +1,8 @@
 package com.soothee.dairy.domain;
 
 import com.soothee.common.domain.TimeEntity;
+import com.soothee.dairy.dto.DairyDTO;
+import com.soothee.dairy.dto.DairyRegisterDTO;
 import com.soothee.member.domain.Member;
 import com.soothee.reference.domain.Weather;
 import jakarta.persistence.*;
@@ -8,8 +10,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Entity
@@ -75,21 +79,53 @@ public class Dairy extends TimeEntity {
     /**
      * 일기 수정</hr>
      *
-     * @param dairy Dairy : 해당 다이어리
+     * @param dairy DairyDTO : 입력된 수정할 일기 정보
+     * @param weather Weather : 해당 일기 날씨 정보
      */
-    public void updateDairy(Dairy dairy) {
-        this.weather = dairy.getWeather();
-        this.score = dairy.getScore();
-        this.content = dairy.getContent();
-        this.hope = dairy.getHope();
-        this.thank = dairy.getThank();
-        this.learn = dairy.getLearn();
+    public void updateDairy(DairyDTO dairy, Weather weather) {
+        if (!Objects.equals(dairy.getWeatherId(), weather.getWeatherId())) {
+            this.weather = weather;
+        }
+        if (!Objects.equals(this.score, dairy.getScore())) {
+            this.score = dairy.getScore();
+        }
+        if (!StringUtils.equals(this.content, dairy.getContent())) {
+            this.content = dairy.getContent();
+        }
+        if (!StringUtils.equals(this.hope, dairy.getHope())) {
+            this.hope = dairy.getHope();
+        }
+        if (!StringUtils.equals(this.thank, dairy.getThank())) {
+            this.thank = dairy.getThank();
+        }
+        if (!StringUtils.equals(this.learn, dairy.getLearn())) {
+            this.learn = dairy.getLearn();
+        }
+    }
+
+    /** 일기 삭제 */
+    public void deleteDairy() {
+        this.isDelete = "Y";
     }
 
     /**
-     * 일기 삭제</hr>
-     * */
-    public void deleteDairy() {
-        this.isDelete = "Y";
+     * 일기 생성</hr>
+     *
+     * @param inputInfo DairyRegisterDTO : 입력된 등록할 일기 정보
+     * @param member Member : 로그인한 계정 정보
+     * @param weather Weather : 해당 일기 날씨 정보
+     * @return Dairy
+     */
+    public static Dairy of(DairyRegisterDTO inputInfo, Member member, Weather weather) {
+        return Dairy.builder()
+                .date(inputInfo.getDate())
+                .member(member)
+                .weather(weather)
+                .score(inputInfo.getScore())
+                .content(inputInfo.getContent())
+                .hope(inputInfo.getHope())
+                .thank(inputInfo.getThank())
+                .learn(inputInfo.getLearn())
+                .build();
     }
 }

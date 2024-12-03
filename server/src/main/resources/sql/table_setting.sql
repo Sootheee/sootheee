@@ -57,6 +57,7 @@ CREATE TABLE dairy_condition
     dairy_cond_id INT AUTO_INCREMENT PRIMARY KEY,
     dairy_id INT NOT NULL,
     cond_id INT NOT NULL,
+    order_no INT NOT NULL,
     is_delete VARCHAR(1) NOT NULL,
     reg_date DATETIME NOT NULL,
     mod_date DATETIME NOT NULL,

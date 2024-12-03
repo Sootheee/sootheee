@@ -1,5 +1,6 @@
 package com.soothee.dairy.domain;
 
+import com.soothee.common.domain.TimeEntity;
 import com.soothee.reference.domain.Condition;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,13 +12,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "dairy_condition")
-public class DairyCondition {
-    /** 다이어리-콘텐츠 일련번호 */
+public class DairyCondition extends TimeEntity {
+    /** 일기-콘텐츠 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long dairyCondId;
 
-    /** 해당 다이어리 일련번호 */
+    /** 해당 일기 일련번호 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dairy_id")
     private Dairy dairy;
@@ -27,18 +28,23 @@ public class DairyCondition {
     @JoinColumn(name = "cond_id")
     private Condition condition;
 
+    /** 선택 순서 */
+    @Column(name = "order_no")
+    private Integer orderNo;
+
     /** 소프트 삭제 */
     @Column(name = "is_delete")
     private String isDelete;
 
     @Builder
-    public DairyCondition(Dairy dairy, Condition condition) {
+    public DairyCondition(Dairy dairy, Condition condition, Integer orderNo) {
         this.dairy = dairy;
         this.condition = condition;
+        this.orderNo = orderNo;
         this.isDelete = "N";
     }
 
-    /** 다이어리 컨디션 변경 시, 소프트 삭제 된 후, 새로 생성 */
+    /** 일기 컨디션 변경 시, 소프트 삭제 된 후, 새로 생성 */
     public void deleteDairyCondition () {
         this.isDelete = "Y";
     }

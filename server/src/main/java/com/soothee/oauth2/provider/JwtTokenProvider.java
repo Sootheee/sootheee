@@ -38,7 +38,12 @@ public class JwtTokenProvider {
         return key;
     }
 
-    // JWT에서 사용자 이름 추출
+    /**
+     * JWT에서 사용자 이름 추출</hr>
+     *
+     * @param token 토큰
+     * @return JWT
+     */
     public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)

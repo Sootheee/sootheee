@@ -1,4 +1,13 @@
 package com.soothee.reference.service;
 
+import com.soothee.reference.domain.Condition;
+
 public interface ConditionService {
+    /**
+     * 컨디션 일련번호로 컨디션 정보 조회</hr>
+     *
+     * @param condId Log : 해당 컨디션 일련번호
+     * @return Condition : 해당 컨디션 정보
+     */
+    Condition getConditionById(Long condId);
 }

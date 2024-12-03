@@ -1,10 +1,11 @@
 package com.soothee.dairy.domain;
 
 import com.soothee.common.constants.SnsType;
-import com.soothee.dairy.dto.DairyDTO;
+import com.soothee.dairy.repository.DairyConditionRepository;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
+import com.soothee.reference.domain.Condition;
 import com.soothee.reference.domain.Weather;
 import com.soothee.reference.repository.ConditionRepository;
 import com.soothee.reference.repository.WeatherRepository;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
@@ -29,73 +31,69 @@ import java.util.List;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
-class DairyTest {
+class DairyConditionTest {
+    @Autowired
+    private DairyConditionRepository dairyConditionRepository;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private DairyRepository dairyRepository;
     @Autowired
     private WeatherRepository weatherRepository;
+    @Autowired
+    private ConditionRepository conditionRepository;
     private final String NAME = "사용자0";
     private final String EMAIL = "abc@def.com";
     private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
     private final String OAUTH2_CLIENT_ID = "111111";
     private Member member;
     private Dairy dairy;
-    private Weather weather;
-    @Autowired
-    private ConditionRepository conditionRepository;
+    private DairyCondition dairyCondition;
 
     @BeforeEach
     void setUp() {
-        weather = weatherRepository.findByWeatherId(1L).orElseThrow();
+        Weather weather = weatherRepository.findByWeatherId(1L).orElseThrow();
 
         member = Member.builder()
-                        .name(NAME)
-                        .email(EMAIL)
-                        .oauth2ClientId(OAUTH2_CLIENT_ID)
-                        .snsType(SNS_TYPE).build();
+                .name(NAME)
+                .email(EMAIL)
+                .oauth2ClientId(OAUTH2_CLIENT_ID)
+                .snsType(SNS_TYPE).build();
         memberRepository.save(member);
 
         dairy = Dairy.builder()
-                    .member(member)
-                    .date(LocalDate.of(2024,10,10))
-                    .score(2.0)
-                    .weather(weather)
-                    .build();
+                .member(member)
+                .date(LocalDate.of(2024,10,10))
+                .score(2.0)
+                .weather(weather)
+                .build();
         dairyRepository.save(dairy);
+        Condition condition = conditionRepository.getReferenceById(1L);
+        dairyCondition = DairyCondition.builder()
+                                        .dairy(dairy)
+                                        .condition(condition)
+                                        .orderNo(0)
+                                        .build();
+        dairyConditionRepository.save(dairyCondition);
     }
 
     @Test
-    void updateDairy() {
+    void deleteDairyCondition() {
         //given
-        List<Dairy> savedDairyList = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow();
-        Dairy savedDairy = savedDairyList.get(0);
-        Weather weather = weatherRepository.findByWeatherId(1L).orElseThrow();
-        DairyDTO newDairy = DairyDTO.builder()
-                                .date(LocalDate.of(2024,10,10))
-                                .score(2.0)
-                                .thank("thanks")
-                                .build();
+        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
+        Optional<List<DairyCondition>> optionalDairyCondition = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N");
+        List<DairyCondition> dairyConditionList = optionalDairyCondition.orElseThrow();
+        DairyCondition savedDairyCondition = dairyConditionList.get(0);
         //when
-        savedDairy.updateDairy(newDairy, weather);
+        savedDairyCondition.deleteDairyCondition();
         //then
-        Assertions.assertThat(dairy.getThank()).isEqualTo("thanks");
-    }
-
-    @Test
-    void deleteDairy() {
-        //given
-        List<Dairy> savedDairyList = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow();
-        Dairy savedDairy = savedDairyList.get(0);
-        //when
-        savedDairy.deleteDairy();
-        //then
-        Assertions.assertThat(savedDairy.getIsDelete()).isEqualTo("Y");
+        Assertions.assertThat(savedDairyCondition.getIsDelete()).isEqualTo("Y");
     }
 
     @AfterEach
     void tearDown() {
+        dairyConditionRepository.delete(dairyCondition);
         dairyRepository.delete(dairy);
         memberRepository.delete(member);
     }

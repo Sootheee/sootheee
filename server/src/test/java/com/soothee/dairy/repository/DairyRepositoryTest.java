@@ -2,7 +2,6 @@ package com.soothee.dairy.repository;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.dairy.domain.Dairy;
-import com.soothee.dairy.dto.MonthlyDairyScoreDTO;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.repository.WeatherRepository;
@@ -13,20 +12,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
 @ExtendWith(SpringExtension.class)
-@DataJpaTest
+@SpringBootTest
 @EnableJpaAuditing
 @ActiveProfiles("test")
 class DairyRepositoryTest {
@@ -62,27 +59,25 @@ class DairyRepositoryTest {
     }
 
     @Test
-    void findByMemberIdAndDate() {
+    void findByMemberMemberIdAndIsDelete() {
         //given
         Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        Optional<List<MonthlyDairyScoreDTO>> optional = dairyRepository.findByMemberIdAndDate(writer.getMemberId(), 2024, 10);
-        List<MonthlyDairyScoreDTO> resultList = optional.orElseThrow();
-        MonthlyDairyScoreDTO result = resultList.get(0);
+        Dairy result = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N").orElseThrow().get(0);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
 
     @Test
-    void findByMemberMemberId() {
+    void findByDairyId() {
         //given
         Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
+
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N").orElseThrow().get(0);
         //when
-        Optional<List<Dairy>> optional = dairyRepository.findByMemberMemberId(writer.getMemberId());
-        List<Dairy> resultList = optional.orElseThrow();
-        Dairy result = resultList.get(0);
+        Dairy searchDairy = dairyRepository.findByDairyId(savedDairy.getDairyId()).orElseThrow();
         //then
-        Assertions.assertThat(result.getScore()).isEqualTo(2.0);
+        Assertions.assertThat(savedDairy.getScore()).isEqualTo(searchDairy.getScore());
     }
 
     @AfterEach

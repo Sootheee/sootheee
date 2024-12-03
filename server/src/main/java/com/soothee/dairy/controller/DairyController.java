@@ -15,13 +15,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -48,5 +52,122 @@ public class DairyController {
                                                  @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         List<DairyScoresDTO> infos = dairyService.getAllDairyMonthly(loginInfo, year, month);
         return new ResponseEntity<List<DairyScoresDTO>>(infos, HttpStatus.OK);
+    }
+
+    /** 일기 조회 - 날짜로 */
+    @GetMapping
+    @Operation(summary = "지정된 날짜로 일기 상세 정보 조회", description = "로그인한 계정이 지정한 날에 작성한 일기 모든 정보 전달", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "date", description = "조회할 날", example = "/dairy/calendar?date=2024-12-12", required = true, in = ParameterIn.QUERY)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = DairyScoresDTO.class))),
+            @ApiResponse(responseCode = "202", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "조회된 일기 1 개 초과", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> sendDairyByDate(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        DairyDTO findDairy = dairyService.getDairyByDate(loginInfo, date);
+        return new ResponseEntity<DairyDTO>(findDairy, HttpStatus.OK);
+    }
+
+    /** 일기 조회 - 일기 일련번호로 */
+    @GetMapping("/{dairy_id}")
+    @Operation(summary = "지정된 일기 일련번호로 일기 상세 정보 조회", description = "로그인한 계정이 작성한 해당 일기 모든 정보 전달", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "date", description = "조회할 날", example = "/dairy/calendar/{dairy_id}", required = true, in = ParameterIn.PATH)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = DairyScoresDTO.class))),
+            @ApiResponse(responseCode = "202", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "조회된 일기 1 개 초과", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> sendDairyByDairyId(@PathVariable("dairy_id") Long dairyId,
+                                                @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        DairyDTO findDairy = dairyService.getDairyByDairyId(loginInfo, dairyId);
+        return new ResponseEntity<DairyDTO>(findDairy, HttpStatus.OK);
+    }
+
+    /** 일기 등록 */
+    @PostMapping
+    @Operation(summary = "새 일기 등록", description = "로그인한 계정이 작성한 새 특정일자 일기 등록", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "date", description = "해당 날짜", example = "date=2024-10-11", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "weatherId", description = "날씨 일련번호", example = "weatherId=11", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "score", description = "오늘의 점수", example = "score=3.2", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "condIds", description = "다중 선택한 컨디션 일련번호 리스트", example = "condIds=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "content", description = "오늘의 요약", example = "content=개발을했다", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "hope", description = "바랐던 방향성", example = "hope=놀고싶다", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "thank", description = "감사한 일", example = "thank=점심을먹었다", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "learn", description = "배운 일", example = "learn=사회는액팅이다", required = false, in = ParameterIn.QUERY)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "요청 오류 || 일기 중복 등록 시도 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> registerDairy(@ModelAttribute @Valid DairyRegisterDTO inputInfo,
+                                           BindingResult bindingResult,
+                                           @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+        }
+        dairyService.registerDairy(loginInfo, inputInfo);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /** 일기 수정 */
+    @PutMapping("/{dairy_id}")
+    @Operation(summary = "일기 수정", description = "로그인한 계정이 작성한 특정 일자 일기 수정", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "dairyId", description = "일기 일련번호 || path의 일련번호와 query의 일련번호가 다르면 수정 불가", example = "/dairy/1111", required = true, in = ParameterIn.PATH),
+            @Parameter(name = "dairyId", description = "일기 일련번호 || path의 일련번호와 query의 일련번호가 다르면 수정 불가", example = "dairyId=1111", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "date", description = "해당 날짜 || 기존 dairy의 date와 query의 date가 다르면 수정 불가", example = "date=2024-10-11", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "weatherId", description = "날씨 일련번호", example = "weatherId=11", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "score", description = "오늘의 점수", example = "score=3.2", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "condIds", description = "다중 선택한 컨디션 일련번호 리스트", example = "condIds=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "content", description = "오늘의 요약", example = "content=개발을했다", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "hope", description = "바랐던 방향성", example = "hope=놀고싶다", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "thank", description = "감사한 일", example = "thank=점심을먹었다", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "learn", description = "배운 일", example = "learn=사회는액팅이다", required = false, in = ParameterIn.QUERY)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "204", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "요청 오류 || 주요 값이 일치하지 않음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> modifyDairy(@PathVariable("dairy_id") Long dairyId,
+                                         @ModelAttribute @Valid DairyDTO inputInfo,
+                                         BindingResult bindingResult,
+                                         @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+        }
+        dairyService.modifyDairy(loginInfo, dairyId, inputInfo);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /** 일기 삭제 */
+    @DeleteMapping("/{dairy_id}")
+    @Operation(summary = "일기 삭제", description = "로그인한 계정이 작성한 특정 일자 일기 삭제", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "dairyId", description = "삭제할 일기 일련번호", example = "/dairy/1111", required = true, in = ParameterIn.PATH),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "204", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "일기 접근 권한 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> deleteDairy(@PathVariable("dairy_id") Long dairyId,
+                                         @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        dairyService.deleteDairy(loginInfo, dairyId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -84,9 +84,7 @@ public class Member extends TimeEntity {
         this.isDark = isDark;
     }
 
-    /**
-     * 회원 삭제</hr>
-     */
+    /** 회원 삭제 */
     public void deleteMember() {
         this.isDelete = "Y";
     }

@@ -1,4 +1,13 @@
 package com.soothee.reference.service;
 
+import com.soothee.reference.domain.Weather;
+
 public interface WeatherService {
+    /**
+     * 날씨 일련번호로 날씨 정보 조회</hr>
+     *
+     * @param weatherId Long : 조회할 날씨 일련번호
+     * @return Weather : 조회된 날씨 정보
+     */
+    Weather getWeatherById(Long weatherId);
 }
