@@ -2,7 +2,6 @@ package com.soothee.dairy.repository;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.dairy.domain.Dairy;
-import com.soothee.dairy.domain.DairyCondition;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.member.domain.Member;

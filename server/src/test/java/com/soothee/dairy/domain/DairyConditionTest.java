@@ -72,6 +72,7 @@ class DairyConditionTest {
         dairyCondition = DairyCondition.builder()
                                         .dairy(dairy)
                                         .condition(condition)
+                                        .orderNo(0)
                                         .build();
         dairyConditionRepository.save(dairyCondition);
     }

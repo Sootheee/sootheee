@@ -5,7 +5,6 @@ import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
-import com.soothee.reference.domain.Condition;
 import com.soothee.reference.domain.Weather;
 import com.soothee.reference.repository.ConditionRepository;
 import com.soothee.reference.repository.WeatherRepository;
@@ -22,7 +21,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
