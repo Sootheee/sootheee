@@ -2,7 +2,6 @@ package com.soothee.dairy.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.soothee.dairy.domain.QDairy;
-import com.soothee.dairy.domain.QDairyCondition;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.dairy.dto.QDairyDTO;
@@ -21,7 +20,6 @@ import java.util.Optional;
 public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     private final JPAQueryFactory queryFactory;
     private final QDairy dairy = QDairy.dairy;
-    private final QDairyCondition dairyCondition = QDairyCondition.dairyCondition;
 
     @Override
     public Optional<List<DairyScoresDTO>> findByMemberIdYearMonth(Long memberId, Integer year, Integer month) {
@@ -50,7 +48,6 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                                     dairy.thank,
                                                     dairy.learn))
                             .from(dairy)
-                            .leftJoin(dairyCondition).on(dairy.dairyId.eq(dairyCondition.dairy.dairyId))
                             .groupBy(dairy.dairyId)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.eq(date),
@@ -71,7 +68,6 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                                     dairy.thank,
                                                     dairy.learn))
                             .from(dairy)
-                            .leftJoin(dairyCondition).on(dairy.dairyId.eq(dairyCondition.dairy.dairyId))
                             .groupBy(dairy.dairyId)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.dairyId.eq(dairyId),
