@@ -7,6 +7,8 @@ import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.dairy.dto.QDairyDTO;
 import com.soothee.dairy.dto.QDairyScoresDTO;
+import com.soothee.stats.dto.MonthlyAvgDTO;
+import com.soothee.stats.dto.QMonthlyAvgDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,14 +23,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     private final QDairy dairy = QDairy.dairy;
     private final QDairyCondition dairyCondition = QDairyCondition.dairyCondition;
 
-    /**
-     * 로그인한 계정이 지정한 년도-월에 작성한 일기 정보 조회</hr>
-     *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param year Integer : 지정한 년도
-     * @param month Integer : 지정한 월
-     * @return Optional<List<DairyScoresDTO>> : 조회된 (일기 일련번호, 일기 날짜, 오늘의 점수) 정보 리스트 (null 가능)
-     */
+    @Override
     public Optional<List<DairyScoresDTO>> findByMemberIdYearMonth(Long memberId, Integer year, Integer month) {
         return Optional.of(
                 queryFactory.select(new QDairyScoresDTO(dairy.dairyId,
@@ -43,14 +38,6 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
         );
     }
 
-    /**
-     * 로그인한 계정이 지정한 날에 작성한 일기 정보 조회</hr>
-     * 삭제한 일기 제외
-     *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param date     LocalDate : 지정한 날짜
-     * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
-     */
     @Override
     public Optional<DairyDTO> findByDate(Long memberId, LocalDate date) {
         return Optional.ofNullable(
@@ -72,14 +59,6 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
         );
     }
 
-    /**
-     * 로그인한 계정이 작성한 해당 일련번호의 일기 정보 조회</hr>
-     * 삭제한 일기 제외
-     *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param dairyId  Long : 조회할 일기 일련번호
-     * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
-     */
     @Override
     public Optional<DairyDTO> findByDiaryId(Long memberId, Long dairyId) {
         return Optional.ofNullable(

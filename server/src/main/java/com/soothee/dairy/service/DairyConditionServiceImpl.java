@@ -23,12 +23,6 @@ public class DairyConditionServiceImpl implements DairyConditionService{
     private final DairyConditionRepository dairyConditionRepository;
     private final ConditionService conditionService;
 
-    /**
-     * 해당 일기에서 선택한 컨디션들 저장</hr>
-     *
-     * @param condIdList List<Long> : 선택한 컨디션들의 일련번호 리스트
-     * @param newDairy   Dairy : 해당 일기
-     */
     @Override
     public void saveConditions(List<Long> condIdList, Dairy newDairy) {
         int idx = 0;
@@ -43,13 +37,6 @@ public class DairyConditionServiceImpl implements DairyConditionService{
         }
     }
 
-    /**
-     * 해당 일기의 일기-컨디션 리스트 조회</hr>
-     * 삭제한 일기-컨디션 제외
-     *
-     * @param dairyId Long : 조회할 일기 일련번호
-     * @return List<Long> : 해당 일기의 다수의 컨디션 일련번호 리스트
-     */
     @Override
     public List<Long> getConditionsIdListByDairy(Long dairyId) {
         List<DairyCondition> findList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(dairyId, "N")
@@ -61,12 +48,6 @@ public class DairyConditionServiceImpl implements DairyConditionService{
         return conditionIdList;
     }
 
-    /**
-     * 해당 일기의 일기-컨디션 리스트 업데이트</hr>
-     *
-     * @param curDairy Dairy : 조회할 일기 일련번호
-     * @param inputCondIds List<Long> : 업데이트될 컨디션 리스트
-     */
     @Override
     public void updateConditions(Dairy curDairy, List<Long> inputCondIds) {
         /* 업데이트할 일기의 현재 컨디션 리스트 */
@@ -126,11 +107,6 @@ public class DairyConditionServiceImpl implements DairyConditionService{
         dairyConditionRepository.save(newDairyCondition);
     }
 
-    /**
-     * 해당 일기의 일기-컨디션 리스트 모두 소프트삭제</hr>
-     *
-     * @param dairy Dairy : 삭제할 일기 일련번호
-     */
     @Override
     public void deleteDairyConditionsOfDairy(Dairy dairy) {
         List<DairyCondition> curList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(dairy.getDairyId(), "N")
