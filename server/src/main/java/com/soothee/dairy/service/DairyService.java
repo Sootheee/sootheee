@@ -59,4 +59,12 @@ public interface DairyService {
      * @param inputInfo
      */
     void modifyDairy(AuthenticatedUser loginInfo, Long dairyId, DairyDTO inputInfo);
+
+    /**
+     * 작성된 일기 삭제</hr>
+     *
+     * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
+     * @param dairyId Long : 삭제할 일기 일련번호
+     */
+    void deleteDairy(AuthenticatedUser loginInfo, Long dairyId);
 }

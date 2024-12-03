@@ -121,7 +121,7 @@ public class DairyController {
 
     /** 일기 수정 */
     @PutMapping("/{dairy_id}")
-    @Operation(summary = "일기 수정", description = "로그인한 계정이 작성한 새 특정일자 일기 등록", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Operation(summary = "일기 수정", description = "로그인한 계정이 작성한 특정 일자 일기 수정", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
             @Parameter(name = "dairyId", description = "일기 일련번호 || path의 일련번호와 query의 일련번호가 다르면 수정 불가", example = "/dairy/1111", required = true, in = ParameterIn.PATH),
             @Parameter(name = "dairyId", description = "일기 일련번호 || path의 일련번호와 query의 일련번호가 다르면 수정 불가", example = "dairyId=1111", required = true, in = ParameterIn.QUERY),
@@ -153,4 +153,21 @@ public class DairyController {
     }
 
     /** 일기 삭제 */
+    @DeleteMapping("/{dairy_id}")
+    @Operation(summary = "일기 삭제", description = "로그인한 계정이 작성한 특정 일자 일기 삭제", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "dairyId", description = "삭제할 일기 일련번호", example = "/dairy/1111", required = true, in = ParameterIn.PATH),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "204", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "일기 접근 권한 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> deleteDairy(@PathVariable("dairy_id") Long dairyId,
+                                         @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        dairyService.deleteDairy(loginInfo, dairyId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

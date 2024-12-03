@@ -140,4 +140,22 @@ public class DairyServiceImpl implements DairyService {
         dairy.updateDairy(inputInfo, weather);
         dairyConditionService.updateConditions(dairy, inputInfo.getCondIds());
     }
+
+    /**
+     * 작성된 일기 삭제</hr>
+     *
+     * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
+     * @param dairyId   Long : 삭제할 일기 일련번호
+     */
+    @Override
+    public void deleteDairy(AuthenticatedUser loginInfo, Long dairyId) {
+        Member loginMember = memberService.getLoginMember(loginInfo);
+        Dairy dairy = dairyRepository.findByDairyId(dairyId)
+                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
+        if (Objects.equals(dairy.getMember().getMemberId(), loginMember.getMemberId())) {
+            throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
+        }
+        dairyConditionService.deleteDairyConditionsOfDairy(dairy);
+        dairy.deleteDairy();
+    }
 }
