@@ -4,8 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class DairyControllerTest {
     @BeforeEach
     void setUp() {
@@ -17,12 +15,14 @@ class DairyControllerTest {
 
     @Test
     void sendDairyByDate() {
-
     }
 
     @Test
     void registerDairy() {
+    }
 
+    @Test
+    void modifyDairy() {
     }
 
     @AfterEach

@@ -65,11 +65,21 @@ class DairyRepositoryTest {
         //given
         Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        Optional<List<Dairy>> optional = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N");
-        List<Dairy> resultList = optional.orElseThrow();
-        Dairy result = resultList.get(0);
+        Dairy result = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N").orElseThrow().get(0);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
+    }
+
+    @Test
+    void findByDairyId() {
+        //given
+        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
+
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N").orElseThrow().get(0);
+        //when
+        Dairy searchDairy = dairyRepository.findByDairyId(savedDairy.getDairyId()).orElseThrow();
+        //then
+        Assertions.assertThat(savedDairy.getScore()).isEqualTo(searchDairy.getScore());
     }
 
     @AfterEach

@@ -65,16 +65,18 @@ class DairyServiceImplTest {
 
     @Test
     void getDairyByDate() {
-
     }
 
     @Test
     void getDairyByDairyId() {
-
     }
 
     @Test
     void registerDairy() {
+    }
+
+    @Test
+    void modifyDairy() {
     }
 
     @AfterEach

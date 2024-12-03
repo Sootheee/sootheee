@@ -14,6 +14,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
@@ -34,6 +35,7 @@ import java.util.Optional;
 @EnableJpaAuditing
 @ActiveProfiles("test")
 class DairyConditionServiceImplTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DairyConditionServiceImplTest.class);
     @Autowired
     private DairyConditionServiceImpl dairyConditionService;
     @Autowired
@@ -103,9 +105,107 @@ class DairyConditionServiceImplTest {
         //then
         Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
         Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
-        Optional<List<DairyCondition>> optionalDairyCondition = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N");
-        List<DairyCondition> dairyConditionList = optionalDairyCondition.orElseThrow();
+        List<DairyCondition> dairyConditionList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
         Assertions.assertThat(dairyConditionList.size()).isEqualTo(3);
+    }
+
+    @Test
+    void updateConditions() {
+        //given
+        condIds = new ArrayList<>();
+        condIds.add(1L);
+        condIds.add(2L);
+        condIds.add(3L);
+        dairyConditionService.saveConditions(condIds, dairy);
+        //when
+        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
+        List<DairyCondition> beforeDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
+        for (int i = 0; i < beforeDcList.size(); i++) {
+            LOGGER.info("before {} : {}, {}", i+1, beforeDcList.get(i).getDairyCondId(),beforeDcList.get(i).getOrderNo());
+        }
+        List<Long> newCondIds = new ArrayList<>();
+        newCondIds.add(4L);
+        newCondIds.add(2L);
+        newCondIds.add(1L);
+        dairyConditionService.updateConditions(savedDairy, newCondIds);
+        //then
+        List<DairyCondition> afterDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
+        for (int i = 0; i < afterDcList.size(); i++) {
+            LOGGER.info("after {} : {}, {}", i+1, afterDcList.get(i).getDairyCondId(),afterDcList.get(i).getOrderNo());
+        }
+        Assertions.assertThat(afterDcList.size()).isEqualTo(3);
+        Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo(4L);
+        Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo(2L);
+        Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo(1L);
+    }
+
+    @Test
+    void updateConditionsBiggerInput() {
+        //given
+        condIds = new ArrayList<>();
+        condIds.add(1L);
+        condIds.add(2L);
+        condIds.add(3L);
+        dairyConditionService.saveConditions(condIds, dairy);
+        //when
+        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
+        List<DairyCondition> beforeDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
+        for (int i = 0; i < beforeDcList.size(); i++) {
+            LOGGER.info("before {} : {}, {}", i+1, beforeDcList.get(i).getDairyCondId(),beforeDcList.get(i).getOrderNo());
+        }
+        List<Long> newCondIds = new ArrayList<>();
+        newCondIds.add(4L);
+        newCondIds.add(2L);
+        newCondIds.add(1L);
+        newCondIds.add(5L);
+        newCondIds.add(6L);
+        dairyConditionService.updateConditions(savedDairy, newCondIds);
+        //then
+        List<DairyCondition> afterDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
+        for (int i = 0; i < afterDcList.size(); i++) {
+            LOGGER.info("after {} : {}, {}", i+1, afterDcList.get(i).getDairyCondId(),afterDcList.get(i).getOrderNo());
+        }
+        Assertions.assertThat(afterDcList.size()).isEqualTo(5);
+        Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo(4L);
+        Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo(2L);
+        Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo(1L);
+        Assertions.assertThat(afterDcList.get(3).getCondition().getCondId()).isEqualTo(5L);
+        Assertions.assertThat(afterDcList.get(4).getCondition().getCondId()).isEqualTo(6L);
+    }
+
+    @Test
+    void updateConditionsBiggerCur() {
+        //given
+        condIds = new ArrayList<>();
+        condIds.add(1L);
+        condIds.add(2L);
+        condIds.add(3L);
+        condIds.add(4L);
+        condIds.add(5L);
+        dairyConditionService.saveConditions(condIds, dairy);
+        //when
+        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
+        List<DairyCondition> beforeDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
+        for (int i = 0; i < beforeDcList.size(); i++) {
+            LOGGER.info("before {} : {}, {}", i+1, beforeDcList.get(i).getDairyCondId(),beforeDcList.get(i).getOrderNo());
+        }
+        List<Long> newCondIds = new ArrayList<>();
+        newCondIds.add(4L);
+        newCondIds.add(2L);
+        newCondIds.add(1L);
+        dairyConditionService.updateConditions(savedDairy, newCondIds);
+        //then
+        List<DairyCondition> afterDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
+        for (int i = 0; i < afterDcList.size(); i++) {
+            LOGGER.info("after {} : {}, {}", i+1, afterDcList.get(i).getDairyCondId(),afterDcList.get(i).getOrderNo());
+        }
+        Assertions.assertThat(afterDcList.size()).isEqualTo(3);
+        Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo(4L);
+        Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo(2L);
+        Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo(1L);
     }
 
     @AfterEach
