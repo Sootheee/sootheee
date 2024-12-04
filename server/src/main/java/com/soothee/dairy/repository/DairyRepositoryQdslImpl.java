@@ -1,5 +1,6 @@
 package com.soothee.dairy.repository;
 
+import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.soothee.dairy.domain.QDairy;
 import com.soothee.dairy.dto.DairyDTO;
@@ -74,5 +75,16 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                     dairy.isDelete.eq("N"))
                             .fetchOne()
         );
+    }
+
+    @Override
+    public MonthlyAvgDTO summaryDairiesInMonth(Long memberId, Integer year, Integer month) {
+        return queryFactory.select(new QMonthlyAvgDTO(dairy.dairyId.count().intValue(),
+                                                        MathExpressions.round(dairy.score.avg(), 2)))
+                            .from(dairy)
+                            .where(dairy.member.memberId.eq(memberId),
+                                    dairy.date.year().eq(year),
+                                    dairy.date.month().eq(month),
+                                    dairy.isDelete.eq("N")).fetchOne();
     }
 }

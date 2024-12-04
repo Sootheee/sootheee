@@ -36,4 +36,17 @@ public interface DairyConditionService {
      * @param dairy Dairy : 삭제할 일기 일련번호
      */
     void deleteDairyConditionsOfDairy(Dairy dairy);
+
+    /**
+     * 로그인한 계정이 한 달간 작성한 일기에 가장 많이 선택한 컨디션 조회</hr>
+     * [컨디션 선택 횟수가 같은 경우]
+     * - 컨디션 카테고리 : 긍정 > 보통 > 부정 순
+     * - 같은 카테고리 간 : 먼저 선택한 순
+     *
+     * @param memberId Long : 로그인한 계정 일련번호
+     * @param year     Integer : 지정한 년도
+     * @param month    Integer : 지정한 달
+     * @return Long : 가장 많이 선택한 컨디션 일련번호
+     */
+    Long getMostOneCondIdInMonth(Long memberId, Integer year, Integer month);
 }

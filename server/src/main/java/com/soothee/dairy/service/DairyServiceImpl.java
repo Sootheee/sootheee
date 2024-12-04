@@ -105,4 +105,11 @@ public class DairyServiceImpl implements DairyService {
                 .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
     }
 
+    @Override
+    public MonthlyAvgDTO getDairyCntAvgInMonth(Long memberId, Integer year, Integer month) {
+        MonthlyAvgDTO result = dairyRepository.summaryDairiesInMonth(memberId, year, month);
+        Long mostCondId = dairyConditionService.getMostOneCondIdInMonth(memberId, year, month);
+        result.setMostCondId(mostCondId);
+        return result;
+    }
 }

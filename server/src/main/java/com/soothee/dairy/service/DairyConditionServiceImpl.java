@@ -115,4 +115,9 @@ public class DairyConditionServiceImpl implements DairyConditionService{
             dairyCondition.deleteDairyCondition();
         }
     }
+
+    @Override
+    public Long getMostOneCondIdInMonth(Long memberId, Integer year, Integer month) {
+        return dairyConditionRepository.findMostOneCondIdInMonth(memberId, year, month).orElse(0L);
+    }
 }
