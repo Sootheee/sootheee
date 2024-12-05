@@ -85,12 +85,12 @@ public class MemberServiceImpl implements MemberService {
      * @param memberId Long : 입력한 회원 일련번호
      */
     @Override
-    public void deleteMember(AuthenticatedUser loginInfo, Long memberId) {
+    public void deleteMember(AuthenticatedUser loginInfo, Long memberId, Long reasonId) {
         Member loginMember =  this.getLoginMember(loginInfo);
         if(this.isNotLoginMemberInfo(loginMember, memberId)) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
-        loginMember.deleteMember();
+        loginMember.deleteMember(reasonId);
     }
 
     /**

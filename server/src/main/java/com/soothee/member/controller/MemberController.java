@@ -92,7 +92,8 @@ public class MemberController {
     @DeleteMapping("/delete")
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 시, 소프트 삭제, 따로 파라미터를 넣지 않아도 현재 로그인한 계정 정보를 이용함", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "memberId", description = "탈퇴할 회원 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY)
+            @Parameter(name = "memberId", description = "탈퇴할 회원 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "reasonId", description = "회원의 탈퇴 사유 일련번호", example = "reasonId=1", required = true, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
@@ -100,8 +101,9 @@ public class MemberController {
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> deleteMember(@RequestParam("memberId") Long memberId,
+                                          @RequestParam("reasonId") Long reasonId,
                                           @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        memberService.deleteMember(loginInfo, memberId);
+        memberService.deleteMember(loginInfo, memberId, reasonId);
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 }
