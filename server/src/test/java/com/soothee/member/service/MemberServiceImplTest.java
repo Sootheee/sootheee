@@ -56,10 +56,11 @@ class MemberServiceImplTest {
     void saveMember() {
         //given
         Member newMember = Member.builder()
-                .email("def@def.com")
-                .name("새사용자")
-                .oauth2ClientId("22222")
-                .snsType(SnsType.GOOGLE).build();
+                                .email("def@def.com")
+                                .name("새사용자")
+                                .oauth2ClientId("22222")
+                                .snsType(SnsType.GOOGLE)
+                                .build();
         //when
         memberService.saveMember(newMember);
         //then

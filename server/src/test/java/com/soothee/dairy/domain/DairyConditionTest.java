@@ -53,20 +53,18 @@ class DairyConditionTest {
     @BeforeEach
     void setUp() {
         Weather weather = weatherService.getWeatherById(1L);
-
         member = Member.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .oauth2ClientId(OAUTH2_CLIENT_ID)
-                .snsType(SNS_TYPE).build();
+                        .name(NAME)
+                        .email(EMAIL)
+                        .oauth2ClientId(OAUTH2_CLIENT_ID)
+                        .snsType(SNS_TYPE).build();
         memberRepository.save(member);
-
         dairy = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,10))
-                .score(2.0)
-                .weather(weather)
-                .build();
+                    .member(member)
+                    .date(LocalDate.of(2024,10,10))
+                    .score(2.0)
+                    .weather(weather)
+                    .build();
         dairyRepository.save(dairy);
         Condition condition = conditionService.getConditionById(1L);
         dairyCondition = DairyCondition.builder()

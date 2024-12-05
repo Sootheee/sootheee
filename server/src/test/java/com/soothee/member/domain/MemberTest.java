@@ -35,10 +35,10 @@ class MemberTest {
     @BeforeEach
     void setUp() {
         member = Member.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .oauth2ClientId(OAUTH2_CLIENT_ID)
-                .snsType(SNS_TYPE).build();
+                        .name(NAME)
+                        .email(EMAIL)
+                        .oauth2ClientId(OAUTH2_CLIENT_ID)
+                        .snsType(SNS_TYPE).build();
         memberRepository.save(member);
     }
 
@@ -48,10 +48,8 @@ class MemberTest {
         //given
         String newName = "수정한이름";
         Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
-
         //when
         mem1.updateName(newName);
-
         //then
         Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         Assertions.assertThat(newName).isEqualTo(mem2.getName());
@@ -63,10 +61,8 @@ class MemberTest {
         //given
         String isDarkY = "Y";
         Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
-
         //when
         mem1.updateDarkModeYN(isDarkY);
-
         //then
         Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         Assertions.assertThat(isDarkY).isEqualTo(mem2.getIsDark());
@@ -77,10 +73,8 @@ class MemberTest {
     void deleteMember() {
         //given
         Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
-
         //when
         mem1.deleteMember();
-
         //then
         Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         Assertions.assertThat("Y").isEqualTo(mem2.getIsDelete());

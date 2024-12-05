@@ -43,18 +43,17 @@ class DairyRepositoryTest {
     @BeforeEach
     void setUp() {
         member = Member.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .oauth2ClientId(OAUTH2_CLIENT_ID)
-                .snsType(SNS_TYPE).build();
+                        .name(NAME)
+                        .email(EMAIL)
+                        .oauth2ClientId(OAUTH2_CLIENT_ID)
+                        .snsType(SNS_TYPE).build();
         memberRepository.save(member);
-
         dairy = Dairy.builder()
-                .member(memberRepository.findByEmail(EMAIL).orElseThrow())
-                .date(LocalDate.of(2024,10,10))
-                .score(2.0)
-                .weather(weatherService.getWeatherById(1L))
-                .build();
+                    .member(memberRepository.findByEmail(EMAIL).orElseThrow())
+                    .date(LocalDate.of(2024,10,10))
+                    .score(2.0)
+                    .weather(weatherService.getWeatherById(1L))
+                    .build();
         dairyRepository.save(dairy);
     }
 
@@ -72,7 +71,6 @@ class DairyRepositoryTest {
     void findByDairyId() {
         //given
         Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
-
         Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N").orElseThrow().get(0);
         //when
         Dairy searchDairy = dairyRepository.findByDairyId(savedDairy.getDairyId()).orElseThrow();

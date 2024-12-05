@@ -50,18 +50,17 @@ class DairyRepositoryQdslImplTest {
     @BeforeEach
     void setUp() {
         member = Member.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .oauth2ClientId(OAUTH2_CLIENT_ID)
-                .snsType(SNS_TYPE).build();
+                        .name(NAME)
+                        .email(EMAIL)
+                        .oauth2ClientId(OAUTH2_CLIENT_ID)
+                        .snsType(SNS_TYPE).build();
         memberRepository.save(member);
-
         dairy = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,10))
-                .score(2.0)
-                .weather(weatherService.getWeatherById(1L))
-                .build();
+                    .member(member)
+                    .date(LocalDate.of(2024,10,10))
+                    .score(2.0)
+                    .weather(weatherService.getWeatherById(1L))
+                    .build();
         dairyRepository.save(dairy);
     }
 
@@ -100,25 +99,25 @@ class DairyRepositoryQdslImplTest {
     void findDiaryStatsInMonth() {
         //given
         Dairy newDairy1 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,11))
-                .score(5.5)
-                .weather(weatherService.getWeatherById(4L))
-                .build();
+                                .member(member)
+                                .date(LocalDate.of(2024,10,11))
+                                .score(5.5)
+                                .weather(weatherService.getWeatherById(4L))
+                                .build();
         dairyRepository.save(newDairy1);
         Dairy newDairy2 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,12))
-                .score(1.0)
-                .weather(weatherService.getWeatherById(2L))
-                .build();
+                                .member(member)
+                                .date(LocalDate.of(2024,10,12))
+                                .score(1.0)
+                                .weather(weatherService.getWeatherById(2L))
+                                .build();
         dairyRepository.save(newDairy2);
         Dairy newDairy3 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,13))
-                .score(9.5)
-                .weather(weatherService.getWeatherById(3L))
-                .build();
+                                .member(member)
+                                .date(LocalDate.of(2024,10,13))
+                                .score(9.5)
+                                .weather(weatherService.getWeatherById(3L))
+                                .build();
         dairyRepository.save(newDairy3);
         //when
         MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(member.getMemberId(), 2024, 10).orElseThrow();

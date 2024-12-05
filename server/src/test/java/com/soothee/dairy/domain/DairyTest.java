@@ -47,14 +47,12 @@ class DairyTest {
     @BeforeEach
     void setUp() {
         weather = weatherService.getWeatherById(1L);
-
         member = Member.builder()
                         .name(NAME)
                         .email(EMAIL)
                         .oauth2ClientId(OAUTH2_CLIENT_ID)
                         .snsType(SNS_TYPE).build();
         memberRepository.save(member);
-
         dairy = Dairy.builder()
                     .member(member)
                     .date(LocalDate.of(2024,10,10))
@@ -71,10 +69,10 @@ class DairyTest {
         Dairy savedDairy = savedDairyList.get(0);
         Weather weather = weatherService.getWeatherById(1L);
         DairyDTO newDairy = DairyDTO.builder()
-                                .date(LocalDate.of(2024,10,10))
-                                .score(2.0)
-                                .thank("thanks")
-                                .build();
+                                    .date(LocalDate.of(2024,10,10))
+                                    .score(2.0)
+                                    .thank("thanks")
+                                    .build();
         //when
         savedDairy.updateDairy(newDairy, weather);
         //then
