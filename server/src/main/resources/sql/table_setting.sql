@@ -1,3 +1,9 @@
+CREATE TABLE del_reason
+(
+  reason_id INT AUTO_INCREMENT PRIMARY KEY,
+  content VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE member
 (
     member_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -5,11 +11,13 @@ CREATE TABLE member
     name VARCHAR(255) NOT NULL,
     is_dark VARCHAR(1) NOT NULL,
     is_delete VARCHAR(1) NOT NULL,
+    reason_id INT NULL,
     reg_date DATETIME NOT NULL,
     mod_date DATETIME NOT NULL,
     sns_type VARCHAR(255) NOT NULL,
     oauth2_client_id VARCHAR(255) NOT NULL,
-    role VARCHAR(10) NOT NULL
+    role VARCHAR(10) NOT NULL,
+    FOREIGN KEY (reason_id) REFERENCES  del_reason(reason_id)
 );
 
 CREATE TABLE weather

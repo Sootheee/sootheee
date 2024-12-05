@@ -47,9 +47,10 @@ public interface MemberService {
      * 회원 탈퇴</hr>
      *
      * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
-     * @param memberId Long : 입력한 회원 일련번호
+     * @param memberId  Long : 입력한 회원 일련번호
+     * @param reasonId  Long : 입력한 탈퇴 사유
      */
-    void deleteMember(AuthenticatedUser loginInfo, Long memberId);
+    void deleteMember(AuthenticatedUser loginInfo, Long memberId, Long reasonId);
 
     /**
      * 로그인한 회원의 모든 정보 조회</hr>
