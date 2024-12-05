@@ -61,7 +61,7 @@ public class DairyController {
             @Parameter(name = "date", description = "조회할 날", example = "/dairy/calendar?date=2024-12-12", required = true, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = DairyScoresDTO.class))),
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = DairyDTO.class))),
             @ApiResponse(responseCode = "202", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "500", description = "조회된 일기 1 개 초과", content = @Content(mediaType = "text/plain"))
@@ -79,7 +79,7 @@ public class DairyController {
             @Parameter(name = "date", description = "조회할 날", example = "/dairy/calendar/{dairy_id}", required = true, in = ParameterIn.PATH)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = DairyScoresDTO.class))),
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = DairyDTO.class))),
             @ApiResponse(responseCode = "202", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "500", description = "조회된 일기 1 개 초과", content = @Content(mediaType = "text/plain"))

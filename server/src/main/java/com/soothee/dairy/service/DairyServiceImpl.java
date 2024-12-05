@@ -12,7 +12,7 @@ import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import com.soothee.reference.domain.Weather;
 import com.soothee.reference.service.WeatherService;
-import com.soothee.stats.dto.MonthlyAvgDTO;
+import com.soothee.stats.dto.MonthlyStatsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -95,10 +95,11 @@ public class DairyServiceImpl implements DairyService {
     }
 
     @Override
-    public MonthlyAvgDTO getDairyCntAvgInMonth(Long memberId, Integer year, Integer month) {
-        MonthlyAvgDTO result = dairyRepository.summaryDairiesInMonth(memberId, year, month);
-        Long mostCondId = dairyConditionService.getMostOneCondIdInMonth(memberId, year, month);
-        result.setMostCondId(mostCondId);
+    public MonthlyStatsDTO getDairyStatsInMonth(Long memberId, Integer year, Integer month) {
+        return dairyRepository.findDiaryStatsInMonth(memberId, year, month).orElseThrow(
+                () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY)
+        );
+    }
         return result;
     }
 

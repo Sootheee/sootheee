@@ -7,7 +7,7 @@ import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.service.WeatherService;
-import com.soothee.stats.dto.MonthlyAvgDTO;
+import com.soothee.stats.dto.MonthlyStatsDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,7 +97,7 @@ class DairyRepositoryQdslImplTest {
     }
 
     @Test
-    void summaryDairiesInMonth() {
+    void findDiaryStatsInMonth() {
         //given
         Dairy newDairy1 = Dairy.builder()
                 .member(member)
@@ -121,7 +121,7 @@ class DairyRepositoryQdslImplTest {
                 .build();
         dairyRepository.save(newDairy3);
         //when
-        MonthlyAvgDTO result = dairyRepository.summaryDairiesInMonth(member.getMemberId(), 2024, 10);
+        MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(member.getMemberId(), 2024, 10).orElseThrow();
         //then
         Assertions.assertThat(result.getDairyCnt()).isEqualTo(4);
         Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);

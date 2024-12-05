@@ -2,10 +2,11 @@ package com.soothee.dairy.repository;
 
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
-import com.soothee.stats.dto.MonthlyAvgDTO;
+import com.soothee.stats.dto.MonthlyStatsDTO;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface DairyRepositoryQdsl {
@@ -47,7 +48,7 @@ public interface DairyRepositoryQdsl {
      * @param memberId Long : 로그인한 계정 일련번호
      * @param year Integer : 지정한 년도
      * @param month Integer : 지정한 월
-     * @return MonthlyAvgDTO : 지정한 년도/월 동안 작성한 일기 개수와 오늘의 점수 평균
+     * @return Optional<MonthlyStatsDTO> : 지정한 년도/월 동안 작성한 일기 개수와 오늘의 점수 평균 (null 가능)
      */
-    MonthlyAvgDTO summaryDairiesInMonth(Long memberId, Integer year, Integer month);
+    Optional<MonthlyStatsDTO> findDiaryStatsInMonth(Long memberId, Integer year, Integer month);
 }

@@ -4,7 +4,7 @@ import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.oauth2.domain.AuthenticatedUser;
-import com.soothee.stats.dto.MonthlyAvgDTO;
+import com.soothee.stats.dto.MonthlyStatsDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -76,7 +76,7 @@ public interface DairyService {
      * @param memberId  Long : 로그인한 계정 일련번호
      * @param year     Integer : 지정한 년도
      * @param month    Integer : 지정한 달
-     * @return MonthlyAvgDTO : 한 달간 작성한 일기의 개수와 오늘의 점수 평균
+     * @return MonthlyStatsDTO : 한 달간 작성한 일기의 개수와 오늘의 점수 평균
      */
-    MonthlyAvgDTO getDairyCntAvgInMonth(Long memberId, Integer year, Integer month);
+    MonthlyStatsDTO getDairyStatsInMonth(Long memberId, Integer year, Integer month);
 }

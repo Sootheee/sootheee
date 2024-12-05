@@ -1,20 +1,30 @@
 package com.soothee.dairy.repository;
 
+import com.querydsl.core.annotations.QueryProjection;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.MathExpressions;
+import com.querydsl.jpa.TransformingIterator;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.soothee.dairy.domain.QDairy;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.dairy.dto.QDairyDTO;
 import com.soothee.dairy.dto.QDairyScoresDTO;
-import com.soothee.stats.dto.MonthlyAvgDTO;
-import com.soothee.stats.dto.QMonthlyAvgDTO;
+import com.soothee.stats.dto.MonthlyStatsDTO;
+import com.soothee.stats.dto.QMonthlyStatsDTO;
+import com.soothee.stats.dto.QWeeklyStatsDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.projection.EntityProjection;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.map;
+import static java.util.Collections.list;
 
 @Repository
 @RequiredArgsConstructor
@@ -53,7 +63,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.eq(date),
                                     dairy.isDelete.eq("N"))
-                                    .fetchOne()
+                            .fetchOne()
         );
     }
 
@@ -78,13 +88,16 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     }
 
     @Override
-    public MonthlyAvgDTO summaryDairiesInMonth(Long memberId, Integer year, Integer month) {
-        return queryFactory.select(new QMonthlyAvgDTO(dairy.dairyId.count().intValue(),
+    public Optional<MonthlyStatsDTO> findDiaryStatsInMonth(Long memberId, Integer year, Integer month) {
+        return Optional.ofNullable(
+                queryFactory.select(new QMonthlyStatsDTO(dairy.dairyId.count().intValue(),
                                                         MathExpressions.round(dairy.score.avg(), 2)))
                             .from(dairy)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(year),
                                     dairy.date.month().eq(month),
-                                    dairy.isDelete.eq("N")).fetchOne();
+                                    dairy.isDelete.eq("N"))
+                            .fetchOne()
+        );
     }
 }

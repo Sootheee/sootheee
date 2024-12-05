@@ -11,7 +11,7 @@ class StatsControllerTest {
     }
 
     @Test
-    void sendMonthlyAvg() {
+    void sendMonthlyStats() {
     }
 
     @AfterEach

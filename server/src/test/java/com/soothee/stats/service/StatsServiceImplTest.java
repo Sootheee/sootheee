@@ -25,7 +25,7 @@ class StatsServiceImplTest {
     }
 
     @Test
-    void getMonthlyAvgInfo() {
+    void getMonthlyStatsInfo() {
     }
 
     @AfterEach

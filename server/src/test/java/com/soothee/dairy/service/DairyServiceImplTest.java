@@ -7,10 +7,9 @@ import com.soothee.dairy.repository.DairyConditionRepository;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
-import com.soothee.reference.repository.ConditionRepository;
 import com.soothee.reference.service.ConditionService;
 import com.soothee.reference.service.WeatherService;
-import com.soothee.stats.dto.MonthlyAvgDTO;
+import com.soothee.stats.dto.MonthlyStatsDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -211,14 +210,13 @@ class DairyServiceImplTest {
     }
 
     @Test
-    void getDairyCntAvgInMonth() {
+    void getDairyStatsInMonth() {
         //given
         //when
-        MonthlyAvgDTO result = dairyService.getDairyCntAvgInMonth(member.getMemberId(), 2024, 10);
+        MonthlyStatsDTO result = dairyService.getDairyStatsInMonth(member.getMemberId(), 2024, 10);
         //then
         Assertions.assertThat(result.getDairyCnt()).isEqualTo(4);
         Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
-        Assertions.assertThat(result.getMostCondId()).isEqualTo(1L);
     }
 
     @AfterEach
