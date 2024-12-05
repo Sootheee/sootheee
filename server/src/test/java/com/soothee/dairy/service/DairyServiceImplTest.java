@@ -10,6 +10,7 @@ import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.service.ConditionService;
 import com.soothee.reference.service.WeatherService;
 import com.soothee.stats.dto.MonthlyStatsDTO;
+import com.soothee.stats.dto.WeeklyStatsDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,10 +59,9 @@ class DairyServiceImplTest {
                         .oauth2ClientId(OAUTH2_CLIENT_ID)
                         .snsType(SNS_TYPE).build();
         memberRepository.save(member);
-
         dairy1 = Dairy.builder()
                         .member(member)
-                        .date(LocalDate.of(2024,10,10))
+                        .date(LocalDate.of(2024,10,9))
                         .score(2.0)
                         .weather(weatherService.getWeatherById(1L))
                         .build();
@@ -92,7 +92,7 @@ class DairyServiceImplTest {
         dairyConditionRepository.save(d1dc4);
         Dairy newDairy2 = Dairy.builder()
                                 .member(member)
-                                .date(LocalDate.of(2024,10,11))
+                                .date(LocalDate.of(2024,10,10))
                                 .score(5.5)
                                 .weather(weatherService.getWeatherById(4L))
                                 .build();
@@ -123,7 +123,7 @@ class DairyServiceImplTest {
         dairyConditionRepository.save(d2dc4);
         Dairy newDairy3 = Dairy.builder()
                                 .member(member)
-                                .date(LocalDate.of(2024,10,12))
+                                .date(LocalDate.of(2024,10,11))
                                 .score(1.0)
                                 .weather(weatherService.getWeatherById(5L))
                                 .build();
@@ -154,7 +154,7 @@ class DairyServiceImplTest {
         dairyConditionRepository.save(d3dc4);
         Dairy newDairy4 = Dairy.builder()
                                 .member(member)
-                                .date(LocalDate.of(2024,10,13))
+                                .date(LocalDate.of(2024,10,12))
                                 .score(9.5)
                                 .weather(weatherService.getWeatherById(3L))
                                 .build();
@@ -183,6 +183,37 @@ class DairyServiceImplTest {
                                             .orderNo(3)
                                             .build();
         dairyConditionRepository.save(d4dc4);
+        Dairy newDairy5 = Dairy.builder()
+                                .member(member)
+                                .date(LocalDate.of(2024,10,13))
+                                .score(7.0)
+                                .weather(weatherService.getWeatherById(3L))
+                                .build();
+        dairyRepository.save(newDairy5);
+        DairyCondition d5dc1 = DairyCondition.builder()
+                                            .condition(conditionService.getConditionById(12L))
+                                            .dairy(newDairy5)
+                                            .orderNo(0)
+                                            .build();
+        dairyConditionRepository.save(d5dc1);
+        DairyCondition d5dc2 = DairyCondition.builder()
+                                            .condition(conditionService.getConditionById(5L))
+                                            .dairy(newDairy5)
+                                            .orderNo(1)
+                                            .build();
+        dairyConditionRepository.save(d5dc2);
+        DairyCondition d5dc3 = DairyCondition.builder()
+                                            .condition(conditionService.getConditionById(8L))
+                                            .dairy(newDairy5)
+                                            .orderNo(2)
+                                            .build();
+        dairyConditionRepository.save(d5dc3);
+        DairyCondition d5dc4 = DairyCondition.builder()
+                                            .condition(conditionService.getConditionById(9L))
+                                            .dairy(newDairy5)
+                                            .orderNo(3)
+                                            .build();
+        dairyConditionRepository.save(d5dc4);
     }
 
     @Test
@@ -215,8 +246,19 @@ class DairyServiceImplTest {
         //when
         MonthlyStatsDTO result = dairyService.getDairyStatsInMonth(member.getMemberId(), 2024, 10);
         //then
-        Assertions.assertThat(result.getDairyCnt()).isEqualTo(4);
-        Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
+        Assertions.assertThat(result.getDairyCnt()).isEqualTo(5);
+        Assertions.assertThat(result.getScoreAvg()).isEqualTo(5.0);
+    }
+
+    @Test
+    void getDairyStatsInWeekly() {
+        //given
+        //when
+        WeeklyStatsDTO result = dairyService.getDairyStatsInWeekly(member.getMemberId(), 2024, 41);
+        //then
+        Assertions.assertThat(result.getDairyCnt()).isEqualTo(5);
+        Assertions.assertThat(result.getScoreAvg()).isEqualTo(5.0);
+        Assertions.assertThat(result.getScores().get(LocalDate.of(2024,10,11))).isEqualTo(1.0);
     }
 
     @AfterEach

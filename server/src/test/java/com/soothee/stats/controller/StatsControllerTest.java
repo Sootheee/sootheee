@@ -14,6 +14,10 @@ class StatsControllerTest {
     void sendMonthlyStats() {
     }
 
+    @Test
+    void sendWeeklyStats() {
+    }
+
     @AfterEach
     void tearDown() {
     }

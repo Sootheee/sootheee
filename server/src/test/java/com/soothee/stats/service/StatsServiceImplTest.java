@@ -26,6 +26,10 @@ class StatsServiceImplTest {
     void getMonthlyStatsInfo() {
     }
 
+    @Test
+    void getWeeklyStatsInfo() {
+    }
+
     @AfterEach
     void tearDown() {
     }
