@@ -15,15 +15,22 @@ public class DairyConditionRepositoryQdslImpl implements DairyConditionRepositor
 
     @Override
     public Optional<Long> findMostOneCondIdInMonth(Long memberId, Integer year, Integer month) {
-        return Optional.ofNullable(queryFactory.select(dairyCondition.condition.condId)
-                .from(dairyCondition)
-                .where(dairyCondition.dairy.member.memberId.eq(memberId),
-                        dairyCondition.dairy.date.year().eq(year),
-                        dairyCondition.dairy.date.month().eq(month),
-                        dairyCondition.isDelete.eq("N"))
-                .groupBy(dairyCondition.condition.condId)
-                .orderBy(dairyCondition.condition.condId.count().intValue().desc())
-                .limit(1)
-                .fetchOne());
+        return Optional.ofNullable(
+                queryFactory.select(dairyCondition.condition.condId)
+                            .from(dairyCondition)
+                            .where(dairyCondition.dairy.member.memberId.eq(memberId),
+                                    dairyCondition.dairy.date.year().eq(year),
+                                    dairyCondition.dairy.date.month().eq(month),
+                                    dairyCondition.dairy.isDelete.eq("N"),
+                                    dairyCondition.isDelete.eq("N"))
+                            .groupBy(dairyCondition.condition.condId,
+                                        dairyCondition.condition.condType.condTypeValue,
+                                        dairyCondition.condition.condValue)
+                            .orderBy(dairyCondition.condition.condId.count().intValue().desc(),
+                                        dairyCondition.orderNo.min().asc(),
+                                        dairyCondition.condition.condType.condTypeValue.desc(),
+                                        dairyCondition.condition.condValue.desc())
+                            .limit(1)
+                            .fetchOne());
     }
 }
