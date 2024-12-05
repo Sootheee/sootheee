@@ -13,6 +13,7 @@ import com.soothee.dairy.dto.QDairyScoresDTO;
 import com.soothee.stats.dto.MonthlyStatsDTO;
 import com.soothee.stats.dto.QMonthlyStatsDTO;
 import com.soothee.stats.dto.QWeeklyStatsDTO;
+import com.soothee.stats.dto.WeeklyStatsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.projection.EntityProjection;
 import org.springframework.stereotype.Repository;
@@ -99,5 +100,30 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                     dairy.isDelete.eq("N"))
                             .fetchOne()
         );
+    }
+
+    @Override
+    public Optional<WeeklyStatsDTO> findDiaryStatsInWeekly(Long memberId, Integer year, Integer week) {
+        return Optional.ofNullable(
+                queryFactory.select(new QWeeklyStatsDTO(dairy.dairyId.count().intValue(),
+                                                        MathExpressions.round(dairy.score.avg(), 2)))
+                        .from(dairy)
+                        .where(dairy.member.memberId.eq(memberId),
+                                dairy.date.year().eq(year),
+                                dairy.date.week().eq(week),
+                                dairy.isDelete.eq("N"))
+                        .fetchOne()
+        );
+    }
+
+    @Override
+    public Optional<Map<LocalDate, Double>> findDiaryScoresInWeekly(Long memberId, Integer year, Integer week) {
+        return Optional.ofNullable(
+                queryFactory.selectFrom(dairy)
+                            .where(dairy.member.memberId.eq(memberId),
+                                    dairy.date.year().eq(year),
+                                    dairy.date.week().eq(week),
+                                    dairy.isDelete.eq("N"))
+                            .transform(groupBy(dairy.date).as(dairy.score)));
     }
 }

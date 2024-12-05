@@ -13,6 +13,7 @@ import com.soothee.oauth2.domain.AuthenticatedUser;
 import com.soothee.reference.domain.Weather;
 import com.soothee.reference.service.WeatherService;
 import com.soothee.stats.dto.MonthlyStatsDTO;
+import com.soothee.stats.dto.WeeklyStatsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -100,6 +101,17 @@ public class DairyServiceImpl implements DairyService {
                 () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY)
         );
     }
+
+    @Override
+    public WeeklyStatsDTO getDairyStatsInWeekly(Long memberId, Integer year, Integer week) {
+        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week).orElseThrow(
+                () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY)
+        );
+        if (result.getDairyCnt() > 4) {
+            result.setScores(dairyRepository.findDiaryScoresInWeekly(memberId, year, week).orElseThrow(
+                    () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY)
+            ));
+        }
         return result;
     }
 

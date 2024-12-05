@@ -2,7 +2,7 @@ package com.soothee.stats.service;
 
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import com.soothee.stats.dto.MonthlyStatsDTO;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.soothee.stats.dto.WeeklyStatsDTO;
 
 public interface StatsService {
     /**
@@ -21,4 +21,17 @@ public interface StatsService {
      * @return MonthlyStatsDTO : 월간 요약 정보
      */
     MonthlyStatsDTO getMonthlyStatsInfo(AuthenticatedUser loginInfo, Integer year, Integer month);
+
+    /**
+     * 로그인한 계정이 지정한 년도/주의 요약 정보 조회</hr>
+     * 1. 한 주간 작성한 일기 개수
+     * 2. 한 주동안 오늘의 점수 평균값
+     * 3. 한 주동안 작성한 일기의 오늘의 점수 Map
+     *
+     * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
+     * @param year      Integer : 지정한 년도
+     * @param week      Integer : 지정한 주
+     * @return WeeklyStatsDTO : 주간 요약 정보
+     */
+    WeeklyStatsDTO getWeeklyStatsInfo(AuthenticatedUser loginInfo, Integer year, Integer week);
 }

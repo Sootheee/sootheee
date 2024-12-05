@@ -6,6 +6,7 @@ import com.soothee.member.domain.Member;
 import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import com.soothee.stats.dto.MonthlyStatsDTO;
+import com.soothee.stats.dto.WeeklyStatsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,10 @@ public class StatsServiceImpl implements StatsService{
         result.setMostCondId(mostCondId);
         return result;
     }
+
+    @Override
+    public WeeklyStatsDTO getWeeklyStatsInfo(AuthenticatedUser loginInfo, Integer year, Integer week) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        return dairyService.getDairyCntAvgInMonth(loginMember.getMemberId(), year, month);
+        return dairyService.getDairyStatsInWeekly(loginMember.getMemberId(), year, week);
     }
 }

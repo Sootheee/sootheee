@@ -3,6 +3,7 @@ package com.soothee.dairy.repository;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.stats.dto.MonthlyStatsDTO;
+import com.soothee.stats.dto.WeeklyStatsDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -51,4 +52,26 @@ public interface DairyRepositoryQdsl {
      * @return Optional<MonthlyStatsDTO> : 지정한 년도/월 동안 작성한 일기 개수와 오늘의 점수 평균 (null 가능)
      */
     Optional<MonthlyStatsDTO> findDiaryStatsInMonth(Long memberId, Integer year, Integer month);
+
+    /**
+     * 로그인한 계정이 지정한 년도/주에 작성한 일기 개수 & 오늘의 점수 평균 조회</hr>
+     * 삭제한 일기 제외
+     *
+     * @param memberId Long : 로그인한 계정 일련번호
+     * @param year Integer : 지정한 년도
+     * @param week Integer : 지정한 주
+     * @return Optional<WeeklyStatsDTO> : 지정한 년도/주 동안 작성한 일기 개수와 오늘의 점수 평균 (null 가능)
+     */
+    Optional<WeeklyStatsDTO> findDiaryStatsInWeekly(Long memberId, Integer year, Integer week);
+
+    /**
+     * 로그인한 계정이 지정한 년도/주에 작성한 일기 날짜와 점수 리스트</hr>
+     * 삭제한 일기 제외
+     *
+     * @param memberId Long : 로그인한 계정 일련번호
+     * @param year Integer : 지정한 년도
+     * @param week Integer : 지정한 주
+     * @return Optional<Map<LocalDate, Double>> : 지정한 년도/주 동안 작성한 일기 날짜와 점수 리스트 (null 가능)
+     */
+    Optional<Map<LocalDate, Double>> findDiaryScoresInWeekly(Long memberId, Integer year, Integer week);
 }
