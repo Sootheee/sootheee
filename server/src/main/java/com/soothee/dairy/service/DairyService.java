@@ -57,7 +57,7 @@ public interface DairyService {
      * 2. 기존 dairy의 date와 query의 date가 다르면 수정 불가
      *
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
-     * @param dairyId Long : 수정할 일기 일련번호
+     * @param dairyId   Long : 수정할 일기 일련번호
      * @param inputInfo DairyDTO : 수정할 일기 정보
      */
     void modifyDairy(AuthenticatedUser loginInfo, Long dairyId, DairyDTO inputInfo);
@@ -66,7 +66,7 @@ public interface DairyService {
      * 작성된 일기 삭제</hr>
      *
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
-     * @param dairyId Long : 삭제할 일기 일련번호
+     * @param dairyId   Long : 삭제할 일기 일련번호
      */
     void deleteDairy(AuthenticatedUser loginInfo, Long dairyId);
 
@@ -75,8 +75,8 @@ public interface DairyService {
      * 삭제한 일기 제외
      *
      * @param memberId  Long : 로그인한 계정 일련번호
-     * @param year     Integer : 지정한 년도
-     * @param month    Integer : 지정한 달
+     * @param year      Integer : 지정한 년도
+     * @param month     Integer : 지정한 달
      * @return MonthlyStatsDTO : 한 달간 작성한 일기의 개수와 오늘의 점수 평균
      */
     MonthlyStatsDTO getDairyStatsInMonth(Long memberId, Integer year, Integer month);

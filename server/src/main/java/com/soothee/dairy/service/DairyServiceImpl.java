@@ -97,20 +97,17 @@ public class DairyServiceImpl implements DairyService {
 
     @Override
     public MonthlyStatsDTO getDairyStatsInMonth(Long memberId, Integer year, Integer month) {
-        return dairyRepository.findDiaryStatsInMonth(memberId, year, month).orElseThrow(
-                () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY)
-        );
+        return dairyRepository.findDiaryStatsInMonth(memberId, year, month)
+                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
     }
 
     @Override
     public WeeklyStatsDTO getDairyStatsInWeekly(Long memberId, Integer year, Integer week) {
-        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week).orElseThrow(
-                () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY)
-        );
+        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week)
+                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
         if (result.getDairyCnt() > 4) {
-            result.setScores(dairyRepository.findDiaryScoresInWeekly(memberId, year, week).orElseThrow(
-                    () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY)
-            ));
+            result.setScores(dairyRepository.findDiaryScoresInWeekly(memberId, year, week)
+                    .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY)));
         }
         return result;
     }

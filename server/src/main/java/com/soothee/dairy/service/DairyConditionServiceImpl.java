@@ -29,10 +29,10 @@ public class DairyConditionServiceImpl implements DairyConditionService{
         for (Long condId : condIdList) {
             Condition condition = conditionService.getConditionById(condId);
             DairyCondition dairyCondition = DairyCondition.builder()
-                                                        .dairy(newDairy)
-                                                        .condition(condition)
-                                                        .orderNo(idx++)
-                                                        .build();
+                                                            .dairy(newDairy)
+                                                            .condition(condition)
+                                                            .orderNo(idx++)
+                                                            .build();
             dairyConditionRepository.save(dairyCondition);
         }
     }
@@ -88,25 +88,6 @@ public class DairyConditionServiceImpl implements DairyConditionService{
         }
     }
 
-    /**
-     * 새 일기-컨디션 저장</hr>
-     *
-     * @param dairy Dairy : 해당 일기
-     * @param condId Long : 해당 컨디션 일련번호
-     * @param idx int : 일기-컨디션 순서번호
-     */
-    private void saveNewDairyCondition(Dairy dairy, Long condId, int idx) {
-        Condition inputCond = conditionService.getConditionById(condId);
-        /* 일기의 새 일기-컨디션 생성 */
-        DairyCondition newDairyCondition = DairyCondition.builder()
-                .dairy(dairy)
-                .condition(inputCond)
-                .orderNo(idx)
-                .build();
-        /* 새 일기-컨디션 저장 */
-        dairyConditionRepository.save(newDairyCondition);
-    }
-
     @Override
     public void deleteDairyConditionsOfDairy(Dairy dairy) {
         List<DairyCondition> curList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(dairy.getDairyId(), "N")
@@ -119,5 +100,24 @@ public class DairyConditionServiceImpl implements DairyConditionService{
     @Override
     public Long getMostOneCondIdInMonth(Long memberId, Integer year, Integer month) {
         return dairyConditionRepository.findMostOneCondIdInMonth(memberId, year, month).orElse(0L);
+    }
+
+    /**
+     * 새 일기-컨디션 저장</hr>
+     *
+     * @param dairy  Dairy : 해당 일기
+     * @param condId Long : 해당 컨디션 일련번호
+     * @param idx    int : 일기-컨디션 순서번호
+     */
+    private void saveNewDairyCondition(Dairy dairy, Long condId, int idx) {
+        Condition inputCond = conditionService.getConditionById(condId);
+        /* 일기의 새 일기-컨디션 생성 */
+        DairyCondition newDairyCondition = DairyCondition.builder()
+                                                        .dairy(dairy)
+                                                        .condition(inputCond)
+                                                        .orderNo(idx)
+                                                        .build();
+        /* 새 일기-컨디션 저장 */
+        dairyConditionRepository.save(newDairyCondition);
     }
 }

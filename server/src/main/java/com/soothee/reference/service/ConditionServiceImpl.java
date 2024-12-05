@@ -24,7 +24,7 @@ public class ConditionServiceImpl implements ConditionService{
      */
     @Override
     public Condition getConditionById(Long condId) {
-        Optional<Condition> optional = conditionRepository.findByCondId(condId);
-        return optional.orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
+        return conditionRepository.findByCondId(condId)
+                .orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
     }
 }

@@ -16,8 +16,8 @@ public interface DairyRepositoryQdsl {
      * 삭제한 일기 제외
      *
      * @param memberId Long : 로그인한 계정 일련번호
-     * @param year Integer : 지정한 년도
-     * @param month Integer : 지정한 월
+     * @param year     Integer : 지정한 년도
+     * @param month    Integer : 지정한 월
      * @return Optional<List<DairyScoresDTO>> : 조회된 (일기 일련번호, 일기 날짜, 오늘의 점수) 정보 리스트 (null 가능)
      */
     Optional<List<DairyScoresDTO>> findByMemberIdYearMonth(Long memberId,Integer year,Integer month);
@@ -27,7 +27,7 @@ public interface DairyRepositoryQdsl {
      * 삭제한 일기 제외
      *
      * @param memberId Long : 로그인한 계정 일련번호
-     * @param date LocalDate : 지정한 날짜
+     * @param date     LocalDate : 지정한 날짜
      * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
      */
     Optional<DairyDTO> findByDate(Long memberId, LocalDate date);
@@ -47,8 +47,8 @@ public interface DairyRepositoryQdsl {
      * 삭제한 일기 제외
      *
      * @param memberId Long : 로그인한 계정 일련번호
-     * @param year Integer : 지정한 년도
-     * @param month Integer : 지정한 월
+     * @param year     Integer : 지정한 년도
+     * @param month    Integer : 지정한 월
      * @return Optional<MonthlyStatsDTO> : 지정한 년도/월 동안 작성한 일기 개수와 오늘의 점수 평균 (null 가능)
      */
     Optional<MonthlyStatsDTO> findDiaryStatsInMonth(Long memberId, Integer year, Integer month);
@@ -58,8 +58,8 @@ public interface DairyRepositoryQdsl {
      * 삭제한 일기 제외
      *
      * @param memberId Long : 로그인한 계정 일련번호
-     * @param year Integer : 지정한 년도
-     * @param week Integer : 지정한 주
+     * @param year     Integer : 지정한 년도
+     * @param week     Integer : 지정한 주
      * @return Optional<WeeklyStatsDTO> : 지정한 년도/주 동안 작성한 일기 개수와 오늘의 점수 평균 (null 가능)
      */
     Optional<WeeklyStatsDTO> findDiaryStatsInWeekly(Long memberId, Integer year, Integer week);
@@ -69,8 +69,8 @@ public interface DairyRepositoryQdsl {
      * 삭제한 일기 제외
      *
      * @param memberId Long : 로그인한 계정 일련번호
-     * @param year Integer : 지정한 년도
-     * @param week Integer : 지정한 주
+     * @param year     Integer : 지정한 년도
+     * @param week     Integer : 지정한 주
      * @return Optional<Map<LocalDate, Double>> : 지정한 년도/주 동안 작성한 일기 날짜와 점수 리스트 (null 가능)
      */
     Optional<Map<LocalDate, Double>> findDiaryScoresInWeekly(Long memberId, Integer year, Integer week);

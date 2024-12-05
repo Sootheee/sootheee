@@ -79,7 +79,7 @@ public class Dairy extends TimeEntity {
     /**
      * 일기 수정</hr>
      *
-     * @param dairy DairyDTO : 입력된 수정할 일기 정보
+     * @param dairy   DairyDTO : 입력된 수정할 일기 정보
      * @param weather Weather : 해당 일기 날씨 정보
      */
     public void updateDairy(DairyDTO dairy, Weather weather) {
@@ -112,8 +112,8 @@ public class Dairy extends TimeEntity {
      * 일기 생성</hr>
      *
      * @param inputInfo DairyRegisterDTO : 입력된 등록할 일기 정보
-     * @param member Member : 로그인한 계정 정보
-     * @param weather Weather : 해당 일기 날씨 정보
+     * @param member    Member : 로그인한 계정 정보
+     * @param weather   Weather : 해당 일기 날씨 정보
      * @return Dairy
      */
     public static Dairy of(DairyRegisterDTO inputInfo, Member member, Weather weather) {

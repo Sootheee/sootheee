@@ -13,8 +13,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
      * 인증 회원 식별자와 SNS 종류로 회원 조회</hr>
      *
      * @param oauth2ClientId String : 인증 회원 식별자
-     * @param snsType SnsType : KAKAOTALK or GOOGLE
-     * @param isDelete String : "Y" 탈퇴 회원 제외
+     * @param snsType        SnsType : KAKAOTALK or GOOGLE
+     * @param isDelete       String : "Y" 탈퇴 회원 제외
      * @return Optional<Member> : 조회한 회원(Null 가능)
      */
     Optional<Member> findByOauth2ClientIdAndSnsTypeAndIsDelete(String oauth2ClientId, SnsType snsType, String isDelete);
@@ -23,7 +23,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
      * 인증 회원 식별자로 회원</hr>
      *
      * @param oauth2ClientId String : 인증 회원 식별자
-     * @param isDelete String : "Y" 탈퇴 회원 제외
+     * @param isDelete       String : "Y" 탈퇴 회원 제외
      * @return Optional<Member> : 조회한 회원(Null 가능)
      */
     Optional<Member> findByOauth2ClientIdAndIsDelete(String oauth2ClientId, String isDelete);

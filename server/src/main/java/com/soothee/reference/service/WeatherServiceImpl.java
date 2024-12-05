@@ -25,7 +25,7 @@ public class WeatherServiceImpl implements WeatherService {
      */
     @Override
     public Weather getWeatherById(Long weatherId) {
-        Optional<Weather> optional = weatherRepository.findByWeatherId(weatherId);
-        return optional.orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
+       return weatherRepository.findByWeatherId(weatherId)
+               .orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
     }
 }

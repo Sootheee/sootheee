@@ -37,7 +37,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void updateName(AuthenticatedUser loginInfo, Long memberId, String updateName) {
         Member loginMember = this.getLoginMember(loginInfo);
-        if(this.isNotLoginMemberInfo(loginMember, memberId)) {
+        if (this.isNotLoginMemberInfo(loginMember, memberId)) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
         loginMember.updateName(updateName);
@@ -46,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void updateDarkMode(AuthenticatedUser loginInfo, Long memberId, String updateMode) {
         Member loginMember = this.getLoginMember(loginInfo);
-        if(this.isNotLoginMemberInfo(loginMember, memberId)) {
+        if (this.isNotLoginMemberInfo(loginMember, memberId)) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
         loginMember.updateDarkModeYN(updateMode);
@@ -55,7 +55,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void deleteMember(AuthenticatedUser loginInfo, Long memberId) {
         Member loginMember =  this.getLoginMember(loginInfo);
-        if(this.isNotLoginMemberInfo(loginMember, memberId)) {
+        if (this.isNotLoginMemberInfo(loginMember, memberId)) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
         loginMember.deleteMember();
@@ -76,8 +76,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getLoginMember(AuthenticatedUser loginInfo) {
         String oauth2Id = loginInfo.getName();
-        Optional<Member> optional =  memberRepository.findByOauth2ClientIdAndIsDelete(oauth2Id, "N");
-        return optional.orElseThrow(() -> new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.NOT_EXIST_MEMBER));
+        return memberRepository.findByOauth2ClientIdAndIsDelete(oauth2Id, "N")
+                .orElseThrow(() -> new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.NOT_EXIST_MEMBER));
     }
 
     /**

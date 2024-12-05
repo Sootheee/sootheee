@@ -1,9 +1,6 @@
 package com.soothee.dairy.repository;
 
-import com.querydsl.core.annotations.QueryProjection;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.MathExpressions;
-import com.querydsl.jpa.TransformingIterator;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.soothee.dairy.domain.QDairy;
 import com.soothee.dairy.dto.DairyDTO;
@@ -15,7 +12,6 @@ import com.soothee.stats.dto.QMonthlyStatsDTO;
 import com.soothee.stats.dto.QWeeklyStatsDTO;
 import com.soothee.stats.dto.WeeklyStatsDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.projection.EntityProjection;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -24,8 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.map;
-import static java.util.Collections.list;
 
 @Repository
 @RequiredArgsConstructor
@@ -107,12 +101,12 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
         return Optional.ofNullable(
                 queryFactory.select(new QWeeklyStatsDTO(dairy.dairyId.count().intValue(),
                                                         MathExpressions.round(dairy.score.avg(), 2)))
-                        .from(dairy)
-                        .where(dairy.member.memberId.eq(memberId),
-                                dairy.date.year().eq(year),
-                                dairy.date.week().eq(week),
-                                dairy.isDelete.eq("N"))
-                        .fetchOne()
+                            .from(dairy)
+                            .where(dairy.member.memberId.eq(memberId),
+                                    dairy.date.year().eq(year),
+                                    dairy.date.week().eq(week),
+                                    dairy.isDelete.eq("N"))
+                            .fetchOne()
         );
     }
 
