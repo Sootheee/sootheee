@@ -96,6 +96,38 @@ class DairyRepositoryQdslImplTest {
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
 
+    @Test
+    void summaryDairiesInMonth() {
+        //given
+        Dairy newDairy1 = Dairy.builder()
+                .member(member)
+                .date(LocalDate.of(2024,10,11))
+                .score(5.5)
+                .weather(weatherService.getWeatherById(4L))
+                .build();
+        dairyRepository.save(newDairy1);
+        Dairy newDairy2 = Dairy.builder()
+                .member(member)
+                .date(LocalDate.of(2024,10,12))
+                .score(1.0)
+                .weather(weatherService.getWeatherById(2L))
+                .build();
+        dairyRepository.save(newDairy2);
+        Dairy newDairy3 = Dairy.builder()
+                .member(member)
+                .date(LocalDate.of(2024,10,13))
+                .score(9.5)
+                .weather(weatherService.getWeatherById(3L))
+                .build();
+        dairyRepository.save(newDairy3);
+        //when
+        MonthlyAvgDTO result = dairyRepository.summaryDairiesInMonth(member.getMemberId(), 2024, 10);
+        //then
+        Assertions.assertThat(result.getDairyCnt()).isEqualTo(4);
+        Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
+        Assertions.assertThat(result.getMostCondId()).isNull();
+    }
+
     @AfterEach
     void tearDown() {
         dairyRepository.deleteAll();

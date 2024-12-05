@@ -67,6 +67,123 @@ class DairyServiceImplTest {
                 .weather(weatherService.getWeatherById(1L))
                 .build();
         dairyRepository.save(dairy1);
+        DairyCondition d1dc1 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(1L))
+                .dairy(dairy1)
+                .orderNo(0)
+                .build();
+        dairyConditionRepository.save(d1dc1);
+        DairyCondition d1dc2 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(3L))
+                .dairy(dairy1)
+                .orderNo(1)
+                .build();
+        dairyConditionRepository.save(d1dc2);
+        DairyCondition d1dc3 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(5L))
+                .dairy(dairy1)
+                .orderNo(2)
+                .build();
+        dairyConditionRepository.save(d1dc3);
+        DairyCondition d1dc4 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(10L))
+                .dairy(dairy1)
+                .orderNo(3)
+                .build();
+        dairyConditionRepository.save(d1dc4);
+        Dairy newDairy2 = Dairy.builder()
+                .member(member)
+                .date(LocalDate.of(2024,10,11))
+                .score(5.5)
+                .weather(weatherService.getWeatherById(4L))
+                .build();
+        dairyRepository.save(newDairy2);
+        DairyCondition d2dc1 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(4L))
+                .dairy(newDairy2)
+                .orderNo(0)
+                .build();
+        dairyConditionRepository.save(d2dc1);
+        DairyCondition d2dc2 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(1L))
+                .dairy(newDairy2)
+                .orderNo(1)
+                .build();
+        dairyConditionRepository.save(d2dc2);
+        DairyCondition d2dc3 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(12L))
+                .dairy(newDairy2)
+                .orderNo(2)
+                .build();
+        dairyConditionRepository.save(d2dc3);
+        DairyCondition d2dc4 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(2L))
+                .dairy(newDairy2)
+                .orderNo(3)
+                .build();
+        dairyConditionRepository.save(d2dc4);
+        Dairy newDairy3 = Dairy.builder()
+                .member(member)
+                .date(LocalDate.of(2024,10,12))
+                .score(1.0)
+                .weather(weatherService.getWeatherById(5L))
+                .build();
+        dairyRepository.save(newDairy3);
+        DairyCondition d3dc1 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(1L))
+                .dairy(newDairy3)
+                .orderNo(0)
+                .build();
+        dairyConditionRepository.save(d3dc1);
+        DairyCondition d3dc2 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(10L))
+                .dairy(newDairy3)
+                .orderNo(1)
+                .build();
+        dairyConditionRepository.save(d3dc2);
+        DairyCondition d3dc3 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(5L))
+                .dairy(newDairy3)
+                .orderNo(2)
+                .build();
+        dairyConditionRepository.save(d3dc3);
+        DairyCondition d3dc4 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(3L))
+                .dairy(newDairy3)
+                .orderNo(3)
+                .build();
+        dairyConditionRepository.save(d3dc4);
+        Dairy newDairy4 = Dairy.builder()
+                .member(member)
+                .date(LocalDate.of(2024,10,13))
+                .score(9.5)
+                .weather(weatherService.getWeatherById(3L))
+                .build();
+        dairyRepository.save(newDairy4);
+        DairyCondition d4dc1 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(12L))
+                .dairy(newDairy4)
+                .orderNo(0)
+                .build();
+        dairyConditionRepository.save(d4dc1);
+        DairyCondition d4dc2 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(5L))
+                .dairy(newDairy4)
+                .orderNo(1)
+                .build();
+        dairyConditionRepository.save(d4dc2);
+        DairyCondition d4dc3 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(8L))
+                .dairy(newDairy4)
+                .orderNo(2)
+                .build();
+        dairyConditionRepository.save(d4dc3);
+        DairyCondition d4dc4 = DairyCondition.builder()
+                .condition(conditionService.getConditionById(9L))
+                .dairy(newDairy4)
+                .orderNo(3)
+                .build();
+        dairyConditionRepository.save(d4dc4);
     }
 
     @Test
@@ -91,6 +208,17 @@ class DairyServiceImplTest {
 
     @Test
     void deleteDairy() {
+    }
+
+    @Test
+    void getDairyCntAvgInMonth() {
+        //given
+        //when
+        MonthlyAvgDTO result = dairyService.getDairyCntAvgInMonth(member.getMemberId(), 2024, 10);
+        //then
+        Assertions.assertThat(result.getDairyCnt()).isEqualTo(4);
+        Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
+        Assertions.assertThat(result.getMostCondId()).isEqualTo(1L);
     }
 
     @AfterEach
