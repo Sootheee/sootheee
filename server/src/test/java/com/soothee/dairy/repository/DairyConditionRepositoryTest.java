@@ -94,7 +94,7 @@ class DairyConditionRepositoryTest {
     @AfterEach
     void tearDown() {
         dairyConditionRepository.deleteAll();
-        dairyRepository.delete(dairy);
-        memberRepository.delete(member);
+        dairyRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 }

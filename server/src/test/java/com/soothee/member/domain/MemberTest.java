@@ -88,6 +88,6 @@ class MemberTest {
 
     @AfterEach
     void tearDown() {
-        memberRepository.delete(member);
+        memberRepository.deleteAll();
     }
 }

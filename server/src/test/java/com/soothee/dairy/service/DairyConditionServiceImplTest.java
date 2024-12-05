@@ -46,8 +46,6 @@ class DairyConditionServiceImplTest {
     private DairyRepository dairyRepository;
     @Autowired
     private WeatherRepository weatherRepository;
-    @Autowired
-    private ConditionRepository conditionRepository;
     private final String NAME = "사용자0";
     private final String EMAIL = "abc@def.com";
     private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
@@ -228,7 +226,7 @@ class DairyConditionServiceImplTest {
     @AfterEach
     void tearDown() {
         dairyConditionRepository.deleteAll();
-        dairyRepository.delete(dairy);
-        memberRepository.delete(member);
+        dairyRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 }

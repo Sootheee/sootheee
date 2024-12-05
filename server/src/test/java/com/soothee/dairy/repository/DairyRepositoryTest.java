@@ -82,7 +82,7 @@ class DairyRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        dairyRepository.delete(dairy);
-        memberRepository.delete(member);
+        dairyRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 }

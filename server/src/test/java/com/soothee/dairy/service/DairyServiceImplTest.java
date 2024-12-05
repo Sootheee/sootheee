@@ -51,7 +51,7 @@ class DairyServiceImplTest {
         memberRepository.save(member);
 
         dairy = Dairy.builder()
-                .member(memberRepository.findByEmail(EMAIL).orElseThrow())
+                .member(member)
                 .date(LocalDate.of(2024,10,10))
                 .score(2.0)
                 .weather(weatherRepository.findByWeatherId(1L).orElseThrow())
@@ -85,7 +85,7 @@ class DairyServiceImplTest {
 
     @AfterEach
     void tearDown() {
-        dairyRepository.delete(dairy);
-        memberRepository.delete(member);
+        dairyRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 }

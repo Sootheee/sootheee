@@ -8,6 +8,7 @@ import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.repository.ConditionRepository;
 import com.soothee.reference.repository.WeatherRepository;
+import com.soothee.stats.dto.MonthlyAvgDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,10 +41,6 @@ class DairyRepositoryQdslImplTest {
     private DairyRepository dairyRepository;
     @Autowired
     private WeatherRepository weatherRepository;
-    @Autowired
-    private ConditionRepository conditionRepository;
-    @Autowired
-    private DairyConditionRepository dairyConditionDairyRepository;
     private final String NAME = "사용자0";
     private final String EMAIL = "abc@def.com";
     private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
@@ -85,7 +82,7 @@ class DairyRepositoryQdslImplTest {
         //given
         Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        DairyDTO result = dairyRepository.findByDate(writer.getMemberId(), LocalDate.of(2024, 10, 10)).orElseThrow().get(0);
+        DairyDTO result = dairyRepository.findByDate(writer.getMemberId(), LocalDate.of(2024, 10, 10)).orElseThrow();
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
@@ -95,14 +92,14 @@ class DairyRepositoryQdslImplTest {
         //given
         Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        DairyDTO result = dairyRepository.findByDiaryId(writer.getMemberId(), dairy.getDairyId()).orElseThrow().get(0);
+        DairyDTO result = dairyRepository.findByDiaryId(writer.getMemberId(), dairy.getDairyId()).orElseThrow();
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
 
     @AfterEach
     void tearDown() {
-        dairyRepository.delete(dairy);
-        memberRepository.delete(member);
+        dairyRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 }
