@@ -1,5 +1,6 @@
 package com.soothee.config;
 
+import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.soothee.common.constants.ConstUrl;
 import com.soothee.oauth2.filter.JwtAuthenticationFilter;
@@ -64,7 +65,7 @@ public class AppConfig implements WebMvcConfigurer {
     private EntityManager entityManager;
     @Bean
     public JPAQueryFactory jpaQueryFactory(){
-        return new JPAQueryFactory(entityManager);
+        return new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
     }
 
     /** Front-Server & Back-Server 간 CORS 설정 */
