@@ -94,6 +94,14 @@ public class DairyServiceImpl implements DairyService {
         dairy.deleteDairy();
     }
 
+    @Override
+    public MonthlyAvgDTO getDairyCntAvgInMonth(Long memberId, Integer year, Integer month) {
+        MonthlyAvgDTO result = dairyRepository.summaryDairiesInMonth(memberId, year, month);
+        Long mostCondId = dairyConditionService.getMostOneCondIdInMonth(memberId, year, month);
+        result.setMostCondId(mostCondId);
+        return result;
+    }
+
     /**
      * 일기 일련변호로 일기 가져오기</hr>
      *
@@ -103,13 +111,5 @@ public class DairyServiceImpl implements DairyService {
     private Dairy getDariyByDairyId(Long dairyId) {
         return dairyRepository.findByDairyId(dairyId)
                 .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
-    }
-
-    @Override
-    public MonthlyAvgDTO getDairyCntAvgInMonth(Long memberId, Integer year, Integer month) {
-        MonthlyAvgDTO result = dairyRepository.summaryDairiesInMonth(memberId, year, month);
-        Long mostCondId = dairyConditionService.getMostOneCondIdInMonth(memberId, year, month);
-        result.setMostCondId(mostCondId);
-        return result;
     }
 }
