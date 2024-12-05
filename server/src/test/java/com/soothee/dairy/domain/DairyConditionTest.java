@@ -7,8 +7,8 @@ import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.domain.Condition;
 import com.soothee.reference.domain.Weather;
-import com.soothee.reference.repository.ConditionRepository;
-import com.soothee.reference.repository.WeatherRepository;
+import com.soothee.reference.service.ConditionService;
+import com.soothee.reference.service.WeatherService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,9 +39,9 @@ class DairyConditionTest {
     @Autowired
     private DairyRepository dairyRepository;
     @Autowired
-    private WeatherRepository weatherRepository;
+    private WeatherService weatherService;
     @Autowired
-    private ConditionRepository conditionRepository;
+    private ConditionService conditionService;
     private final String NAME = "사용자0";
     private final String EMAIL = "abc@def.com";
     private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
@@ -52,7 +52,7 @@ class DairyConditionTest {
 
     @BeforeEach
     void setUp() {
-        Weather weather = weatherRepository.findByWeatherId(1L).orElseThrow();
+        Weather weather = weatherService.getWeatherById(1L);
 
         member = Member.builder()
                 .name(NAME)
@@ -68,7 +68,7 @@ class DairyConditionTest {
                 .weather(weather)
                 .build();
         dairyRepository.save(dairy);
-        Condition condition = conditionRepository.getReferenceById(1L);
+        Condition condition = conditionService.getConditionById(1L);
         dairyCondition = DairyCondition.builder()
                                         .dairy(dairy)
                                         .condition(condition)

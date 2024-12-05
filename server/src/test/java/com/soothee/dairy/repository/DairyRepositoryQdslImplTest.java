@@ -6,8 +6,7 @@ import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
-import com.soothee.reference.repository.ConditionRepository;
-import com.soothee.reference.repository.WeatherRepository;
+import com.soothee.reference.service.WeatherService;
 import com.soothee.stats.dto.MonthlyAvgDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -40,7 +39,7 @@ class DairyRepositoryQdslImplTest {
     @Autowired
     private DairyRepository dairyRepository;
     @Autowired
-    private WeatherRepository weatherRepository;
+    private WeatherService weatherService;
     private final String NAME = "사용자0";
     private final String EMAIL = "abc@def.com";
     private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
@@ -61,7 +60,7 @@ class DairyRepositoryQdslImplTest {
                 .member(member)
                 .date(LocalDate.of(2024,10,10))
                 .score(2.0)
-                .weather(weatherRepository.findByWeatherId(1L).orElseThrow())
+                .weather(weatherService.getWeatherById(1L))
                 .build();
         dairyRepository.save(dairy);
     }
