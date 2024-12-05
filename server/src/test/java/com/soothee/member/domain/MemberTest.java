@@ -74,7 +74,8 @@ class MemberTest {
         //given
         Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         //when
-        mem1.deleteMember();
+        mem1.deleteMember(1L);
+
         //then
         Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         Assertions.assertThat("Y").isEqualTo(mem2.getIsDelete());

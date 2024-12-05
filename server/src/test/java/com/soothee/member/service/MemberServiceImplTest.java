@@ -106,7 +106,7 @@ class MemberServiceImplTest {
         Optional<Member> optional1 = memberRepository.findByEmail(EMAIL);
         Member mem1 = optional1.orElseThrow(NullPointerException::new);
         //when
-        mem1.deleteMember();
+        mem1.deleteMember(1L);
         //then
         Optional<Member> optional2 = memberRepository.findByEmail(EMAIL);
         Member mem2 = optional2.orElseThrow(NullPointerException::new);

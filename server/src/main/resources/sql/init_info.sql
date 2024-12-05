@@ -27,3 +27,10 @@ VALUES (NULL, 'sunny'),
        (NULL, 'rainy'),
        (NULL, 'thunder'),
        (NULL, 'snow');
+
+INSERT INTO del_reason
+VALUES (NULL, 'A'),
+       (NULL, 'B'),
+       (NULL, 'C'),
+       (NULL, 'D'),
+       (NULL, '기타');
