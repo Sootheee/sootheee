@@ -67,9 +67,8 @@ class DairyRepositoryTest {
     @Test
     void findByMemberMemberIdAndIsDelete() {
         //given
-        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        Dairy result = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N").orElseThrow().get(0);
+        Dairy result = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow().get(0);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
@@ -77,8 +76,7 @@ class DairyRepositoryTest {
     @Test
     void findByDairyId() {
         //given
-        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
-        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N").orElseThrow().get(0);
+        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow().get(0);
         //when
         Dairy searchDairy = dairyRepository.findByDairyId(savedDairy.getDairyId()).orElseThrow();
         //then
@@ -89,9 +87,8 @@ class DairyRepositoryTest {
     @Test
     void findByMemberIdYearMonth() {
         //given
-        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        Optional<List<DairyScoresDTO>> optional = dairyRepository.findByMemberIdYearMonth(writer.getMemberId(), 2024, 10);
+        Optional<List<DairyScoresDTO>> optional = dairyRepository.findByMemberIdYearMonth(member.getMemberId(), 2024, 10);
         DairyScoresDTO result = optional.orElseThrow().get(0);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
@@ -100,9 +97,8 @@ class DairyRepositoryTest {
     @Test
     void findByDate() {
         //given
-        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        DairyDTO result = dairyRepository.findByDate(writer.getMemberId(), LocalDate.of(2024, 10, 9)).orElseThrow();
+        DairyDTO result = dairyRepository.findByDate(member.getMemberId(), LocalDate.of(2024, 10, 10)).orElseThrow();
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
@@ -110,9 +106,8 @@ class DairyRepositoryTest {
     @Test
     void findByDiaryId() {
         //given
-        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        DairyDTO result = dairyRepository.findByDiaryId(writer.getMemberId(), dairy.getDairyId()).orElseThrow();
+        DairyDTO result = dairyRepository.findByDiaryId(member.getMemberId(), dairy.getDairyId()).orElseThrow();
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
