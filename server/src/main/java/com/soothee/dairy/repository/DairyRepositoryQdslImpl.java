@@ -1,5 +1,8 @@
 package com.soothee.dairy.repository;
 
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.soothee.dairy.domain.QDairy;
@@ -7,19 +10,14 @@ import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.dairy.dto.QDairyDTO;
 import com.soothee.dairy.dto.QDairyScoresDTO;
-import com.soothee.stats.dto.MonthlyStatsDTO;
-import com.soothee.stats.dto.QMonthlyStatsDTO;
-import com.soothee.stats.dto.QWeeklyStatsDTO;
-import com.soothee.stats.dto.WeeklyStatsDTO;
+import com.soothee.stats.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import static com.querydsl.core.group.GroupBy.groupBy;
 
 @Repository
 @RequiredArgsConstructor
@@ -92,6 +90,56 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                     dairy.date.year().eq(year),
                                     dairy.date.month().eq(month),
                                     dairy.isDelete.eq("N"))
+                            .fetchOne()
+        );
+    }
+
+    private BooleanExpression getContentTypeNull(String type) {
+        return StringUtils.equals(type, "thanks") ? dairy.thank.isNotNull() : dairy.learn.isNotNull();
+    }
+
+    private BooleanExpression getContentTypeEmpty(String type) {
+        return StringUtils.equals(type, "thanks") ? dairy.thank.isNotEmpty() : dairy.learn.isNotEmpty();
+    }
+
+    @Override
+    public Optional<Integer> findDiaryContentCntInMonth(Long memberId, String type, Integer year, Integer month) {
+        return Optional.ofNullable(
+                queryFactory.select(dairy.dairyId.count().intValue())
+                            .from(dairy)
+                            .where(dairy.member.memberId.eq(memberId),
+                                    dairy.date.year().eq(year),
+                                    dairy.date.month().eq(month),
+                                    getContentTypeNull(type),
+                                    getContentTypeEmpty(type),
+                                    dairy.isDelete.eq("N"))
+                            .fetchOne()
+        );
+    }
+
+    private Expression<String> getContentType(String type) {
+        return StringUtils.equals(type, "thanks") ? dairy.thank : dairy.learn;
+    }
+
+    private OrderSpecifier<Double> getContentHighLow(String high) {
+        return StringUtils.equals(high, "high") ? dairy.score.desc() : dairy.score.asc();
+    }
+
+    @Override
+    public Optional<DateContents> findDiaryContentInMonth(Long memberId, String type, Integer year, Integer month, String high) {
+        return Optional.ofNullable(
+                queryFactory.select(new QDateContents(dairy.dairyId,
+                                                        dairy.date,
+                                                        getContentType(type)))
+                            .from(dairy)
+                            .where(dairy.member.memberId.eq(memberId),
+                                    dairy.date.year().eq(year),
+                                    dairy.date.month().eq(month),
+                                    getContentTypeNull(type),
+                                    getContentTypeEmpty(type),
+                                    dairy.isDelete.eq("N"))
+                            .orderBy(getContentHighLow(high))
+                            .limit(1)
                             .fetchOne()
         );
     }

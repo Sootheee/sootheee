@@ -29,6 +29,16 @@ public class StatsServiceImpl implements StatsService{
     }
 
     @Override
+    public MonthlyContentsDTO getMonthlyContents(AuthenticatedUser loginInfo, String type, Integer year, Integer month) {
+        Member loginMember = memberService.getLoginMember(loginInfo);
+        return MonthlyContentsDTO.builder()
+                .count(dairyRepository.findDiaryContentCntInMonth(memberId, type, year, month).orElse(0))
+                .highest(dairyRepository.findDiaryContentInMonth(memberId, type, year, month, "high").orElse(new DateContents()))
+                .lowest(dairyRepository.findDiaryContentInMonth(memberId, type, year, month, "low").orElse(new DateContents()))
+                .build();
+    }
+
+    @Override
     public WeeklyStatsDTO getWeeklyStatsInfo(AuthenticatedUser loginInfo, Integer year, Integer week) {
         Member loginMember = memberService.getLoginMember(loginInfo);
         return dairyService.getDairyStatsInWeekly(loginMember.getMemberId(), year, week);

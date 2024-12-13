@@ -2,6 +2,7 @@ package com.soothee.stats.controller;
 
 import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.oauth2.domain.AuthenticatedUser;
+import com.soothee.stats.dto.MonthlyContentsDTO;
 import com.soothee.stats.dto.MonthlyStatsDTO;
 import com.soothee.stats.dto.WeeklyStatsDTO;
 import com.soothee.stats.service.StatsService;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -51,6 +53,30 @@ public class StatsController {
             return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<MonthlyStatsDTO>(result, HttpStatus.OK);
+    }
+
+    /** 통계 월간 감사한/배운 일 */
+    @GetMapping("/monthly/{type}")
+    @Operation(summary = "통계 월간 고마운/배운 일 요약", description = "로그인한 계정의 해당 월 고마운/배운 일 작성 횟수, 가장 높은/낮은 점수의 고마운/배운 일", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "type", description = "고마운(thanks)/배운(learn) 일 종류", example = "/stats/monthly/thanks", required = true, in = ParameterIn.PATH),
+            @Parameter(name = "year", description = "조회할 년도", example = "/stats/monthly/thanks?year=2024", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "month", description = "조회할 달", example = "/stats/monthly/thanks?year=2024&month=10", required = true, in = ParameterIn.QUERY)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = MonthlyContentsDTO.class))),
+            @ApiResponse(responseCode = "204", description = "작성한 일기 수 부족", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> sendMonthlyContents(@PathVariable("type") String type,
+                                                 @RequestParam("year") Integer year,
+                                                 @RequestParam("month") Integer month,
+                                                 @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        MonthlyContentsDTO result = statsService.getMonthlyContents(loginInfo, type, year, month);
+        if (result.getCount() < 1) {
+            return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /** 통계 주간 요약 */

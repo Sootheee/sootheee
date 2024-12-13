@@ -1,6 +1,7 @@
 package com.soothee.stats.service;
 
 import com.soothee.oauth2.domain.AuthenticatedUser;
+import com.soothee.stats.dto.MonthlyContentsDTO;
 import com.soothee.stats.dto.MonthlyStatsDTO;
 import com.soothee.stats.dto.WeeklyStatsDTO;
 
@@ -13,7 +14,8 @@ public interface StatsService {
      * [컨디션 선택 횟수가 같은 경우]</br>
      * (1) 먼저 선택한 순</br>
      * (2) 긍정 > 보통 > 부정 카테고리 순</br>
-     * (3) 카테고리별 먼저 등록된 순
+     * (3) 카테고리별 먼저 등록된 순</br>
+     * 삭제한 일기 제외
      *
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
      * @param year      Integer : 지정한 년도
@@ -21,6 +23,20 @@ public interface StatsService {
      * @return MonthlyStatsDTO : 월간 요약 정보
      */
     MonthlyStatsDTO getMonthlyStatsInfo(AuthenticatedUser loginInfo, Integer year, Integer month);
+
+    /**
+     * 로그인한 계정이 지정한 년도/달의 고마운/배운 일 통계 조회</hr>
+     * 1. 한 달간 작성한 고마운/배운 일 횟수</br>
+     * 2. 한 달간 작성한 고마운/배운 일 중 가장 높은 점수 날의 고마운/배운 일</br>
+     * 3. 한 달간 작성한 고마운/배운 일 중 가장 낮은 점수 날의 고마운/배운 일
+     *
+     * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
+     * @param type      String : 고마운/배운 일 타입
+     * @param year      Integer : 지정한 년도
+     * @param month     Integer : 지정한 달
+     * @return MonthlyContentsDTO : 월간 고마운/배운 일 정보
+     */
+    MonthlyContentsDTO getMonthlyContents(AuthenticatedUser loginInfo, String type, Integer year, Integer month);
 
     /**
      * 로그인한 계정이 지정한 년도/주의 요약 정보 조회</hr>

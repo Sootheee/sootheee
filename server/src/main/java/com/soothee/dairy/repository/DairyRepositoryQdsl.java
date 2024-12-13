@@ -2,12 +2,10 @@ package com.soothee.dairy.repository;
 
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
-import com.soothee.stats.dto.MonthlyStatsDTO;
-import com.soothee.stats.dto.WeeklyStatsDTO;
+import com.soothee.stats.dto.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface DairyRepositoryQdsl {
@@ -52,6 +50,29 @@ public interface DairyRepositoryQdsl {
      * @return Optional<MonthlyStatsDTO> : 지정한 년도/월 동안 작성한 일기 개수와 오늘의 점수 평균 (null 가능)
      */
     Optional<MonthlyStatsDTO> findDiaryStatsInMonth(Long memberId, Integer year, Integer month);
+
+    /**
+     * 해당 달에 작성한 고마운/배운 일 횟수</hr>
+     *
+     * @param memberId Long : 로그인한 계정 일련번호
+     * @param type     String : 고마운/배운 일 중 타입
+     * @param year     Integer : 지정한 년도
+     * @param month    Integer : 지정한 월
+     * @return Optional<Integer> :
+     */
+    Optional<Integer> findDiaryContentCntInMonth(Long memberId, String type, Integer year, Integer month);
+
+    /**
+     * 해당 달에 작성한 고마운/배운 일 중 가장 높은/낮은 점수를 기록한 날의 고마운/배운 일</hr>
+     *
+     * @param memberId Long : 로그인한 계정 일련번호
+     * @param type     String : 고마운/배운 일 중 타입
+     * @param year     Integer : 지정한 년도
+     * @param month    Integer : 지정한 월
+     * @param high     String : 가장 높은/낮은 점수 중 타입
+     * @return Optional<DateContents>
+     */
+    Optional<DateContents> findDiaryContentInMonth(Long memberId, String type, Integer year, Integer month, String high);
 
     /**
      * 로그인한 계정이 지정한 년도/주에 작성한 일기 개수 & 오늘의 점수 평균 조회</hr>
