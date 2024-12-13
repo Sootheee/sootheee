@@ -7,8 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 
 @NoArgsConstructor
 @Setter
@@ -25,7 +24,7 @@ public class WeeklyStatsDTO {
 
     @NotEmpty(message = "일주일 동안 작성된 오늘의 점수이 없습니다.")
     @Schema(description = "주간 작성된 해당 날짜의 오늘의 점수 Map")
-    private Map<LocalDate, Double> scores;
+    private List<DateScore> scoreList;
 
     @QueryProjection
     public WeeklyStatsDTO(Integer dairyCnt, Double scoreAvg) {

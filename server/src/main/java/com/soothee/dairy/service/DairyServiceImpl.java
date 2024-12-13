@@ -35,25 +35,26 @@ public class DairyServiceImpl implements DairyService {
     @Override
     public List<DairyScoresDTO> getAllDairyMonthly(AuthenticatedUser loginInfo, Integer year, Integer month) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        return dairyRepository.findByMemberIdYearMonth(loginMember.getMemberId(), year, month)
-                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
+        return dairyRepository.findByMemberIdYearMonth(loginMember.getMemberId(), year, month).orElse(new ArrayList<>());
     }
 
     @Override
     public DairyDTO getDairyByDate(AuthenticatedUser loginInfo, LocalDate date) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        DairyDTO dairyDTO = dairyRepository.findByDate(loginMember.getMemberId(), date)
-                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
-        dairyDTO.setCondIds(dairyConditionService.getConditionsIdListByDairy(dairyDTO.getDairyId()));
+        DairyDTO dairyDTO = dairyRepository.findByDate(loginMember.getMemberId(), date).orElse(new DairyDTO());
+        if (Objects.nonNull(dairyDTO.getDairyId())) {
+            dairyDTO.setCondIds(dairyConditionService.getConditionsIdListByDairy(dairyDTO.getDairyId()));
+        }
         return dairyDTO;
     }
 
     @Override
     public DairyDTO getDairyByDairyId(AuthenticatedUser loginInfo, Long dairyId) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        DairyDTO dairyDTO = dairyRepository.findByDiaryId(loginMember.getMemberId(), dairyId)
-                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
-        dairyDTO.setCondIds(dairyConditionService.getConditionsIdListByDairy(dairyDTO.getDairyId()));
+        DairyDTO dairyDTO = dairyRepository.findByDiaryId(loginMember.getMemberId(), dairyId).orElse(new DairyDTO());
+        if (Objects.nonNull(dairyDTO.getDairyId())) {
+            dairyDTO.setCondIds(dairyConditionService.getConditionsIdListByDairy(dairyDTO.getDairyId()));
+        }
         return dairyDTO;
     }
 
@@ -73,7 +74,7 @@ public class DairyServiceImpl implements DairyService {
     @Override
     public void modifyDairy(AuthenticatedUser loginInfo, Long dairyId, DairyDTO inputInfo) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        Dairy dairy = this.getDariyByDairyId(inputInfo.getDairyId());
+        Dairy dairy = this.getDairyByDairyId(inputInfo.getDairyId());
         if (!Objects.equals(dairyId, inputInfo.getDairyId())
             || !dairy.getDate().isEqual(inputInfo.getDate())
             || !Objects.equals(dairy.getMember().getMemberId(), loginMember.getMemberId())) {
@@ -87,7 +88,7 @@ public class DairyServiceImpl implements DairyService {
     @Override
     public void deleteDairy(AuthenticatedUser loginInfo, Long dairyId) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        Dairy dairy = this.getDariyByDairyId(dairyId);
+        Dairy dairy = this.getDairyByDairyId(dairyId);
         if (!Objects.equals(dairy.getMember().getMemberId(), loginMember.getMemberId())) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
@@ -103,11 +104,9 @@ public class DairyServiceImpl implements DairyService {
 
     @Override
     public WeeklyStatsDTO getDairyStatsInWeekly(Long memberId, Integer year, Integer week) {
-        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week)
-                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
-        if (result.getDairyCnt() > 4) {
-            result.setScores(dairyRepository.findDiaryScoresInWeekly(memberId, year, week)
-                    .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY)));
+        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week).orElse(new WeeklyStatsDTO());
+        if (result.getDairyCnt() > 2) {
+            result.setScoreList(dairyRepository.findDiaryScoresInWeekly(memberId, year, week).orElse(new ArrayList<>()));
         }
         return result;
     }
@@ -118,7 +117,7 @@ public class DairyServiceImpl implements DairyService {
      * @param dairyId Long : 가져올 일기 일련번호
      * @return Dairy : 가져온 일기
      */
-    private Dairy getDariyByDairyId(Long dairyId) {
+    private Dairy getDairyByDairyId(Long dairyId) {
         return dairyRepository.findByDairyId(dairyId)
                 .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
     }

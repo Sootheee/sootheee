@@ -71,7 +71,7 @@ public interface DairyRepositoryQdsl {
      * @param memberId Long : 로그인한 계정 일련번호
      * @param year     Integer : 지정한 년도
      * @param week     Integer : 지정한 주
-     * @return Optional<Map<LocalDate, Double>> : 지정한 년도/주 동안 작성한 일기 날짜와 점수 리스트 (null 가능)
+     * @return Optional<List<DateScore>> : 지정한 년도/주 동안 작성한 일기 날짜와 점수 리스트 (null 가능)
      */
-    Optional<Map<LocalDate, Double>> findDiaryScoresInWeekly(Long memberId, Integer year, Integer week);
+    Optional<List<DateScore>> findDiaryScoresInWeekly(Long memberId, Integer year, Integer week);
 }

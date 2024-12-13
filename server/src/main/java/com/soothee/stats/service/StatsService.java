@@ -24,9 +24,9 @@ public interface StatsService {
 
     /**
      * 로그인한 계정이 지정한 년도/주의 요약 정보 조회</hr>
-     * 1. 한 주간 작성한 일기 개수
-     * 2. 한 주동안 오늘의 점수 평균값
-     * 3. 한 주동안 작성한 일기의 오늘의 점수 Map
+     * 1. 한 주간 작성한 일기 개수</br>
+     * 2. 한 주동안 오늘의 점수 평균값</br>
+     * 3. 한 주동안 작성한 일기의 날짜와 오늘의 점수
      *
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
      * @param year      Integer : 지정한 년도

@@ -111,13 +111,18 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     }
 
     @Override
-    public Optional<Map<LocalDate, Double>> findDiaryScoresInWeekly(Long memberId, Integer year, Integer week) {
+    public Optional<List<DateScore>> findDiaryScoresInWeekly(Long memberId, Integer year, Integer week) {
         return Optional.ofNullable(
-                queryFactory.selectFrom(dairy)
+                queryFactory.select(new QDateScore(dairy.dairyId,
+                                                    dairy.date,
+                                                    dairy.score))
+                            .from(dairy)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(year),
                                     dairy.date.week().eq(week),
                                     dairy.isDelete.eq("N"))
-                            .transform(groupBy(dairy.date).as(dairy.score)));
+                            .orderBy(dairy.date.dayOfYear().asc())
+                            .fetch()
+        );
     }
 }
