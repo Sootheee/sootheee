@@ -1,6 +1,7 @@
 package com.soothee.stats.controller;
 
 import com.soothee.common.exception.MyErrorMsg;
+import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import com.soothee.stats.dto.MonthlyContentsDTO;
 import com.soothee.stats.dto.MonthlyStatsDTO;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "Stats API", description = "통계 관련 처리")
 @RequestMapping("/stats")
 public class StatsController {
+    private final MemberService memberService;
     private final StatsService statsService;
 
     /** 통계 월간 요약 */
@@ -48,7 +50,8 @@ public class StatsController {
     public ResponseEntity<?> sendMonthlyStats(@RequestParam("year") Integer year,
                                             @RequestParam("month") Integer month,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(loginInfo, year, month);
+        Long memberId = memberService.getLoginMemberId(loginInfo);
+        MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(memberId, year, month);
         if (result.getDairyCnt() < 3) {
             return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
@@ -72,7 +75,8 @@ public class StatsController {
                                                  @RequestParam("year") Integer year,
                                                  @RequestParam("month") Integer month,
                                                  @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        MonthlyContentsDTO result = statsService.getMonthlyContents(loginInfo, type, year, month);
+        Long memberId = memberService.getLoginMemberId(loginInfo);
+        MonthlyContentsDTO result = statsService.getMonthlyContents(memberId, type, year, month);
         if (result.getCount() < 1) {
             return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
@@ -94,7 +98,8 @@ public class StatsController {
     public ResponseEntity<?> sendWeeklyStats(@RequestParam("year") Integer year,
                                              @RequestParam("week") Integer week,
                                              @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(loginInfo, year, week);
+        Long memberId = memberService.getLoginMemberId(loginInfo);
+        WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(memberId, year, week);
         if (result.getDairyCnt() < 3) {
             return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }

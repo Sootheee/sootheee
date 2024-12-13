@@ -43,11 +43,12 @@ public class MemberController {
     })
     public ResponseEntity<?> sendMemberInfo(@RequestParam(value = "type", required = false) String type,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        Long memberId = memberService.getLoginMemberId(loginInfo);
         if (StringUtils.isNotBlank(type)) {
-            MemberNameDTO result = memberService.getNicknameInfo(loginInfo);
+            MemberNameDTO result = memberService.getNicknameInfo(memberId);
             return new ResponseEntity<MemberNameDTO>(result, HttpStatus.PARTIAL_CONTENT);
         }
-        MemberInfoDTO info = memberService.getAllMemberInfo(loginInfo);
+        MemberInfoDTO info = memberService.getAllMemberInfo(memberId);
         return new ResponseEntity<MemberInfoDTO>(info, HttpStatus.OK);
     }
 
@@ -66,7 +67,8 @@ public class MemberController {
     public ResponseEntity<?> updateDarkMode(@RequestParam("memberId") Long memberId,
                                             @RequestParam("isDark") String isDark,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        memberService.updateDarkMode(loginInfo, memberId, isDark);
+        Long loginMemberId = memberService.getLoginMemberId(loginInfo);
+        memberService.updateDarkMode(loginMemberId, memberId, isDark);
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 
@@ -85,7 +87,8 @@ public class MemberController {
     public ResponseEntity<?> updateName(@RequestParam("memberId") Long memberId,
                                           @RequestParam("name") String name,
                                           @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        memberService.updateName(loginInfo, memberId, name);
+        Long loginMemberId = memberService.getLoginMemberId(loginInfo);
+        memberService.updateName(loginMemberId, memberId, name);
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 
@@ -103,7 +106,8 @@ public class MemberController {
     })
     public ResponseEntity<?> deleteMember(@ModelAttribute MemberDelDTO memberDelDTO,
                                           @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        memberService.deleteMember(loginInfo, memberDelDTO);
+        Long loginMemberId = memberService.getLoginMemberId(loginInfo);
+        memberService.deleteMember(loginMemberId, memberDelDTO);
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 }

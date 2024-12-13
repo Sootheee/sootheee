@@ -5,6 +5,7 @@ import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.dairy.service.DairyService;
+import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,6 +36,7 @@ import java.util.Objects;
 @Tag(name = "Dairy API", description = "일기 관련 처리")
 @RequestMapping("/dairy")
 public class DairyController {
+    private final MemberService memberService;
     private final DairyService dairyService;
 
     /** 달력(홈)에 표시될 해당 월의 모든 일기 점수 조회 */
@@ -52,7 +54,8 @@ public class DairyController {
     public ResponseEntity<?> sendAllDairyMonthly(@RequestParam("year") Integer year,
                                                  @RequestParam("month") Integer month,
                                                  @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        List<DairyScoresDTO> infos = dairyService.getAllDairyMonthly(loginInfo, year, month);
+        Long memberId = memberService.getLoginMemberId(loginInfo);
+        List<DairyScoresDTO> infos = dairyService.getAllDairyMonthly(memberId, year, month);
         if (infos.isEmpty()) {
             return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
@@ -73,7 +76,8 @@ public class DairyController {
     })
     public ResponseEntity<?> sendDairyByDate(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        DairyDTO findDairy = dairyService.getDairyByDate(loginInfo, date);
+        Long memberId = memberService.getLoginMemberId(loginInfo);
+        DairyDTO findDairy = dairyService.getDairyByDate(memberId, date);
         if (Objects.isNull(findDairy.getDairyId())) {
             return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
@@ -94,7 +98,8 @@ public class DairyController {
     })
     public ResponseEntity<?> sendDairyByDairyId(@PathVariable("dairy_id") Long dairyId,
                                                 @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        DairyDTO findDairy = dairyService.getDairyByDairyId(loginInfo, dairyId);
+        Long memberId = memberService.getLoginMemberId(loginInfo);
+        DairyDTO findDairy = dairyService.getDairyByDairyId(memberId, dairyId);
         if (Objects.isNull(findDairy.getDairyId())) {
             return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
@@ -123,10 +128,11 @@ public class DairyController {
     public ResponseEntity<?> registerDairy(@ModelAttribute @Valid DairyRegisterDTO inputInfo,
                                            BindingResult bindingResult,
                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        Long memberId = memberService.getLoginMemberId(loginInfo);
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
         }
-        dairyService.registerDairy(loginInfo, inputInfo);
+        dairyService.registerDairy(memberId, inputInfo);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -156,10 +162,11 @@ public class DairyController {
                                          @ModelAttribute @Valid DairyDTO inputInfo,
                                          BindingResult bindingResult,
                                          @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        Long memberId = memberService.getLoginMemberId(loginInfo);
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
         }
-        dairyService.modifyDairy(loginInfo, dairyId, inputInfo);
+        dairyService.modifyDairy(memberId, dairyId, inputInfo);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -178,7 +185,8 @@ public class DairyController {
     })
     public ResponseEntity<?> deleteDairy(@PathVariable("dairy_id") Long dairyId,
                                          @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        dairyService.deleteDairy(loginInfo, dairyId);
+        Long memberId = memberService.getLoginMemberId(loginInfo);
+        dairyService.deleteDairy(memberId, dairyId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

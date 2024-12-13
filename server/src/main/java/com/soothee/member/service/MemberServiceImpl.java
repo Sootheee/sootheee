@@ -37,8 +37,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateName(AuthenticatedUser loginInfo, Long memberId, String updateName) {
-        Member loginMember = this.getLoginMember(loginInfo);
+    public void updateName(Long loginMemberId, Long memberId, String updateName) {
+        Member loginMember = this.getMemberById(loginMemberId);
         if (this.isNotLoginMemberInfo(loginMember, memberId)) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
@@ -46,8 +46,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateDarkMode(AuthenticatedUser loginInfo, Long memberId, String updateMode) {
-        Member loginMember = this.getLoginMember(loginInfo);
+    public void updateDarkMode(Long loginMemberId, Long memberId, String updateMode) {
+        Member loginMember = this.getMemberById(loginMemberId);
         if (this.isNotLoginMemberInfo(loginMember, memberId)) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
@@ -55,8 +55,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void deleteMember(AuthenticatedUser loginInfo, MemberDelDTO memberDelDTO) {
-        Member loginMember =  this.getLoginMember(loginInfo);
+    public void deleteMember(Long memberId, MemberDelDTO memberDelDTO) {
+        Member loginMember =  this.getMemberById(memberId);
         if (this.isNotLoginMemberInfo(loginMember, memberDelDTO.getMemberId())) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
@@ -65,21 +65,32 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberInfoDTO getAllMemberInfo(AuthenticatedUser loginInfo) {
-        Member loginMember = this.getLoginMember(loginInfo);
-        return MemberInfoDTO.fromMember(loginMember);
+    public MemberInfoDTO getAllMemberInfo(Long memberId) {
+        Member member = this.getMemberById(memberId);
+        return MemberInfoDTO.fromMember(member);
     }
 
     @Override
-    public MemberNameDTO getNicknameInfo(AuthenticatedUser loginInfo) {
-        Member loginMember = this.getLoginMember(loginInfo);
-        return MemberNameDTO.fromMember(loginMember);
+    public MemberNameDTO getNicknameInfo(Long memberId) {
+        Member member = this.getMemberById(memberId);
+        return MemberNameDTO.fromMember(member);
+    }
+
+    @Override
+    public Long getLoginMemberId(AuthenticatedUser loginInfo) {
+        return this.getLoginMember(loginInfo).getMemberId();
     }
 
     @Override
     public Member getLoginMember(AuthenticatedUser loginInfo) {
         String oauth2Id = loginInfo.getName();
         return memberRepository.findByOauth2ClientIdAndIsDelete(oauth2Id, "N")
+                .orElseThrow(() -> new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.NOT_EXIST_MEMBER));
+    }
+
+    @Override
+    public Member getMemberById(Long memberId) {
+        return memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.NOT_EXIST_MEMBER));
     }
 

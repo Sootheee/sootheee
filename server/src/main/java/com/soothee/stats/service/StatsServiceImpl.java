@@ -2,11 +2,7 @@ package com.soothee.stats.service;
 
 import com.soothee.dairy.repository.DairyConditionRepository;
 import com.soothee.dairy.repository.DairyRepository;
-import com.soothee.dairy.service.DairyConditionService;
-import com.soothee.dairy.service.DairyService;
-import com.soothee.member.domain.Member;
 import com.soothee.member.service.MemberService;
-import com.soothee.oauth2.domain.AuthenticatedUser;
 import com.soothee.stats.dto.DateContents;
 import com.soothee.stats.dto.MonthlyContentsDTO;
 import com.soothee.stats.dto.MonthlyStatsDTO;
@@ -26,8 +22,7 @@ public class StatsServiceImpl implements StatsService{
     private final DairyConditionRepository dairyConditionRepository;
 
     @Override
-    public MonthlyStatsDTO getMonthlyStatsInfo(AuthenticatedUser loginInfo, Integer year, Integer month) {
-        Member loginMember = memberService.getLoginMember(loginInfo);
+    public MonthlyStatsDTO getMonthlyStatsInfo(Long memberId, Integer year, Integer month) {
         MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(memberId, year, month).orElse(new MonthlyStatsDTO());
         Long mostCondId = dairyConditionRepository.findMostOneCondIdInMonth(memberId, year, month).orElse(0L);
         result.setMostCondId(mostCondId);
@@ -35,8 +30,7 @@ public class StatsServiceImpl implements StatsService{
     }
 
     @Override
-    public MonthlyContentsDTO getMonthlyContents(AuthenticatedUser loginInfo, String type, Integer year, Integer month) {
-        Member loginMember = memberService.getLoginMember(loginInfo);
+    public MonthlyContentsDTO getMonthlyContents(Long memberId, String type, Integer year, Integer month) {
         return MonthlyContentsDTO.builder()
                 .count(dairyRepository.findDiaryContentCntInMonth(memberId, type, year, month).orElse(0))
                 .highest(dairyRepository.findDiaryContentInMonth(memberId, type, year, month, "high").orElse(new DateContents()))
@@ -45,8 +39,7 @@ public class StatsServiceImpl implements StatsService{
     }
 
     @Override
-    public WeeklyStatsDTO getWeeklyStatsInfo(AuthenticatedUser loginInfo, Integer year, Integer week) {
-        Member loginMember = memberService.getLoginMember(loginInfo);
+    public WeeklyStatsDTO getWeeklyStatsInfo(Long memberId, Integer year, Integer week) {
         WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week).orElse(new WeeklyStatsDTO());
         if (result.getDairyCnt() > 2) {
             result.setScoreList(dairyRepository.findDiaryScoresInWeekly(memberId, year, week).orElse(new ArrayList<>()));
