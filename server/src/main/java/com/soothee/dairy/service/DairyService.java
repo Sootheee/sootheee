@@ -69,26 +69,4 @@ public interface DairyService {
      * @param dairyId   Long : 삭제할 일기 일련번호
      */
     void deleteDairy(AuthenticatedUser loginInfo, Long dairyId);
-
-    /**
-     * 한 달간 작성한 일기의 개수 & 오늘의 점수 평균</hr>
-     * 삭제한 일기 제외
-     *
-     * @param memberId  Long : 로그인한 계정 일련번호
-     * @param year      Integer : 지정한 년도
-     * @param month     Integer : 지정한 달
-     * @return MonthlyStatsDTO : 한 달간 작성한 일기의 개수와 오늘의 점수 평균
-     */
-    MonthlyStatsDTO getDairyStatsInMonth(Long memberId, Integer year, Integer month);
-
-    /**
-     * 한 주간 작성한 일기의 개수 & 오늘의 점수 평균 & 오늘의 점수 리스트</hr>
-     * 삭제한 일기 제외
-     *
-     * @param memberId  Long : 로그인한 계정 일련번호
-     * @param year      Integer : 지정한 년도
-     * @param week      Integer : 지정한 주
-     * @return WeeklyStatsDTO : 한 주간 작성한 일기의 개수, 오늘의 점수 평균 및 리스트
-     */
-    WeeklyStatsDTO getDairyStatsInWeekly(Long memberId, Integer year, Integer week);
 }

@@ -9,9 +9,6 @@ import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.service.ConditionService;
 import com.soothee.reference.service.WeatherService;
-import com.soothee.stats.dto.MonthlyStatsDTO;
-import com.soothee.stats.dto.WeeklyStatsDTO;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -238,27 +235,6 @@ class DairyServiceTest {
 
     @Test
     void deleteDairy() {
-    }
-
-    @Test
-    void getDairyStatsInMonth() {
-        //given
-        //when
-        MonthlyStatsDTO result = dairyService.getDairyStatsInMonth(member.getMemberId(), 2024, 10);
-        //then
-        Assertions.assertThat(result.getDairyCnt()).isEqualTo(5);
-        Assertions.assertThat(result.getScoreAvg()).isEqualTo(5.0);
-    }
-
-    @Test
-    void getDairyStatsInWeekly() {
-        //given
-        //when
-        WeeklyStatsDTO result = dairyService.getDairyStatsInWeekly(member.getMemberId(), 2024, 41);
-        //then
-        Assertions.assertThat(result.getDairyCnt()).isEqualTo(5);
-        Assertions.assertThat(result.getScoreAvg()).isEqualTo(5.0);
-        Assertions.assertThat(result.getScoreList().get(0).getScore()).isEqualTo(2.0);
     }
 
     @AfterEach

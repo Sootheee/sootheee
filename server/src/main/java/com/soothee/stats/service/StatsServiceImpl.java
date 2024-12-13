@@ -1,29 +1,35 @@
 package com.soothee.stats.service;
 
+import com.soothee.dairy.repository.DairyConditionRepository;
+import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.dairy.service.DairyConditionService;
 import com.soothee.dairy.service.DairyService;
 import com.soothee.member.domain.Member;
 import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
+import com.soothee.stats.dto.DateContents;
+import com.soothee.stats.dto.MonthlyContentsDTO;
 import com.soothee.stats.dto.MonthlyStatsDTO;
 import com.soothee.stats.dto.WeeklyStatsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class StatsServiceImpl implements StatsService{
     private final MemberService memberService;
-    private final DairyService dairyService;
-    private final DairyConditionService dairyConditionService;
+    private final DairyRepository dairyRepository;
+    private final DairyConditionRepository dairyConditionRepository;
 
     @Override
     public MonthlyStatsDTO getMonthlyStatsInfo(AuthenticatedUser loginInfo, Integer year, Integer month) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        MonthlyStatsDTO result = dairyService.getDairyStatsInMonth(loginMember.getMemberId(), year, month);
-        Long mostCondId = dairyConditionService.getMostOneCondIdInMonth(loginMember.getMemberId(), year, month);
+        MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(memberId, year, month).orElse(new MonthlyStatsDTO());
+        Long mostCondId = dairyConditionRepository.findMostOneCondIdInMonth(memberId, year, month).orElse(0L);
         result.setMostCondId(mostCondId);
         return result;
     }
@@ -41,6 +47,10 @@ public class StatsServiceImpl implements StatsService{
     @Override
     public WeeklyStatsDTO getWeeklyStatsInfo(AuthenticatedUser loginInfo, Integer year, Integer week) {
         Member loginMember = memberService.getLoginMember(loginInfo);
-        return dairyService.getDairyStatsInWeekly(loginMember.getMemberId(), year, week);
+        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week).orElse(new WeeklyStatsDTO());
+        if (result.getDairyCnt() > 2) {
+            result.setScoreList(dairyRepository.findDiaryScoresInWeekly(memberId, year, week).orElse(new ArrayList<>()));
+        }
+        return result;
     }
 }

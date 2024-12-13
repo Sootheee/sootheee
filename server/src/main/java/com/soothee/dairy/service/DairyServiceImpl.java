@@ -96,21 +96,6 @@ public class DairyServiceImpl implements DairyService {
         dairy.deleteDairy();
     }
 
-    @Override
-    public MonthlyStatsDTO getDairyStatsInMonth(Long memberId, Integer year, Integer month) {
-        return dairyRepository.findDiaryStatsInMonth(memberId, year, month)
-                .orElseThrow(() -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NOT_EXIST_DAIRY));
-    }
-
-    @Override
-    public WeeklyStatsDTO getDairyStatsInWeekly(Long memberId, Integer year, Integer week) {
-        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week).orElse(new WeeklyStatsDTO());
-        if (result.getDairyCnt() > 2) {
-            result.setScoreList(dairyRepository.findDiaryScoresInWeekly(memberId, year, week).orElse(new ArrayList<>()));
-        }
-        return result;
-    }
-
     /**
      * 일기 일련변호로 일기 가져오기</hr>
      *

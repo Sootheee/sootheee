@@ -19,7 +19,7 @@ import java.util.Objects;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class DairyConditionServiceImpl implements DairyConditionService{
+public class DairyConditionServiceImpl implements DairyConditionService {
     private final DairyConditionRepository dairyConditionRepository;
     private final ConditionService conditionService;
 
@@ -95,11 +95,6 @@ public class DairyConditionServiceImpl implements DairyConditionService{
         for (DairyCondition dairyCondition : curList) {
             dairyCondition.deleteDairyCondition();
         }
-    }
-
-    @Override
-    public Long getMostOneCondIdInMonth(Long memberId, Integer year, Integer month) {
-        return dairyConditionRepository.findMostOneCondIdInMonth(memberId, year, month).orElse(0L);
     }
 
     /**
