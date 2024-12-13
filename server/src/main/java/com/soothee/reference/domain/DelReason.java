@@ -7,19 +7,19 @@ import lombok.NoArgsConstructor;
 
 /**
  * Reference Entity
- * 오늘의 점수 조회만 가능 (수정/삭제 불가)
+ * 탈퇴 사유 조회만 가능 (수정/삭제 불가)
  */
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "daily_score")
-public class DailyScore {
-    /** 점수 일련번호 */
+@Table(name = "del_reason")
+public class DelReason {
+    /** 탈퇴 사유 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long dailyScoreId;
+    private Long reasonId;
 
-    /** 오늘의 점수 */
-    @Column(name = "daily_score", nullable = false)
-    private Integer dailyScore;
+    /** 탈퇴 사유 */
+    @Column(name = "content", nullable = false)
+    private String content;
 }
