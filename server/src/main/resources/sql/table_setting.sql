@@ -23,7 +23,6 @@ CREATE TABLE member_del_reason
     member_del_reason_id INT AUTO_INCREMENT PRIMARY KEY,
     member_id INT NOT NULL,
     reason_id INT NOT NULL,
-    is_delete VARCHAR(1) NOT NULL,
     reg_date DATETIME NOT NULL,
     mod_date DATETIME NOT NULL,
     FOREIGN KEY (member_id) REFERENCES member(member_id),
