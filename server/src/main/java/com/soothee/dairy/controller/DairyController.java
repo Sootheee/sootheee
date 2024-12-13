@@ -1,5 +1,6 @@
 package com.soothee.dairy.controller;
 
+import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -51,6 +53,9 @@ public class DairyController {
                                                  @RequestParam("month") Integer month,
                                                  @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         List<DairyScoresDTO> infos = dairyService.getAllDairyMonthly(loginInfo, year, month);
+        if (infos.isEmpty()) {
+            return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<List<DairyScoresDTO>>(infos, HttpStatus.OK);
     }
 
@@ -69,6 +74,9 @@ public class DairyController {
     public ResponseEntity<?> sendDairyByDate(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         DairyDTO findDairy = dairyService.getDairyByDate(loginInfo, date);
+        if (Objects.isNull(findDairy.getDairyId())) {
+            return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<DairyDTO>(findDairy, HttpStatus.OK);
     }
 
@@ -87,6 +95,9 @@ public class DairyController {
     public ResponseEntity<?> sendDairyByDairyId(@PathVariable("dairy_id") Long dairyId,
                                                 @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         DairyDTO findDairy = dairyService.getDairyByDairyId(loginInfo, dairyId);
+        if (Objects.isNull(findDairy.getDairyId())) {
+            return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<DairyDTO>(findDairy, HttpStatus.OK);
     }
 
@@ -95,9 +106,9 @@ public class DairyController {
     @Operation(summary = "새 일기 등록", description = "로그인한 계정이 작성한 새 특정일자 일기 등록", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
             @Parameter(name = "date", description = "해당 날짜", example = "date=2024-10-11", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "weatherId", description = "날씨 일련번호", example = "weatherId=11", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "weather_id", description = "날씨 일련번호", example = "weatherId=11", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "score", description = "오늘의 점수", example = "score=3.2", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "condIds", description = "다중 선택한 컨디션 일련번호 리스트", example = "condIds=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "cond_ids", description = "다중 선택한 컨디션 일련번호 리스트", example = "condIds=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "content", description = "오늘의 요약", example = "content=개발을했다", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "hope", description = "바랐던 방향성", example = "hope=놀고싶다", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "thank", description = "감사한 일", example = "thank=점심을먹었다", required = false, in = ParameterIn.QUERY),
@@ -123,12 +134,12 @@ public class DairyController {
     @PutMapping("/{dairy_id}")
     @Operation(summary = "일기 수정", description = "로그인한 계정이 작성한 특정 일자 일기 수정", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "dairyId", description = "일기 일련번호 || path의 일련번호와 query의 일련번호가 다르면 수정 불가", example = "/dairy/1111", required = true, in = ParameterIn.PATH),
-            @Parameter(name = "dairyId", description = "일기 일련번호 || path의 일련번호와 query의 일련번호가 다르면 수정 불가", example = "dairyId=1111", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "dairy_id", description = "일기 일련번호 || path의 일련번호와 query의 일련번호가 다르면 수정 불가", example = "/dairy/1111", required = true, in = ParameterIn.PATH),
+            @Parameter(name = "dairy_id", description = "일기 일련번호 || path의 일련번호와 query의 일련번호가 다르면 수정 불가", example = "dairyId=1111", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "date", description = "해당 날짜 || 기존 dairy의 date와 query의 date가 다르면 수정 불가", example = "date=2024-10-11", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "weatherId", description = "날씨 일련번호", example = "weatherId=11", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "weather_id", description = "날씨 일련번호", example = "weatherId=11", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "score", description = "오늘의 점수", example = "score=3.2", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "condIds", description = "다중 선택한 컨디션 일련번호 리스트", example = "condIds=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
+            @Parameter(name = "cond_ids", description = "다중 선택한 컨디션 일련번호 리스트", example = "condIds=[1,2,4,5,3]", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "content", description = "오늘의 요약", example = "content=개발을했다", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "hope", description = "바랐던 방향성", example = "hope=놀고싶다", required = false, in = ParameterIn.QUERY),
             @Parameter(name = "thank", description = "감사한 일", example = "thank=점심을먹었다", required = false, in = ParameterIn.QUERY),
@@ -156,7 +167,7 @@ public class DairyController {
     @DeleteMapping("/{dairy_id}")
     @Operation(summary = "일기 삭제", description = "로그인한 계정이 작성한 특정 일자 일기 삭제", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "dairyId", description = "삭제할 일기 일련번호", example = "/dairy/1111", required = true, in = ParameterIn.PATH),
+            @Parameter(name = "dairy_id", description = "삭제할 일기 일련번호", example = "/dairy/1111", required = true, in = ParameterIn.PATH)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),

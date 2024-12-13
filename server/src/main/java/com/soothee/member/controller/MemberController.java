@@ -54,8 +54,8 @@ public class MemberController {
     @PutMapping("/update/dark")
     @Operation(summary = "화면 보기 모드 수정", description = "회원의 다크모드 업데이트", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "memberId", description = "수정할 회원의 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "isDark", description = "회원의 수정할 보기모드 || Y : dark mode / N : normal mode", example = "isDark=Y", required = true, in = ParameterIn.QUERY)
+            @Parameter(name = "member_id", description = "수정할 회원의 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "is_dark", description = "회원의 수정할 보기모드 || Y : dark mode / N : normal mode", example = "isDark=Y", required = true, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
@@ -73,7 +73,7 @@ public class MemberController {
     @PutMapping("/update/name")
     @Operation(summary = "회원 닉네임 수정", description = "회원이 입력한 닉네임으로 업데이트", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters({
-            @Parameter(name = "memberId", description = "회원 고유일련번호", example = "memberId=1112", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "member_id", description = "회원 고유일련번호", example = "memberId=1112", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "name", description = "회원이 입력한 새로운 닉네임", example = "name=사용자", required = true, in = ParameterIn.QUERY),
     })
     @ApiResponses(value = {
@@ -92,8 +92,8 @@ public class MemberController {
     @DeleteMapping("/delete")
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 시, 소프트 삭제, 따로 파라미터를 넣지 않아도 현재 로그인한 계정 정보를 이용함", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "memberId", description = "탈퇴할 회원 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "reasonId", description = "회원의 탈퇴 사유 일련번호", example = "reasonId=1", required = true, in = ParameterIn.QUERY)
+            @Parameter(name = "member_id", description = "탈퇴할 회원 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "del_reasons", description = "회원의 탈퇴 사유 일련번호 리스트", example = "reasonId=[1,2,3,4]", required = true, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
