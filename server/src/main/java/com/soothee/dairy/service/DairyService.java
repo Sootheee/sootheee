@@ -53,7 +53,7 @@ public interface DairyService {
 
     /**
      * 기존 일기 수정</hr>
-     * 1. path의 일련번호와 query의 일련번호가 다르면 수정 불가
+     * 1. path의 일련번호와 query의 일련번호가 다르면 수정 불가</br>
      * 2. 기존 dairy의 date와 query의 date가 다르면 수정 불가
      *
      * @param loginInfo AuthenticatedUser : 현재 로그인한 계정 정보
