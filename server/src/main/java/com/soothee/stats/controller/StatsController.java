@@ -47,8 +47,8 @@ public class StatsController {
                                             @RequestParam("month") Integer month,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(loginInfo, year, month);
-        if (result.getDairyCnt() < 5) {
-            return new ResponseEntity<>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT, HttpStatus.NO_CONTENT);
+        if (result.getDairyCnt() < 3) {
+            return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<MonthlyStatsDTO>(result, HttpStatus.OK);
     }
