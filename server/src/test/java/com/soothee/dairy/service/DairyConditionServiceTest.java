@@ -34,8 +34,8 @@ import java.util.List;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
-class DairyConditionServiceImplTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DairyConditionServiceImplTest.class);
+class DairyConditionServiceTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DairyConditionServiceTest.class);
     @Autowired
     private DairyConditionServiceImpl dairyConditionService;
     @Autowired

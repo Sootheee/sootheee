@@ -1,8 +1,9 @@
-package com.soothee.stats.service;
+package com.soothee.reference.service;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.soothee.reference.domain.Weather;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -16,21 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
-class StatsServiceImplTest {
-
-    @BeforeEach
-    void setUp() {
-    }
+class WeatherServiceTest {
+    @Autowired
+    private WeatherService weatherService;
 
     @Test
-    void getMonthlyStatsInfo() {
-    }
-
-    @Test
-    void getWeeklyStatsInfo() {
-    }
-
-    @AfterEach
-    void tearDown() {
+    void getWeatherById() {
+        Weather weather = weatherService.getWeatherById(1L);
+        Assertions.assertThat(weather.getWeatherId()).isEqualTo(1L);
     }
 }

@@ -7,6 +7,7 @@ import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.member.domain.Member;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.service.WeatherService;
+import com.soothee.stats.dto.DateScore;
 import com.soothee.stats.dto.MonthlyStatsDTO;
 import com.soothee.stats.dto.WeeklyStatsDTO;
 import org.assertj.core.api.Assertions;
@@ -25,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
@@ -35,7 +35,7 @@ import java.util.Optional;
 @EnableJpaAuditing
 @ActiveProfiles("test")
 @Transactional
-class DairyRepositoryQdslImplTest {
+class DairyRepositoryQdslTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -199,9 +199,9 @@ class DairyRepositoryQdslImplTest {
                                 .build();
         dairyRepository.save(newDairy4);
         //when
-        Map<LocalDate, Double> result = dairyRepository.findDiaryScoresInWeekly(member.getMemberId(), 2024, 41).orElseThrow();
+        List<DateScore> result = dairyRepository.findDiaryScoresInWeekly(member.getMemberId(), 2024, 41).orElseThrow();
         //then
-        Assertions.assertThat(result.get(LocalDate.of(2024,10,12))).isEqualTo(9.5);
+        Assertions.assertThat(result.get(0).getScore()).isEqualTo(5.5);
     }
 
     @AfterEach

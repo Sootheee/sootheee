@@ -74,7 +74,7 @@ class MemberTest {
         //given
         Member mem1 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
         //when
-        mem1.deleteMember(1L);
+        mem1.deleteMember();
 
         //then
         Member mem2 = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
