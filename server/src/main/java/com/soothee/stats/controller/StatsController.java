@@ -69,8 +69,8 @@ public class StatsController {
                                              @RequestParam("week") Integer week,
                                              @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(loginInfo, year, week);
-        if (result.getDairyCnt() < 5) {
-            return new ResponseEntity<>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT, HttpStatus.NO_CONTENT);
+        if (result.getDairyCnt() < 3) {
+            return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<WeeklyStatsDTO>(HttpStatus.OK);
     }
