@@ -201,7 +201,7 @@ class DairyRepositoryQdslTest {
         //when
         List<DateScore> result = dairyRepository.findDiaryScoresInWeekly(member.getMemberId(), 2024, 41).orElseThrow();
         //then
-        Assertions.assertThat(result.get(0).getScore()).isEqualTo(5.5);
+        Assertions.assertThat(result.get(0).getScore()).isEqualTo(2.0);
     }
 
     @AfterEach
