@@ -2,6 +2,7 @@ package com.soothee.member.service;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.member.domain.Member;
+import com.soothee.member.dto.MemberDelDTO;
 import com.soothee.member.dto.MemberInfoDTO;
 import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.oauth2.domain.AuthenticatedUser;
@@ -47,10 +48,9 @@ public interface MemberService {
      * 회원 탈퇴</hr>
      *
      * @param loginInfo AuthenticatedUser : 로그인한 회원 정보
-     * @param memberId  Long : 입력한 회원 일련번호
-     * @param reasonId  Long : 입력한 탈퇴 사유
+     * @param memberDelDTO  MemberDelDTO : 입력된 탈퇴 정보
      */
-    void deleteMember(AuthenticatedUser loginInfo, Long memberId, Long reasonId);
+    void deleteMember(AuthenticatedUser loginInfo, MemberDelDTO memberDelDTO);
 
     /**
      * 로그인한 회원의 모든 정보 조회</hr>

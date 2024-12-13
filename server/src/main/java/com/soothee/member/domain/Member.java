@@ -37,10 +37,6 @@ public class Member extends TimeEntity {
     @Column(name = "is_delete", nullable = false, length = 1)
     private String isDelete;
 
-    /** 삭제 사유 */
-    @Column(name = "reason_id", nullable = true)
-    private Long reasonId;
-
     /** 가입한 SNS */
     @Enumerated(EnumType.STRING)
     @Column(name = "sns_type", nullable = false)
@@ -89,8 +85,7 @@ public class Member extends TimeEntity {
     }
 
     /** 회원 삭제 */
-    public void deleteMember(Long reasonId) {
-        this.reasonId = reasonId;
+    public void deleteMember() {
         this.isDelete = "Y";
     }
 }

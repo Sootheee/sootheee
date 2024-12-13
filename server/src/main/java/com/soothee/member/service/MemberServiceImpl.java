@@ -4,6 +4,7 @@ import com.soothee.common.constants.SnsType;
 import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.common.exception.MyException;
 import com.soothee.member.domain.Member;
+import com.soothee.member.dto.MemberDelDTO;
 import com.soothee.member.dto.MemberInfoDTO;
 import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.member.repository.MemberRepository;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+    private final MemberDelReasonService memberDelReasonService;
 
     @Override
     public Optional<Member> getMemberForOAuth2(String oauth2ClientId, SnsType snsType) {
@@ -53,12 +55,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void deleteMember(AuthenticatedUser loginInfo, Long memberId, Long reasonId) {
+    public void deleteMember(AuthenticatedUser loginInfo, MemberDelDTO memberDelDTO) {
         Member loginMember =  this.getLoginMember(loginInfo);
-        if (this.isNotLoginMemberInfo(loginMember, memberId)) {
+        if (this.isNotLoginMemberInfo(loginMember, memberDelDTO.getMemberId())) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
-        loginMember.deleteMember(reasonId);
+        memberDelReasonService.saveDeleteReasons(loginMember, memberDelDTO.getDelReasonList());
+        loginMember.deleteMember();
     }
 
     @Override
