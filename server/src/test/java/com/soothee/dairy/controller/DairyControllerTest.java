@@ -1,14 +1,11 @@
 package com.soothee.dairy.controller;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.soothee.config.TestConfig;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Import;
 
+@Import(TestConfig.class)
 class DairyControllerTest {
-    @BeforeEach
-    void setUp() {
-    }
-
     @Test
     void sendAllDairyMonthly() {
     }
@@ -27,9 +24,5 @@ class DairyControllerTest {
 
     @Test
     void deleteDairy() {
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 }

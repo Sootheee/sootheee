@@ -1,10 +1,12 @@
 package com.soothee.stats.service;
 
+import com.soothee.config.TestConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Import(TestConfig.class)
 class StatsServiceTest {
 
     @BeforeEach

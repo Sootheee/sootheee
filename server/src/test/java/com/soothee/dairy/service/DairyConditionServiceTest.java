@@ -1,30 +1,20 @@
 package com.soothee.dairy.service;
 
-import com.soothee.common.constants.SnsType;
+import com.soothee.config.TestConfig;
+import com.soothee.util.CommonTestCode;
 import com.soothee.dairy.domain.Dairy;
 import com.soothee.dairy.domain.DairyCondition;
-import com.soothee.dairy.repository.DairyConditionRepository;
-import com.soothee.dairy.repository.DairyRepository;
-import com.soothee.member.domain.Member;
-import com.soothee.member.repository.MemberRepository;
-import com.soothee.reference.domain.Weather;
-import com.soothee.reference.service.ConditionService;
-import com.soothee.reference.service.WeatherService;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,104 +24,53 @@ import java.util.List;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Import(TestConfig.class)
 class DairyConditionServiceTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DairyConditionServiceTest.class);
     @Autowired
     private DairyConditionServiceImpl dairyConditionService;
     @Autowired
-    private DairyConditionRepository dairyConditionRepository;
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private DairyRepository dairyRepository;
-    @Autowired
-    private WeatherService weatherService;
-    @Autowired
-    private ConditionService conditionService;
-    private final String NAME = "사용자0";
-    private final String EMAIL = "abc@def.com";
-    private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
-    private final String OAUTH2_CLIENT_ID = "111111";
-    private Member member;
-    private Dairy dairy;
-    private DairyCondition dairyCondition;
-    private List<Long> condIds;
-
-    @BeforeEach
-    void setUp() {
-        Weather weather = weatherService.getWeatherById(1L);
-        member = Member.builder()
-                        .name(NAME)
-                        .email(EMAIL)
-                        .oauth2ClientId(OAUTH2_CLIENT_ID)
-                        .snsType(SNS_TYPE).build();
-        memberRepository.save(member);
-        dairy = Dairy.builder()
-                        .member(memberRepository.findByEmail(EMAIL).orElseThrow())
-                        .date(LocalDate.of(2024,10,10))
-                        .score(2.0)
-                        .weather(weather)
-                        .build();
-        dairyRepository.save(dairy);
-    }
+    private CommonTestCode commonTestCode;
 
     @Test
     void getConditionsIdListByDairy() {
         //given
-        condIds = new ArrayList<>();
-        condIds.add(1L);
-        condIds.add(2L);
-        condIds.add(3L);
-        dairyConditionService.saveConditions(condIds, dairy);
+        commonTestCode.saveNewDairyCondition();
         //when
-        List<Long> dairyConditionList = dairyConditionService.getConditionsIdListByDairy(dairy.getDairyId());
+        List<Long> dairyConditionList = dairyConditionService.getConditionsIdListByDairy(CommonTestCode.DAIRY_ID1);
         //then
         Assertions.assertThat(dairyConditionList.get(0)).isEqualTo(1L);
-        Assertions.assertThat(dairyConditionList.get(1)).isEqualTo(2L);
-        Assertions.assertThat(dairyConditionList.get(2)).isEqualTo(3L);
+        Assertions.assertThat(dairyConditionList.get(1)).isEqualTo(7L);
+        Assertions.assertThat(dairyConditionList.get(2)).isEqualTo(2L);
     }
 
     @Test
     void saveConditions() {
         //given
-        condIds = new ArrayList<>();
+        Dairy savedNewDairy = commonTestCode.saveNewDairy();
+        List<Long> condIds = new ArrayList<>();
         condIds.add(1L);
         condIds.add(2L);
         condIds.add(3L);
         //when
-        dairyConditionService.saveConditions(condIds, dairy);
+        dairyConditionService.saveConditions(condIds, savedNewDairy);
         //then
-        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
-        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
-        List<DairyCondition> dairyConditionList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
-        Assertions.assertThat(dairyConditionList.size()).isEqualTo(3);
+        List<DairyCondition> afterDcList = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(),"after");
+        Assertions.assertThat(afterDcList.size()).isEqualTo(3);
     }
 
     @Test
     void updateConditions() {
         //given
-        condIds = new ArrayList<>();
-        condIds.add(1L);
-        condIds.add(2L);
-        condIds.add(3L);
-        dairyConditionService.saveConditions(condIds, dairy);
+        Dairy savedNewDairy = commonTestCode.saveNewDairyCondition();
+        commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "before");
         //when
-        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
-        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
-        List<DairyCondition> beforeDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
-        for (int i = 0; i < beforeDcList.size(); i++) {
-            LOGGER.info("before {} : {}, {}", i+1, beforeDcList.get(i).getDairyCondId(),beforeDcList.get(i).getOrderNo());
-        }
         List<Long> newCondIds = new ArrayList<>();
         newCondIds.add(4L);
         newCondIds.add(2L);
         newCondIds.add(1L);
-        dairyConditionService.updateConditions(savedDairy, newCondIds);
+        dairyConditionService.updateConditions(savedNewDairy, newCondIds);
         //then
-        List<DairyCondition> afterDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
-        for (int i = 0; i < afterDcList.size(); i++) {
-            LOGGER.info("after {} : {}, {}", i+1, afterDcList.get(i).getDairyCondId(),afterDcList.get(i).getOrderNo());
-        }
+        List<DairyCondition> afterDcList = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "after");
         Assertions.assertThat(afterDcList.size()).isEqualTo(3);
         Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo(4L);
         Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo(2L);
@@ -141,30 +80,18 @@ class DairyConditionServiceTest {
     @Test
     void updateConditionsBiggerInput() {
         //given
-        condIds = new ArrayList<>();
-        condIds.add(1L);
-        condIds.add(2L);
-        condIds.add(3L);
-        dairyConditionService.saveConditions(condIds, dairy);
         //when
-        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
-        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
-        List<DairyCondition> beforeDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
-        for (int i = 0; i < beforeDcList.size(); i++) {
-            LOGGER.info("before {} : {}, {}", i+1, beforeDcList.get(i).getDairyCondId(),beforeDcList.get(i).getOrderNo());
-        }
+        Dairy savedNewDairy = commonTestCode.saveNewDairyCondition();
+        commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "before");
         List<Long> newCondIds = new ArrayList<>();
         newCondIds.add(4L);
         newCondIds.add(2L);
         newCondIds.add(1L);
         newCondIds.add(5L);
         newCondIds.add(6L);
-        dairyConditionService.updateConditions(savedDairy, newCondIds);
+        dairyConditionService.updateConditions(savedNewDairy, newCondIds);
         //then
-        List<DairyCondition> afterDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
-        for (int i = 0; i < afterDcList.size(); i++) {
-            LOGGER.info("after {} : {}, {}", i+1, afterDcList.get(i).getDairyCondId(),afterDcList.get(i).getOrderNo());
-        }
+        List<DairyCondition> afterDcList = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "after");
         Assertions.assertThat(afterDcList.size()).isEqualTo(5);
         Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo(4L);
         Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo(2L);
@@ -176,30 +103,16 @@ class DairyConditionServiceTest {
     @Test
     void updateConditionsBiggerCur() {
         //given
-        condIds = new ArrayList<>();
-        condIds.add(1L);
-        condIds.add(2L);
-        condIds.add(3L);
-        condIds.add(4L);
-        condIds.add(5L);
-        dairyConditionService.saveConditions(condIds, dairy);
         //when
-        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
-        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
-        List<DairyCondition> beforeDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
-        for (int i = 0; i < beforeDcList.size(); i++) {
-            LOGGER.info("before {} : {}, {}", i+1, beforeDcList.get(i).getDairyCondId(),beforeDcList.get(i).getOrderNo());
-        }
+        Dairy savedNewDairy = commonTestCode.saveNewDairyCondition();
+        commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "before");
         List<Long> newCondIds = new ArrayList<>();
         newCondIds.add(4L);
         newCondIds.add(2L);
         newCondIds.add(1L);
-        dairyConditionService.updateConditions(savedDairy, newCondIds);
+        dairyConditionService.updateConditions(savedNewDairy, newCondIds);
         //then
-        List<DairyCondition> afterDcList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
-        for (int i = 0; i < afterDcList.size(); i++) {
-            LOGGER.info("after {} : {}, {}", i+1, afterDcList.get(i).getDairyCondId(),afterDcList.get(i).getOrderNo());
-        }
+        List<DairyCondition> afterDcList = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "after");
         Assertions.assertThat(afterDcList.size()).isEqualTo(3);
         Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo(4L);
         Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo(2L);
@@ -209,24 +122,11 @@ class DairyConditionServiceTest {
     @Test
     void deleteDairyConditionsOfDairy() {
         //given
-        condIds = new ArrayList<>();
-        condIds.add(1L);
-        condIds.add(2L);
-        condIds.add(3L);
-        dairyConditionService.saveConditions(condIds, dairy);
-        Member savedmember = memberRepository.findByEmail(EMAIL).orElseThrow();
-        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(savedmember.getMemberId(), "N").orElseThrow().get(0);
-        List<DairyCondition> savedDairyConditionList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow();
+        Dairy savedNewDairy = commonTestCode.saveNewDairyCondition();
         //when
-        dairyConditionService.deleteDairyConditionsOfDairy(savedDairy);
+        dairyConditionService.deleteDairyConditionsOfDairy(savedNewDairy);
         //then
-        Assertions.assertThat(dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(savedDairy.getDairyId(), "N").orElseThrow().size()).isEqualTo(0);
-    }
-
-    @AfterEach
-    void tearDown() {
-        dairyConditionRepository.deleteAll();
-        dairyRepository.deleteAll();
-        memberRepository.deleteAll();
+        int cnt = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "after").size();
+        Assertions.assertThat(cnt).isEqualTo(0);
     }
 }

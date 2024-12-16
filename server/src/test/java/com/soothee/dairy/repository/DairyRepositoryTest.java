@@ -1,31 +1,25 @@
 package com.soothee.dairy.repository;
 
-import com.soothee.common.constants.SnsType;
+import com.soothee.config.TestConfig;
+import com.soothee.util.CommonTestCode;
 import com.soothee.dairy.domain.Dairy;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
-import com.soothee.member.domain.Member;
-import com.soothee.member.repository.MemberRepository;
-import com.soothee.reference.service.WeatherService;
 import com.soothee.stats.dto.DateScore;
-import com.soothee.stats.dto.MonthlyStatsDTO;
 import com.soothee.stats.dto.WeeklyStatsDTO;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
@@ -33,42 +27,17 @@ import java.util.Optional;
 @SpringBootTest
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Import(TestConfig.class)
 class DairyRepositoryTest {
     @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
     private DairyRepository dairyRepository;
-    @Autowired
-    private WeatherService weatherService;
-    private final String NAME = "사용자0";
-    private final String EMAIL = "abc@def.com";
-    private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
-    private final String OAUTH2_CLIENT_ID = "111111";
-    private Member member;
-    private Dairy dairy;
-
-    @BeforeEach
-    void setUp() {
-        member = Member.builder()
-                        .name(NAME)
-                        .email(EMAIL)
-                        .oauth2ClientId(OAUTH2_CLIENT_ID)
-                        .snsType(SNS_TYPE).build();
-        memberRepository.save(member);
-        dairy = Dairy.builder()
-                    .member(memberRepository.findByEmail(EMAIL).orElseThrow())
-                    .date(LocalDate.of(2024,10,10))
-                    .score(2.0)
-                    .weather(weatherService.getWeatherById(1L))
-                    .build();
-        dairyRepository.save(dairy);
-    }
 
     @Test
     void findByMemberMemberIdAndIsDelete() {
         //given
         //when
-        Dairy result = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow().get(0);
+        Dairy result = dairyRepository.findByMemberMemberIdAndIsDelete(CommonTestCode.MEMBER_ID, "N")
+                                        .orElseThrow(NullPointerException::new).get(0);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
@@ -76,11 +45,10 @@ class DairyRepositoryTest {
     @Test
     void findByDairyId() {
         //given
-        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow().get(0);
         //when
-        Dairy searchDairy = dairyRepository.findByDairyId(savedDairy.getDairyId()).orElseThrow();
+        Dairy searchDairy = dairyRepository.findByDairyId(CommonTestCode.DAIRY_ID1).orElseThrow(NullPointerException::new);
         //then
-        Assertions.assertThat(savedDairy.getScore()).isEqualTo(searchDairy.getScore());
+        Assertions.assertThat(searchDairy.getScore()).isEqualTo(2.0);
     }
 
 
@@ -88,8 +56,8 @@ class DairyRepositoryTest {
     void findByMemberIdYearMonth() {
         //given
         //when
-        Optional<List<DairyScoresDTO>> optional = dairyRepository.findByMemberIdYearMonth(member.getMemberId(), 2024, 10);
-        DairyScoresDTO result = optional.orElseThrow().get(0);
+        DairyScoresDTO result = dairyRepository.findByMemberIdYearMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH)
+                                                .orElseThrow(NullPointerException::new).get(0);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
@@ -98,7 +66,8 @@ class DairyRepositoryTest {
     void findByDate() {
         //given
         //when
-        DairyDTO result = dairyRepository.findByDate(member.getMemberId(), LocalDate.of(2024, 10, 10)).orElseThrow();
+        DairyDTO result = dairyRepository.findByDate(CommonTestCode.MEMBER_ID, CommonTestCode.DATE1)
+                                            .orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
@@ -107,7 +76,8 @@ class DairyRepositoryTest {
     void findByDiaryId() {
         //given
         //when
-        DairyDTO result = dairyRepository.findByDiaryId(member.getMemberId(), dairy.getDairyId()).orElseThrow();
+        DairyDTO result = dairyRepository.findByMemberDiaryId(CommonTestCode.MEMBER_ID, CommonTestCode.DAIRY_ID1)
+                                            .orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
@@ -115,36 +85,9 @@ class DairyRepositoryTest {
     @Test
     void findDiaryStatsInWeekly() {
         //given
-        Dairy newDairy1 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,10))
-                .score(5.5)
-                .weather(weatherService.getWeatherById(4L))
-                .build();
-        dairyRepository.save(newDairy1);
-        Dairy newDairy2 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,11))
-                .score(1.0)
-                .weather(weatherService.getWeatherById(2L))
-                .build();
-        dairyRepository.save(newDairy2);
-        Dairy newDairy3 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,12))
-                .score(9.5)
-                .weather(weatherService.getWeatherById(3L))
-                .build();
-        dairyRepository.save(newDairy3);
-        Dairy newDairy4 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,13))
-                .score(4.5)
-                .weather(weatherService.getWeatherById(3L))
-                .build();
-        dairyRepository.save(newDairy4);
         //when
-        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(member.getMemberId(), 2024, 41).orElseThrow();
+        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK)
+                                                .orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getDairyCnt()).isEqualTo(5);
         Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
@@ -153,43 +96,10 @@ class DairyRepositoryTest {
     @Test
     void findDiaryScoresInWeekly() {
         //given
-        Dairy newDairy1 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,10))
-                .score(5.5)
-                .weather(weatherService.getWeatherById(4L))
-                .build();
-        dairyRepository.save(newDairy1);
-        Dairy newDairy2 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,11))
-                .score(1.0)
-                .weather(weatherService.getWeatherById(2L))
-                .build();
-        dairyRepository.save(newDairy2);
-        Dairy newDairy3 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,12))
-                .score(9.5)
-                .weather(weatherService.getWeatherById(3L))
-                .build();
-        dairyRepository.save(newDairy3);
-        Dairy newDairy4 = Dairy.builder()
-                .member(member)
-                .date(LocalDate.of(2024,10,13))
-                .score(4.5)
-                .weather(weatherService.getWeatherById(3L))
-                .build();
-        dairyRepository.save(newDairy4);
         //when
-        List<DateScore> result = dairyRepository.findDiaryScoresInWeekly(member.getMemberId(), 2024, 41).orElseThrow();
+        List<DateScore> result = dairyRepository.findDiaryScoresInWeekly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK)
+                                                    .orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.get(0).getScore()).isEqualTo(2.0);
-    }
-
-    @AfterEach
-    void tearDown() {
-        dairyRepository.deleteAll();
-        memberRepository.deleteAll();
     }
 }

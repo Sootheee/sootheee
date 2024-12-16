@@ -1,22 +1,19 @@
 package com.soothee.member.service;
 
-import com.soothee.common.constants.SnsType;
+import com.soothee.config.TestConfig;
+import com.soothee.util.CommonTestCode;
 import com.soothee.member.domain.Member;
-import com.soothee.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
@@ -24,26 +21,12 @@ import java.util.Optional;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Import(TestConfig.class)
 class MemberServiceTest {
     @Autowired
     private MemberService memberService;
     @Autowired
-    private MemberRepository memberRepository;
-    private final String NAME = "사용자0";
-    private final String EMAIL = "abc@def.com";
-    private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
-    private final String OAUTH2_CLIENT_ID = "111111";
-    private Member member;
-
-    @BeforeEach
-    void setUp() {
-        member = Member.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .oauth2ClientId(OAUTH2_CLIENT_ID)
-                .snsType(SNS_TYPE).build();
-        memberRepository.save(member);
-    }
+    private CommonTestCode commonTestCode;
 
     @Test
     @DisplayName("OAuth2 로그인 시, 받은 정보로 회원 조회")
@@ -55,18 +38,11 @@ class MemberServiceTest {
     @DisplayName("회원 가입")
     void saveMember() {
         //given
-        Member newMember = Member.builder()
-                                .email("def@def.com")
-                                .name("새사용자")
-                                .oauth2ClientId("22222")
-                                .snsType(SnsType.GOOGLE)
-                                .build();
+        Member newMember = commonTestCode.getNewMember();
         //when
         memberService.saveMember(newMember);
         //then
-        Optional<Member> optional = memberRepository.findByEmail("def@def.com");
-        Member mem1 = optional.orElseThrow(NullPointerException::new);
-        Assertions.assertThat("22222").isEqualTo(mem1.getOauth2ClientId());
+        Assertions.assertThat(newMember.getOauth2ClientId()).isEqualTo("222222");
     }
 
     @Test
@@ -74,14 +50,11 @@ class MemberServiceTest {
     void updateName() {
         //given
         String newName = "새 이름";
-        Optional<Member> optional1 = memberRepository.findByEmail(EMAIL);
-        Member mem1 = optional1.orElseThrow(NullPointerException::new);
+        Member savedMember = commonTestCode.getSavedMember();
         //when
-        mem1.updateName(newName);
+        savedMember.updateName(newName);
         //then
-        Optional<Member> optional2 = memberRepository.findByEmail(EMAIL);
-        Member mem2 = optional2.orElseThrow(NullPointerException::new);
-        Assertions.assertThat(mem2.getName()).isEqualTo(newName);
+        Assertions.assertThat(savedMember.getName()).isEqualTo(newName);
     }
 
     @Test
@@ -89,28 +62,22 @@ class MemberServiceTest {
     void updateDarkMode() {
         //given
         String isDarkY = "Y";
-        Optional<Member> optional1 = memberRepository.findByEmail(EMAIL);
-        Member mem1 = optional1.orElseThrow(NullPointerException::new);
+        Member savedMember = commonTestCode.getSavedMember();
         //when
-        mem1.updateDarkModeYN(isDarkY);
+        savedMember.updateDarkModeYN(isDarkY);
         //then
-        Optional<Member> optional2 = memberRepository.findByEmail(EMAIL);
-        Member mem2 = optional2.orElseThrow(NullPointerException::new);
-        Assertions.assertThat(mem2.getIsDark()).isEqualTo(isDarkY);
+        Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDarkY);
     }
 
     @Test
     @DisplayName("회원 탈퇴")
     void deleteMember() {
         //given
-        Optional<Member> optional1 = memberRepository.findByEmail(EMAIL);
-        Member mem1 = optional1.orElseThrow(NullPointerException::new);
+        Member savedMember = commonTestCode.getSavedMember();
         //when
-        member.deleteMember();
+        savedMember.deleteMember();
         //then
-        Optional<Member> optional2 = memberRepository.findByEmail(EMAIL);
-        Member mem2 = optional2.orElseThrow(NullPointerException::new);
-        Assertions.assertThat(mem2.getIsDelete()).isEqualTo("Y");
+        Assertions.assertThat(savedMember.getIsDelete()).isEqualTo("Y");
     }
 
     @Test
@@ -123,8 +90,4 @@ class MemberServiceTest {
     void getNicknameInfo() {
     }
 
-    @AfterEach
-    void tearDown() {
-        memberRepository.deleteAll();
-    }
 }
