@@ -46,7 +46,7 @@ public class DairyServiceImpl implements DairyService {
 
     @Override
     public DairyDTO getDairyByDairyId(Long memberId, Long dairyId) {
-        DairyDTO dairyDTO = dairyRepository.findByDiaryId(memberId, dairyId).orElse(new DairyDTO());
+        DairyDTO dairyDTO = dairyRepository.findByMemberDiaryId(memberId, dairyId).orElse(new DairyDTO());
         if (Objects.nonNull(dairyDTO.getDairyId())) {
             dairyDTO.setCondIds(dairyConditionService.getConditionsIdListByDairy(dairyDTO.getDairyId()));
         }

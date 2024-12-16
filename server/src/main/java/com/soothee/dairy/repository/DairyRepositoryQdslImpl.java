@@ -61,7 +61,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     }
 
     @Override
-    public Optional<DairyDTO> findByDiaryId(Long memberId, Long dairyId) {
+    public Optional<DairyDTO> findByMemberDiaryId(Long memberId, Long dairyId) {
         return Optional.ofNullable(
                 queryFactory.select(new QDairyDTO(dairy.dairyId,
                                                     dairy.date,

@@ -86,6 +86,7 @@ public interface MemberService {
 
     /**
      * 회원 일련번호로 회원 정보 조회</hr>
+     *
      * @param memberId Long : 조회할 회원 일련번호
      * @return Member : 조회한 회원 정보
      */

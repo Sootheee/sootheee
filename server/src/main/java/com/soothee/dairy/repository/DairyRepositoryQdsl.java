@@ -38,7 +38,7 @@ public interface DairyRepositoryQdsl {
      * @param dairyId  Long : 조회할 일기 일련번호
      * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
      */
-    Optional<DairyDTO> findByDiaryId(Long memberId, Long dairyId);
+    Optional<DairyDTO> findByMemberDiaryId(Long memberId, Long dairyId);
 
     /**
      * 로그인한 계정이 지정한 년도/달에 작성한 일기 개수 & 오늘의 점수 평균 조회</hr>
