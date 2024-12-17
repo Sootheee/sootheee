@@ -56,15 +56,26 @@ public class CommonTestCode {
     public static final String NEW_AUTH2 = "222222";
     public static final SnsType NEW_SNS_TYPE = SnsType.GOOGLE;
     public static final Long DAIRY_ID1 = 11L;
+    public static final Long DAIRY_ID2 = 12L;
+    public static final Long DAIRY_ID3 = 13L;
+    public static final Long DAIRY_ID4 = 14L;
+    public static final Long DAIRY_ID5 = 15L;
     public static final Long NEW_DAIRY_ID = 1L;
     public static final Double SCORE1 = 2.0;
+    public static final Double SCORE2 = 5.5;
+    public static final Double SCORE3 = 1.0;
+    public static final Double SCORE4 = 9.5;
+    public static final Double SCORE5 =4.5;
     public static final Double NEW_SCORE = 3.0;
     public static final int YEAR = 2024;
     public static final int MONTH = 10;
     public static final int WEEK = 40;
-    public static final int DAY = 1;
     public static final int NEW_DAY = 10;
-    public static final LocalDate DATE1 = LocalDate.of(YEAR, MONTH, DAY);
+    public static final LocalDate DATE1 = LocalDate.of(YEAR, MONTH, 1);
+    public static final LocalDate DATE2 = LocalDate.of(YEAR, MONTH, 2);
+    public static final LocalDate DATE3 = LocalDate.of(YEAR, MONTH, 3);
+    public static final LocalDate DATE4 = LocalDate.of(YEAR, MONTH, 4);
+    public static final LocalDate DATE5 = LocalDate.of(YEAR, MONTH, 5);
     public static final LocalDate NEW_DATE = LocalDate.of(YEAR, MONTH, NEW_DAY);
     public static final Long WEATHER_ID = 1L;
     public static final Long COND_ID1 = 1L;
@@ -113,6 +124,15 @@ public class CommonTestCode {
 
     public Dairy getSavedDairy() {
         return dairyRepository.findByDairyId(DAIRY_ID1).orElseThrow(NullPointerException::new);
+    }
+
+    public Dairy getSavedNewDairy(Long newDairyId) {
+        return dairyRepository.findByDairyId(newDairyId).orElseThrow(NullPointerException::new);
+    }
+
+    public Dairy getSavedNewDairy(LocalDate newDairyDate) {
+        Long newDairyId = dairyRepository.findByDate(CommonTestCode.MEMBER_ID, newDairyDate).orElseThrow(NullPointerException::new).getDairyId();
+        return getSavedNewDairy(newDairyId);
     }
 
     public List<DairyCondition> getSavedDairyConditions() {
