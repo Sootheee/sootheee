@@ -20,6 +20,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Objects;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
@@ -33,12 +34,18 @@ class DairyRepositoryTest {
     private DairyRepository dairyRepository;
 
     @Test
-    void findByMemberMemberIdAndIsDelete() {
+    void findByMemberMemberIdAndIsDeleteOrderByDairyId() {
         //given
         //when
-        Dairy result = dairyRepository.findByMemberMemberIdAndIsDelete(CommonTestCode.MEMBER_ID, "N")
-                                        .orElseThrow(NullPointerException::new).get(0);
+        List<Dairy> list = dairyRepository.findByMemberMemberIdAndIsDeleteOrderByDairyId(CommonTestCode.MEMBER_ID, "N")
+                                        .orElseThrow(NullPointerException::new);
         //then
+        Dairy result = Dairy.builder().build();
+        for (Dairy dairy : list) {
+            if (Objects.equals(dairy.getDairyId(), CommonTestCode.DAIRY_ID1)) {
+                result = dairy;
+            }
+        }
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
 
@@ -56,9 +63,15 @@ class DairyRepositoryTest {
     void findByMemberIdYearMonth() {
         //given
         //when
-        DairyScoresDTO result = dairyRepository.findByMemberIdYearMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH)
-                                                .orElseThrow(NullPointerException::new).get(0);
+        List<DairyScoresDTO> list = dairyRepository.findByMemberIdYearMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH)
+                                                .orElseThrow(NullPointerException::new);
         //then
+        DairyScoresDTO result = new DairyScoresDTO();
+        for (DairyScoresDTO scoresDTO : list) {
+            if (Objects.equals(scoresDTO.getDairyId(), CommonTestCode.DAIRY_ID1)) {
+                result = scoresDTO;
+            }
+        }
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
 
