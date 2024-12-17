@@ -1,6 +1,9 @@
 package com.soothee.member.service;
 
 import com.soothee.config.TestConfig;
+import com.soothee.member.dto.MemberDTO;
+import com.soothee.member.dto.MemberInfoDTO;
+import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.util.CommonTestCode;
 import com.soothee.member.domain.Member;
 import org.assertj.core.api.Assertions;
@@ -31,7 +34,11 @@ class MemberServiceTest {
     @Test
     @DisplayName("OAuth2 로그인 시, 받은 정보로 회원 조회")
     void getMemberForOAuth2() {
-
+        //given
+        //when
+        Member savedMember = memberService.getMemberForOAuth2(CommonTestCode.OAUTH2, CommonTestCode.SNS_TYPE).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
     }
 
     @Test
@@ -83,11 +90,30 @@ class MemberServiceTest {
     @Test
     @DisplayName("로그인한 회원의 모든 정보 조회")
     void getAllMemberInfo() {
+        //given
+        //when
+        MemberInfoDTO savedMember = memberService.getAllMemberInfo(CommonTestCode.MEMBER_ID);
+        //then
+        Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
     }
 
     @Test
     @DisplayName("로그인한 회원의 닉네임만 조회")
     void getNicknameInfo() {
+        //given
+        //when
+        MemberNameDTO savedMember = memberService.getNicknameInfo(CommonTestCode.MEMBER_ID);
+        //then
+        Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
+    }
+
+    @Test
+    void getMemberById() {
+        //given
+        //when
+        Member savedMember = memberService.getMemberById(CommonTestCode.MEMBER_ID);
+        //then
+        Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
     }
 
 }
