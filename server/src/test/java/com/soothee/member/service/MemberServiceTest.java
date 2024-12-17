@@ -57,11 +57,11 @@ class MemberServiceTest {
     void updateName() {
         //given
         String newName = "새 이름";
-        Member savedMember = commonTestCode.getSavedMember();
+        Member newMember = commonTestCode.saveNewMember();
         //when
-        savedMember.updateName(newName);
+        newMember.updateName(newName);
         //then
-        Assertions.assertThat(savedMember.getName()).isEqualTo(newName);
+        Assertions.assertThat(newMember.getName()).isEqualTo(newName);
     }
 
     @Test
@@ -80,11 +80,11 @@ class MemberServiceTest {
     @DisplayName("회원 탈퇴")
     void deleteMember() {
         //given
-        Member savedMember = commonTestCode.getSavedMember();
+        Member newMember = commonTestCode.saveNewMember();
         //when
-        savedMember.deleteMember();
+        newMember.deleteMember();
         //then
-        Assertions.assertThat(savedMember.getIsDelete()).isEqualTo("Y");
+        Assertions.assertThat(newMember.getIsDelete()).isEqualTo("Y");
     }
 
     @Test
@@ -94,7 +94,7 @@ class MemberServiceTest {
         //when
         MemberInfoDTO savedMember = memberService.getAllMemberInfo(CommonTestCode.MEMBER_ID);
         //then
-        Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
+        Assertions.assertThat(savedMember.getEmail()).isEqualTo("abc@def.com");
     }
 
     @Test
