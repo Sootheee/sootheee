@@ -19,4 +19,12 @@ public interface DairyConditionRepository extends JpaRepository<DairyCondition, 
      * @return Optional<List<DairyCondition>> : 조회된 일기의 일기-컨디션 리스트 선택한 순서대로 (null 가능)
      */
     Optional<List<DairyCondition>> findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(Long dairyId, String isDelete);
+
+    /**
+     * 일기 일련번호로 일기의 컨디션 리스트가 존재하는지 확인</hr>
+     *
+     * @param dairyId  Long : 조회할 일기 일련번호
+     * @return boolean : 존재하면 true 아니면 false
+     */
+    boolean existsByDairyDairyId(Long dairyId);
 }

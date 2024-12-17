@@ -56,14 +56,16 @@ public class DairyServiceImpl implements DairyService {
     @Override
     public void registerDairy(Long memberId, DairyRegisterDTO inputInfo) {
         /* 이미 등록된 일기가 있으면 Exception 발생 */
-        if (Objects.nonNull(this.getDairyByDate(memberId, inputInfo.getDate()))) {
+        if (Objects.nonNull(this.getDairyByDate(memberId, inputInfo.getDate()).getDairyId())) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.ALREADY_EXIST_DAIRY);
         }
         Member member = memberService.getMemberById(memberId);
         Weather weather = weatherService.getWeatherById(inputInfo.getWeatherId());
         Dairy newDairy = Dairy.of(inputInfo, member, weather);
         dairyRepository.save(newDairy);
-        dairyConditionService.saveConditions(inputInfo.getCondIdList(), newDairy);
+        if (Objects.nonNull(inputInfo.getCondIdList())) {
+            dairyConditionService.saveConditions(inputInfo.getCondIdList(), newDairy);
+        }
     }
 
     @Override
@@ -76,7 +78,9 @@ public class DairyServiceImpl implements DairyService {
         }
         Weather weather = weatherService.getWeatherById(inputInfo.getWeatherId());
         dairy.updateDairy(inputInfo, weather);
-        dairyConditionService.updateConditions(dairy, inputInfo.getCondIds());
+        if (Objects.nonNull(inputInfo.getCondIds())) {
+            dairyConditionService.updateConditions(dairy, inputInfo.getCondIds());
+        }
     }
 
     @Override
@@ -85,6 +89,7 @@ public class DairyServiceImpl implements DairyService {
         if (!Objects.equals(dairy.getMember().getMemberId(), memberId)) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
+
         dairyConditionService.deleteDairyConditionsOfDairy(dairy);
         dairy.deleteDairy();
     }
