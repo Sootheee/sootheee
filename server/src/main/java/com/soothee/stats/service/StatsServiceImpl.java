@@ -2,7 +2,6 @@ package com.soothee.stats.service;
 
 import com.soothee.dairy.repository.DairyConditionRepository;
 import com.soothee.dairy.repository.DairyRepository;
-import com.soothee.member.service.MemberService;
 import com.soothee.stats.dto.DateContents;
 import com.soothee.stats.dto.MonthlyContentsDTO;
 import com.soothee.stats.dto.MonthlyStatsDTO;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 @Transactional
 @RequiredArgsConstructor
 public class StatsServiceImpl implements StatsService{
-    private final MemberService memberService;
     private final DairyRepository dairyRepository;
     private final DairyConditionRepository dairyConditionRepository;
 

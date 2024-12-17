@@ -20,20 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 @Import(TestConfig.class)
 class StatsServiceTest {
-
-    @BeforeEach
-    void setUp() {
-    }
-
     @Test
     void getMonthlyStatsInfo() {
     }
 
     @Test
     void getWeeklyStatsInfo() {
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 }
