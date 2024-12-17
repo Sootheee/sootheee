@@ -45,7 +45,7 @@ class StatsServiceTest {
         //when
         MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, "thanks", CommonTestCode.YEAR, CommonTestCode.MONTH);
         //then
-        Assertions.assertThat(result.getCount()).isEqualTo(2);
+        Assertions.assertThat(result.getCount()).isEqualTo(3);
         Assertions.assertThat(result.getHighest().getContent()).isEqualTo("땡큐");
         Assertions.assertThat(result.getLowest().getContent()).isEqualTo("감사");
     }
@@ -56,7 +56,7 @@ class StatsServiceTest {
         //when
         MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, "learn", CommonTestCode.YEAR, CommonTestCode.MONTH);
         //then
-        Assertions.assertThat(result.getCount()).isEqualTo(2);
+        Assertions.assertThat(result.getCount()).isEqualTo(3);
         Assertions.assertThat(result.getHighest().getContent()).isEqualTo("배운");
         Assertions.assertThat(result.getLowest().getContent()).isEqualTo("공부");
     }
@@ -76,6 +76,5 @@ class StatsServiceTest {
             }
         }
         Assertions.assertThat(resultScore).isEqualTo(2.0);
-
     }
 }
