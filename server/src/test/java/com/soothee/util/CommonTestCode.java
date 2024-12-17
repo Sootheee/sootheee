@@ -122,8 +122,8 @@ public class CommonTestCode {
         return memberRepository.findByMemberId(MEMBER_ID).orElseThrow(NullPointerException::new);
     }
 
-    public Dairy getSavedDairy() {
-        return dairyRepository.findByDairyId(DAIRY_ID1).orElseThrow(NullPointerException::new);
+    public Dairy getSavedDairy(Long dairyId) {
+        return dairyRepository.findByDairyId(dairyId).orElseThrow(NullPointerException::new);
     }
 
     public Dairy getSavedNewDairy(Long newDairyId) {

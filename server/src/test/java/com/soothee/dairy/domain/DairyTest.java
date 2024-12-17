@@ -30,7 +30,7 @@ class DairyTest {
     void updateDairy() {
         //given
         String changeThank = "thanks";
-        Dairy savedDairy = commonTestCode.getSavedDairy();
+        Dairy savedDairy = commonTestCode.getSavedDairy(CommonTestCode.DAIRY_ID1);
         Weather weather = commonTestCode.getWeather();
         DairyDTO changedInfo = DairyDTO.builder()
                                         .thank(changeThank)
@@ -44,7 +44,7 @@ class DairyTest {
     @Test
     void deleteDairy() {
         //given
-        Dairy savedDairy = commonTestCode.getSavedDairy();
+        Dairy savedDairy = commonTestCode.getSavedDairy(CommonTestCode.DAIRY_ID1);
         //when
         savedDairy.deleteDairy();
         //then
