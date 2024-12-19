@@ -16,11 +16,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -85,8 +87,8 @@ public class MemberController {
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> updateName(@RequestParam("memberId") Long memberId,
-                                          @RequestParam("name") String name,
-                                          @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+                                        @RequestParam("name") String name,
+                                        @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         Long loginMemberId = memberService.getLoginMemberId(loginInfo);
         memberService.updateName(loginMemberId, memberId, name);
         return new ResponseEntity<String>(HttpStatus.OK);
@@ -104,9 +106,12 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "로그인한 회원과 입력한 회원의 정보가 상이함", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> deleteMember(@ModelAttribute MemberDelDTO memberDelDTO,
+    public ResponseEntity<?> deleteMember(@ModelAttribute @Valid MemberDelDTO memberDelDTO, BindingResult bindingResult,
                                           @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         Long loginMemberId = memberService.getLoginMemberId(loginInfo);
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+        }
         memberService.deleteMember(loginMemberId, memberDelDTO);
         return new ResponseEntity<String>(HttpStatus.OK);
     }

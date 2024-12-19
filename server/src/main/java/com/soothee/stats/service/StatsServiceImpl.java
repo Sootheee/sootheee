@@ -2,6 +2,8 @@ package com.soothee.stats.service;
 
 import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.common.exception.MyException;
+import com.soothee.common.requestParam.MonthParam;
+import com.soothee.common.requestParam.WeekParam;
 import com.soothee.dairy.repository.DairyConditionRepository;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.stats.dto.*;
@@ -21,12 +23,12 @@ public class StatsServiceImpl implements StatsService{
     private final DairyConditionRepository dairyConditionRepository;
 
     @Override
-    public MonthlyStatsDTO getMonthlyStatsInfo(Long memberId, Integer year, Integer month) {
-        MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(memberId, year, month).orElse(new MonthlyStatsDTO());
-        Double condCnt = dairyConditionRepository.getAllDairyConditionCntInMonth(memberId, year, month).orElseThrow(
+    public MonthlyStatsDTO getMonthlyStatsInfo(Long memberId, MonthParam monthParam) {
+        MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(memberId, monthParam).orElse(new MonthlyStatsDTO());
+        Double condCnt = dairyConditionRepository.getAllDairyConditionCntInMonth(memberId, monthParam).orElseThrow(
                 () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
         ).getCount().doubleValue();
-        ConditionRatio mostCond = dairyConditionRepository.findConditionRatioListInMonth(memberId, year, month, 1, condCnt).orElseThrow(
+        ConditionRatio mostCond = dairyConditionRepository.findConditionRatioListInMonth(memberId, monthParam, 1, condCnt).orElseThrow(
                 () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
         ).get(0);
         result.setMostCondId(mostCond.getCondId());
@@ -35,23 +37,23 @@ public class StatsServiceImpl implements StatsService{
     }
 
     @Override
-    public MonthlyContentsDTO getMonthlyContents(Long memberId, String type, Integer year, Integer month) {
+    public MonthlyContentsDTO getMonthlyContents(Long memberId, String type, MonthParam monthParam) {
         return MonthlyContentsDTO.builder()
-                .count(dairyRepository.findDiaryContentCntInMonth(memberId, type, year, month).orElse(0))
-                .highest(dairyRepository.findDiaryContentInMonth(memberId, type, year, month, "high").orElse(new DateContents()))
-                .lowest(dairyRepository.findDiaryContentInMonth(memberId, type, year, month, "low").orElse(new DateContents()))
+                .count(dairyRepository.findDiaryContentCntInMonth(memberId, type, monthParam).orElse(0))
+                .highest(dairyRepository.findDiaryContentInMonth(memberId, type, monthParam, "high").orElse(new DateContents()))
+                .lowest(dairyRepository.findDiaryContentInMonth(memberId, type, monthParam, "low").orElse(new DateContents()))
                 .build();
     }
 
     @Override
-    public MonthlyConditionsDTO getMonthlyConditionList(Long memberId, Integer year, Integer month) {
-        dairyRepository.findDiaryStatsInMonth(memberId, year, month).orElseThrow(
+    public MonthlyConditionsDTO getMonthlyConditionList(Long memberId, MonthParam monthParam) {
+        dairyRepository.findDiaryStatsInMonth(memberId, monthParam).orElseThrow(
                 () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
         );
-        MonthlyConditionsDTO result = dairyConditionRepository.getAllDairyConditionCntInMonth(memberId, year, month).orElseThrow(
+        MonthlyConditionsDTO result = dairyConditionRepository.getAllDairyConditionCntInMonth(memberId, monthParam).orElseThrow(
                 () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
         );
-        List<ConditionRatio> condRatioList = dairyConditionRepository.findConditionRatioListInMonth(memberId, year, month, 3, result.getCount().doubleValue()).orElseThrow(
+        List<ConditionRatio> condRatioList = dairyConditionRepository.findConditionRatioListInMonth(memberId, monthParam, 3, result.getCount().doubleValue()).orElseThrow(
                 () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
         );
         result.setCondiList(condRatioList);
@@ -59,10 +61,10 @@ public class StatsServiceImpl implements StatsService{
     }
 
     @Override
-    public WeeklyStatsDTO getWeeklyStatsInfo(Long memberId, Integer year, Integer week) {
-        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week).orElse(new WeeklyStatsDTO());
+    public WeeklyStatsDTO getWeeklyStatsInfo(Long memberId, WeekParam weekParam) {
+        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, weekParam).orElse(new WeeklyStatsDTO());
         if (result.getCount() > 2) {
-            result.setScoreList(dairyRepository.findDiaryScoresInWeekly(memberId, year, week).orElse(new ArrayList<>()));
+            result.setScoreList(dairyRepository.findDiaryScoresInWeekly(memberId, weekParam).orElse(new ArrayList<>()));
         }
         return result;
     }

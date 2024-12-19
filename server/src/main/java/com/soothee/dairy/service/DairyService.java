@@ -1,5 +1,6 @@
 package com.soothee.dairy.service;
 
+import com.soothee.common.requestParam.MonthParam;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
@@ -12,12 +13,11 @@ public interface DairyService {
      * 지정한 달에 작성한 모든 일기의 오늘의 점수 리스트 조회</hr>
      * 삭제된 일기 제외
      *
-     * @param memberId Long : 현재 로그인한 계정의 일련번호
-     * @param year      Integer : 지정한 년도
-     * @param month     Integer : 지정한 달
+     * @param memberId     Long : 현재 로그인한 계정의 일련번호
+     * @param monthParam   MonthParam : 지정한 년도/달
      * @return List<DairyScoresDTO> : 일기 일련번호와 날짜, 오늘의 점수 리스트
      */
-    List<DairyScoresDTO> getAllDairyMonthly(Long memberId, Integer year, Integer month);
+    List<DairyScoresDTO> getAllDairyMonthly(Long memberId, MonthParam monthParam);
 
     /**
      * 해당 날짜 일기 조회</hr>

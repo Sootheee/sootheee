@@ -2,6 +2,7 @@ package com.soothee.dairy.service;
 
 import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.common.exception.MyException;
+import com.soothee.common.requestParam.MonthParam;
 import com.soothee.dairy.domain.Dairy;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
@@ -31,8 +32,8 @@ public class DairyServiceImpl implements DairyService {
     private final DairyConditionService dairyConditionService;
 
     @Override
-    public List<DairyScoresDTO> getAllDairyMonthly(Long memberId, Integer year, Integer month) {
-        return dairyRepository.findByMemberIdYearMonth(memberId, year, month).orElse(new ArrayList<>());
+    public List<DairyScoresDTO> getAllDairyMonthly(Long memberId, MonthParam monthParam) {
+        return dairyRepository.findByMemberIdYearMonth(memberId, monthParam).orElse(new ArrayList<>());
     }
 
     @Override

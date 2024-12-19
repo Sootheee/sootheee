@@ -1,6 +1,7 @@
 package com.soothee.dairy.controller;
 
 import com.soothee.common.exception.MyErrorMsg;
+import com.soothee.common.requestParam.MonthParam;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
@@ -44,18 +45,20 @@ public class DairyController {
     @Operation(summary = "달력의 출력될 일기들의 오늘의 점수 리스트 조회", description = "로그인한 계정이 지정한 달에 작성한 모든 일기 일련번호와 각 오늘의 점수 정보 전달", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
             @Parameter(name = "year", description = "조회할 년도", example = "/dairy/calendar?year=2022", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "month", description = "조회할 월", example = "/dairy/calendar?year=2022&month=2", required = true, in = ParameterIn.QUERY)
+            @Parameter(name = "month", description = "조회할 달", example = "/dairy/calendar?year=2022&month=2", required = true, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = DairyScoresDTO.class))),
             @ApiResponse(responseCode = "202", description = "조회된 일기 없음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> sendAllDairyMonthly(@RequestParam("year") Integer year,
-                                                 @RequestParam("month") Integer month,
+    public ResponseEntity<?> sendAllDairyMonthly(@ModelAttribute @Valid MonthParam monthParam, BindingResult bindingResult,
                                                  @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         Long memberId = memberService.getLoginMemberId(loginInfo);
-        List<DairyScoresDTO> infos = dairyService.getAllDairyMonthly(memberId, year, month);
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+        }
+        List<DairyScoresDTO> infos = dairyService.getAllDairyMonthly(memberId, monthParam);
         if (infos.isEmpty()) {
             return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
@@ -75,7 +78,7 @@ public class DairyController {
             @ApiResponse(responseCode = "500", description = "조회된 일기 1 개 초과", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> sendDairyByDate(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         Long memberId = memberService.getLoginMemberId(loginInfo);
         DairyDTO findDairy = dairyService.getDairyByDate(memberId, date);
         if (Objects.isNull(findDairy.getDairyId())) {
@@ -125,8 +128,7 @@ public class DairyController {
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> registerDairy(@ModelAttribute @Valid DairyRegisterDTO inputInfo,
-                                           BindingResult bindingResult,
+    public ResponseEntity<?> registerDairy(@ModelAttribute @Valid DairyRegisterDTO inputInfo, BindingResult bindingResult,
                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         Long memberId = memberService.getLoginMemberId(loginInfo);
         if (bindingResult.hasErrors()) {
@@ -159,8 +161,7 @@ public class DairyController {
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> modifyDairy(@PathVariable("dairy_id") Long dairyId,
-                                         @ModelAttribute @Valid DairyDTO inputInfo,
-                                         BindingResult bindingResult,
+                                         @ModelAttribute @Valid DairyDTO inputInfo, BindingResult bindingResult,
                                          @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         Long memberId = memberService.getLoginMemberId(loginInfo);
         if (bindingResult.hasErrors()) {

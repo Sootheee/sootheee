@@ -1,5 +1,7 @@
 package com.soothee.stats.service;
 
+import com.soothee.common.requestParam.MonthParam;
+import com.soothee.common.requestParam.WeekParam;
 import com.soothee.config.TestConfig;
 import com.soothee.stats.dto.*;
 import com.soothee.util.CommonTestCode;
@@ -26,14 +28,13 @@ import java.util.Objects;
 class StatsServiceTest {
     @Autowired
     private StatsService statsService;
-    @Autowired
-    private CommonTestCode commonTestCode;
 
     @Test
     void getMonthlyStatsInfo() {
         //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH);
+        MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(CommonTestCode.MEMBER_ID, monthParam);
         //then
         Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
         Assertions.assertThat(result.getMostCondId()).isEqualTo(1L);
@@ -42,8 +43,9 @@ class StatsServiceTest {
     @Test
     void getMonthlyContentsT() {
         //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, "thanks", CommonTestCode.YEAR, CommonTestCode.MONTH);
+        MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, "thanks", monthParam);
         //then
         Assertions.assertThat(result.getCount()).isEqualTo(3);
         Assertions.assertThat(result.getHighest().getContent()).isEqualTo("땡큐");
@@ -53,8 +55,9 @@ class StatsServiceTest {
     @Test
     void getMonthlyContentsL() {
         //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, "learn", CommonTestCode.YEAR, CommonTestCode.MONTH);
+        MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, "learn", monthParam);
         //then
         Assertions.assertThat(result.getCount()).isEqualTo(3);
         Assertions.assertThat(result.getHighest().getContent()).isEqualTo("배운");
@@ -64,8 +67,9 @@ class StatsServiceTest {
     @Test
     void getMonthlyConditionList() {
         //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        MonthlyConditionsDTO result = statsService.getMonthlyConditionList(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH);
+        MonthlyConditionsDTO result = statsService.getMonthlyConditionList(CommonTestCode.MEMBER_ID, monthParam);
         //then
         Assertions.assertThat(result.getCount()).isEqualTo(20);
         Assertions.assertThat(result.getCondiList().get(0).getCondId()).isEqualTo(1L);
@@ -79,8 +83,9 @@ class StatsServiceTest {
     @Test
     void getWeeklyStatsInfo() {
         //given
+        WeekParam weekParam = new WeekParam(CommonTestCode.YEAR, CommonTestCode.WEEK);
         //when
-        WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK);
+        WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(CommonTestCode.MEMBER_ID, weekParam);
         //then
         Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
         Assertions.assertThat(result.getCount()).isEqualTo(5);

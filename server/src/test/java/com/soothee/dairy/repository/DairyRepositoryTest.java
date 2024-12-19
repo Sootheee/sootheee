@@ -1,5 +1,7 @@
 package com.soothee.dairy.repository;
 
+import com.soothee.common.requestParam.MonthParam;
+import com.soothee.common.requestParam.WeekParam;
 import com.soothee.config.TestConfig;
 import com.soothee.stats.dto.DateContents;
 import com.soothee.stats.dto.MonthlyStatsDTO;
@@ -63,8 +65,9 @@ class DairyRepositoryTest {
     @Test
     void findByMemberIdYearMonth() {
         //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        List<DairyScoresDTO> list = dairyRepository.findByMemberIdYearMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow(NullPointerException::new);
+        List<DairyScoresDTO> list = dairyRepository.findByMemberIdYearMonth(CommonTestCode.MEMBER_ID, monthParam).orElseThrow(NullPointerException::new);
         //then
         DairyScoresDTO result = new DairyScoresDTO();
         for (DairyScoresDTO scoresDTO : list) {
@@ -96,8 +99,9 @@ class DairyRepositoryTest {
     @Test
     void findDiaryStatsInMonth() {
         //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow(NullPointerException::new);
+        MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(CommonTestCode.MEMBER_ID, monthParam).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getCount()).isEqualTo(5);
         Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
@@ -106,8 +110,9 @@ class DairyRepositoryTest {
     @Test
     void findDiaryContentCntInMonth() {
         //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        int result = dairyRepository.findDiaryContentCntInMonth(CommonTestCode.MEMBER_ID, "thanks",CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow(NullPointerException::new);
+        int result = dairyRepository.findDiaryContentCntInMonth(CommonTestCode.MEMBER_ID, "thanks", monthParam).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result).isEqualTo(3);
     }
@@ -115,8 +120,9 @@ class DairyRepositoryTest {
     @Test
     void findDiaryContentInMonth() {
         //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        DateContents result = dairyRepository.findDiaryContentInMonth(CommonTestCode.MEMBER_ID, "thanks", CommonTestCode.YEAR, CommonTestCode.MONTH, "high").orElseThrow(NullPointerException::new);
+        DateContents result = dairyRepository.findDiaryContentInMonth(CommonTestCode.MEMBER_ID, "thanks", monthParam, "high").orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getDairyId()).isEqualTo(CommonTestCode.DAIRY_ID2);
         Assertions.assertThat(result.getDate()).isEqualTo(CommonTestCode.DATE2);
@@ -126,8 +132,9 @@ class DairyRepositoryTest {
     @Test
     void findDiaryStatsInWeekly() {
         //given
+        WeekParam weekParam = new WeekParam(CommonTestCode.YEAR, CommonTestCode.WEEK);
         //when
-        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK).orElseThrow(NullPointerException::new);
+        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(CommonTestCode.MEMBER_ID, weekParam).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getCount()).isEqualTo(5);
         Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
@@ -136,8 +143,9 @@ class DairyRepositoryTest {
     @Test
     void findDiaryScoresInWeekly() {
         //given
+        WeekParam weekParam = new WeekParam(CommonTestCode.YEAR, CommonTestCode.WEEK);
         //when
-        List<DateScore> result = dairyRepository.findDiaryScoresInWeekly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK).orElseThrow(NullPointerException::new);
+        List<DateScore> result = dairyRepository.findDiaryScoresInWeekly(CommonTestCode.MEMBER_ID, weekParam).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.get(0).getScore()).isEqualTo(2.0);
     }

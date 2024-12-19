@@ -1,5 +1,6 @@
 package com.soothee.dairy.service;
 
+import com.soothee.common.requestParam.MonthParam;
 import com.soothee.config.TestConfig;
 import com.soothee.dairy.domain.Dairy;
 import com.soothee.dairy.dto.DairyDTO;
@@ -38,8 +39,9 @@ class DairyServiceTest {
     @Test
     void getAllDairyMonthly() {
         //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        List<DairyScoresDTO> result = dairyService.getAllDairyMonthly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH);
+        List<DairyScoresDTO> result = dairyService.getAllDairyMonthly(CommonTestCode.MEMBER_ID, monthParam);
         //then
         Assertions.assertThat(result.size()).isEqualTo(5);
         Assertions.assertThat(result.get(2).getScore()).isEqualTo(1.0);
