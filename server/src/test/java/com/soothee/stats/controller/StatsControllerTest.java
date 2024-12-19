@@ -18,6 +18,14 @@ class StatsControllerTest {
     }
 
     @Test
+    void sendMonthlyContents() {
+    }
+
+    @Test
+    void sendMonthlyConditionRatioList(){
+    }
+
+    @Test
     void sendWeeklyStats() {
     }
 

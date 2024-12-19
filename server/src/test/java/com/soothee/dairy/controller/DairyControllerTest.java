@@ -8,21 +8,43 @@ import org.springframework.context.annotation.Import;
 class DairyControllerTest {
     @Test
     void sendAllDairyMonthly() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void sendDairyByDate() {
+        //given
+        //when
+        //then
+    }
+
+    @Test
+    void sendDairyByDairyId() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void registerDairy() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void modifyDairy() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void deleteDairy() {
+        //given
+        //when
+        //then
     }
 }

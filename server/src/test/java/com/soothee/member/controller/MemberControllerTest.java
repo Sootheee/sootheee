@@ -39,18 +39,30 @@ class MemberControllerTest {
     @Test
     @WithMockUser
     @DisplayName("회원 정보 가져오기 성공")
-    void sendMemberInfo() throws Exception {
+    void sendMemberInfo() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void updateDarkMode() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void updateName() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void deleteMember() {
+        //given
+        //when
+        //then
     }
 }
