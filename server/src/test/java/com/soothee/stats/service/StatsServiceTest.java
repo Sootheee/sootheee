@@ -68,7 +68,7 @@ class StatsServiceTest {
         WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK);
         //then
         Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
-        Assertions.assertThat(result.getDairyCnt()).isEqualTo(5);
+        Assertions.assertThat(result.getCount()).isEqualTo(5);
         Double resultScore = 0.0;
         for (DateScore score : result.getScoreList()) {
             if (Objects.equals(score.getDate(), CommonTestCode.DATE1)) {

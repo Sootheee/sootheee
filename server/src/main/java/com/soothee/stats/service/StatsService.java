@@ -43,7 +43,7 @@ public interface StatsService {
      * 2. 한 주동안 오늘의 점수 평균값</br>
      * 3. 한 주동안 작성한 일기의 날짜와 오늘의 점수
      *
-     * @param memberId Long : 현재 로그인한 계정의 일련번호
+     * @param memberId  Long : 현재 로그인한 계정의 일련번호
      * @param year      Integer : 지정한 년도
      * @param week      Integer : 지정한 주
      * @return WeeklyStatsDTO : 주간 요약 정보

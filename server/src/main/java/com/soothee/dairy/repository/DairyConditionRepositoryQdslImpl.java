@@ -1,10 +1,14 @@
 package com.soothee.dairy.repository;
 
+import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.soothee.dairy.domain.QDairyCondition;
+import com.soothee.stats.dto.ConditionRatio;
+import com.soothee.stats.dto.QConditionRatio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,9 +18,12 @@ public class DairyConditionRepositoryQdslImpl implements DairyConditionRepositor
     private final QDairyCondition dairyCondition = QDairyCondition.dairyCondition;
 
     @Override
-    public Optional<Long> findMostOneCondIdInMonth(Long memberId, Integer year, Integer month) {
+    public Optional<List<ConditionRatio>> findConditionRatioListInMonth(Long memberId, Integer year, Integer month, Integer limit, Double count) {
         return Optional.ofNullable(
-                queryFactory.select(dairyCondition.condition.condId)
+                queryFactory.select(new QConditionRatio(dairyCondition.condition.condId,
+                                                            MathExpressions.round(
+                                                                    dairyCondition.condition.condId.count().doubleValue().divide(count)
+                                                                    , 2)))
                             .from(dairyCondition)
                             .where(dairyCondition.dairy.member.memberId.eq(memberId),
                                     dairyCondition.dairy.date.year().eq(year),
@@ -30,7 +37,8 @@ public class DairyConditionRepositoryQdslImpl implements DairyConditionRepositor
                                         dairyCondition.orderNo.min().asc(),
                                         dairyCondition.condition.condType.condTypeValue.desc(),
                                         dairyCondition.condition.condValue.desc())
-                            .limit(1)
-                            .fetchOne());
+                            .limit(limit)
+                            .fetch()
+        );
     }
 }

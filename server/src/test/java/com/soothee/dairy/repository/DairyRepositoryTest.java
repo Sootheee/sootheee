@@ -102,7 +102,7 @@ class DairyRepositoryTest {
         WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK)
                                                 .orElseThrow(NullPointerException::new);
         //then
-        Assertions.assertThat(result.getDairyCnt()).isEqualTo(5);
+        Assertions.assertThat(result.getCount()).isEqualTo(5);
         Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
     }
 

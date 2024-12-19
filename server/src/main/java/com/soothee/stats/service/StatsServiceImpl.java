@@ -1,16 +1,17 @@
 package com.soothee.stats.service;
 
+import com.soothee.common.exception.MyErrorMsg;
+import com.soothee.common.exception.MyException;
 import com.soothee.dairy.repository.DairyConditionRepository;
 import com.soothee.dairy.repository.DairyRepository;
-import com.soothee.stats.dto.DateContents;
-import com.soothee.stats.dto.MonthlyContentsDTO;
-import com.soothee.stats.dto.MonthlyStatsDTO;
-import com.soothee.stats.dto.WeeklyStatsDTO;
+import com.soothee.stats.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -22,8 +23,14 @@ public class StatsServiceImpl implements StatsService{
     @Override
     public MonthlyStatsDTO getMonthlyStatsInfo(Long memberId, Integer year, Integer month) {
         MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(memberId, year, month).orElse(new MonthlyStatsDTO());
-        Long mostCondId = dairyConditionRepository.findMostOneCondIdInMonth(memberId, year, month).orElse(0L);
-        result.setMostCondId(mostCondId);
+        Double condCnt = dairyConditionRepository.getAllDairyConditionCntInMonth(memberId, year, month).orElseThrow(
+                () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
+        ).getCount().doubleValue();
+        ConditionRatio mostCond = dairyConditionRepository.findConditionRatioListInMonth(memberId, year, month, 1, condCnt).orElseThrow(
+                () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
+        ).get(0);
+        result.setMostCondId(mostCond.getCondId());
+        result.setMostCondRatio(mostCond.getCondRatio());
         return result;
     }
 
@@ -39,7 +46,7 @@ public class StatsServiceImpl implements StatsService{
     @Override
     public WeeklyStatsDTO getWeeklyStatsInfo(Long memberId, Integer year, Integer week) {
         WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week).orElse(new WeeklyStatsDTO());
-        if (result.getDairyCnt() > 2) {
+        if (result.getCount() > 2) {
             result.setScoreList(dairyRepository.findDiaryScoresInWeekly(memberId, year, week).orElse(new ArrayList<>()));
         }
         return result;
