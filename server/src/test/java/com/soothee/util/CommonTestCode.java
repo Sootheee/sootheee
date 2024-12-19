@@ -76,7 +76,7 @@ public class CommonTestCode {
     public static final LocalDate DATE3 = LocalDate.of(YEAR, MONTH, 3);
     public static final LocalDate DATE4 = LocalDate.of(YEAR, MONTH, 4);
     public static final LocalDate DATE5 = LocalDate.of(YEAR, MONTH, 5);
-    public static final LocalDate NEW_DATE = LocalDate.of(YEAR, MONTH, NEW_DAY);
+    public static final LocalDate NEW_DATE = LocalDate.of(YEAR, MONTH + 1, NEW_DAY);
     public static final Long WEATHER_ID = 1L;
     public static final Long COND_ID1 = 1L;
     public static final Long COND_ID2 = 7L;
