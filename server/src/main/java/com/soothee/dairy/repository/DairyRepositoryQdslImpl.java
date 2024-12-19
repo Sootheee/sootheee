@@ -128,7 +128,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     }
 
     @Override
-    public Optional<DateContents> findDiaryContentInMonth(Long memberId, String type, MonthParam monthParam, String high) {
+    public Optional<DateContents> findDiaryContentInMonthHL(Long memberId, String type, MonthParam monthParam, String high) {
         return Optional.ofNullable(
                 queryFactory.select(new QDateContents(dairy.dairyId,
                                                         dairy.date,

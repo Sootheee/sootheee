@@ -70,7 +70,7 @@ public interface DairyRepositoryQdsl {
      * @param high     String : 가장 높은/낮은 점수 중 타입
      * @return Optional<DateContents>
      */
-    Optional<DateContents> findDiaryContentInMonth(Long memberId, String type, MonthParam monthParam, String high);
+    Optional<DateContents> findDiaryContentInMonthHL(Long memberId, String type, MonthParam monthParam, String high);
 
     /**
      * 로그인한 계정이 지정한 년도/주차에 작성한 일기 개수 & 오늘의 점수 평균 조회</hr>

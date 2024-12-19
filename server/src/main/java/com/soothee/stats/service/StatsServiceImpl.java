@@ -40,8 +40,8 @@ public class StatsServiceImpl implements StatsService{
     public MonthlyContentsDTO getMonthlyContents(Long memberId, String type, MonthParam monthParam) {
         return MonthlyContentsDTO.builder()
                 .count(dairyRepository.findDiaryContentCntInMonth(memberId, type, monthParam).orElse(0))
-                .highest(dairyRepository.findDiaryContentInMonth(memberId, type, monthParam, "high").orElse(new DateContents()))
-                .lowest(dairyRepository.findDiaryContentInMonth(memberId, type, monthParam, "low").orElse(new DateContents()))
+                .highest(dairyRepository.findDiaryContentInMonthHL(memberId, type, monthParam, "high").orElse(new DateContents()))
+                .lowest(dairyRepository.findDiaryContentInMonthHL(memberId, type, monthParam, "low").orElse(new DateContents()))
                 .build();
     }
 

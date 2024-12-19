@@ -122,7 +122,7 @@ class DairyRepositoryTest {
         //given
         MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        DateContents result = dairyRepository.findDiaryContentInMonth(CommonTestCode.MEMBER_ID, "thanks", monthParam, "high").orElseThrow(NullPointerException::new);
+        DateContents result = dairyRepository.findDiaryContentInMonthHL(CommonTestCode.MEMBER_ID, "thanks", monthParam, "high").orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getDairyId()).isEqualTo(CommonTestCode.DAIRY_ID2);
         Assertions.assertThat(result.getDate()).isEqualTo(CommonTestCode.DATE2);
