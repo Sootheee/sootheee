@@ -93,4 +93,16 @@ public interface DairyRepositoryQdsl {
      * @return Optional<List<DateScore>> : 지정한 년도/주차 동안 작성한 일기 날짜와 점수 리스트 (null 가능)
      */
     Optional<List<DateScore>> findDiaryScoresInWeekly(Long memberId, WeekParam weekParam);
+
+    /**
+     * 해당 달에 작성한 모든 감사한/배운 일 정보 리스트 조회</hr>
+     * 삭제한 일기 제외
+     *
+     * @param memberId Long : 로그인한 계정 일련번호
+     * @param type     String : 감사한/배운 일 중 타입
+     * @param monthParam   MonthParam : 지정한 년도/달
+     * @param orderBy     String : 조회 순서 타입
+     * @return Optional<DateContents> : 기록한 날짜, 오늘의 점수, 감사한/배운 일 내용 정보 리스트 (null 가능)
+     */
+    Optional<List<DateContents>> findDiaryContentInMonthSort(Long memberId, String type, MonthParam monthParam, String orderBy);
 }

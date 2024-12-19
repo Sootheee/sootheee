@@ -176,4 +176,28 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .fetch()
         );
     }
+
+    private OrderSpecifier<?> getOrderBy(String orderBy) {
+        return StringUtils.equals(orderBy, "date") ? dairy.date.desc()
+                : StringUtils.equals(orderBy, "high") ? dairy.score.desc() : dairy.score.asc();
+    }
+
+    @Override
+    public Optional<List<DateContents>> findDiaryContentInMonthSort(Long memberId, String type, MonthParam monthParam, String orderBy) {
+        return Optional.ofNullable(
+                queryFactory.select(new QDateContents(dairy.dairyId,
+                                                        dairy.date,
+                                                        dairy.score,
+                                                        getContentType(type)))
+                            .from(dairy)
+                            .where(dairy.member.memberId.eq(memberId),
+                                    dairy.date.year().eq(monthParam.getYear()),
+                                    dairy.date.month().eq(monthParam.getMonth()),
+                                    getContentTypeNull(type),
+                                    getContentTypeEmpty(type),
+                                    dairy.isDelete.eq("N"))
+                            .orderBy(getOrderBy(orderBy))
+                            .fetch()
+        );
+    }
 }

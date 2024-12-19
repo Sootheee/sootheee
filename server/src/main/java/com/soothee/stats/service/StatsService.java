@@ -44,15 +44,6 @@ public interface StatsService {
     MonthlyContentsDTO getMonthlyContents(Long memberId, String type, MonthParam monthParam);
 
     /**
-     * 월간 선택 횟수 상위 최대 3개 컨디션 리스트 조회</hr>
-     *
-     * @param memberId     Long : 현재 로그인한 계정의 일련번호
-     * @param monthParam   MonthParam : 지정한 년도/달
-     * @return MonthlyConditionDTO : 월간 선택 횟수 상위 최대 3개 컨디션 리스트
-     */
-    MonthlyConditionsDTO getMonthlyConditionList(Long memberId, MonthParam monthParam);
-
-    /**
      * 로그인한 계정이 지정한 년도/주차의 요약 정보 조회</hr>
      * 1. 한 주간 작성한 일기 개수</br>
      * 2. 한 주동안 오늘의 점수 평균값</br>
@@ -63,4 +54,34 @@ public interface StatsService {
      * @return WeeklyStatsDTO : 주간 요약 정보
      */
     WeeklyStatsDTO getWeeklyStatsInfo(Long memberId, WeekParam weekParam);
+
+    /**
+     * 월간 선택 횟수 상위 최대 3개 컨디션 리스트 조회</hr>
+     * 1. 한 달간 기록한 컨디션 개수</br>
+     * 2. 한 달동안 기록한 컨디션 중 상위 최대 3개의 컨디션 정보</br>
+     * 2-1. 컨디션의 일련번호</br>
+     * 2-2. 전체 선택한 컨디션 중 해당 컨디션의 비율
+     *
+     * @param memberId     Long : 현재 로그인한 계정의 일련번호
+     * @param monthParam   MonthParam : 지정한 년도/달
+     * @return MonthlyConditionDTO : 월간 선택 횟수 상위 최대 3개 컨디션 리스트
+     */
+    MonthlyConditionsDTO getMonthlyConditionList(Long memberId, MonthParam monthParam);
+
+    /**
+     * 로그인한 계정이 지정한 년도/달에 작성한 모든 감사한/배운 일 리스트 조회</hr>
+     * 1. 한 달간 작성한 감사한/배운 일 횟수</br>
+     * 2. 한 달간 작성한 감사한/배운 일 리스트</br>
+     * 2-1. 일기 일련번호</br>
+     * 2-2. 일기 날짜</br>
+     * 2-3. 일기 오늘의 점수</br>
+     * 2-4. 해당 감사한/배운 일 내용
+     *
+     * @param memberId      Long : 현재 로그인한 계정의 일련번호
+     * @param type          String : 감사한/배운 일 타입
+     * @param monthParam    MonthParam : 지정한 년도/달
+     * @param orderBy       String : 조회 순서
+     * @return MonthlyAllContentsDTO : 월간 작성한 모든 감사한/배운 일의 개수와 정보 리스트
+     */
+    MonthlyAllContentsDTO getAllContentsInMonth(Long memberId, String type, MonthParam monthParam, String orderBy);
 }

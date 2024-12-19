@@ -136,18 +136,18 @@ public class StatsController {
         return new ResponseEntity<MonthlyConditionsDTO>(result, HttpStatus.OK);
     }
 
-    /** 월간 작성한 모든 고마운/배운 일 리스트 조회 */
+    /** 통계 월간 감사한/배운 일 세부 조회 */
     @GetMapping("/monthly/detail/{type}")
-    @Operation(summary = "월간 작성한 모든 고마운/배운 일 리스트", description = "로그인한 계정의 해당 달 고마운/배운 일 작성 횟수, 작성한 모든 고마운/배운 일 리스트 조회", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Operation(summary = "월간 작성한 모든 감사한/배운 일 리스트", description = "로그인한 계정의 해당 달 감사한/배운 일 작성 횟수, 작성한 모든 감사한/배운 일 리스트 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "type", description = "고마운(thanks)/배운(learn) 일 종류", example = "/stats/monthly/thanks", required = true, in = ParameterIn.PATH),
+            @Parameter(name = "type", description = "감사한(thanks)/배운(learn) 일 종류", example = "/stats/monthly/thanks", required = true, in = ParameterIn.PATH),
             @Parameter(name = "year", description = "조회할 년도", example = "/stats/monthly/detail/thanks?year=2024", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "month", description = "조회할 달", example = "/stats/monthly/detail/learn?year=2024&month=10", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "order_by", description = "조회 순서", example = "/stats/monthly/detail/thanks?year=2024&month=10&order_by=date", required = true, in = ParameterIn.QUERY)
+            @Parameter(name = "order_by", description = "조회 순서 1.날짜순(date) 2.높은 점수순(high) 3.낮은 점수순(low)", example = "/stats/monthly/detail/thanks?year=2024&month=10&order_by=date", required = true, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = MonthlyContentsDTO.class))),
-            @ApiResponse(responseCode = "204", description = "작성한 고마운/배운 일 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "204", description = "작성한 감사한/배운 일 없음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> sendMonthlyContentsList(@PathVariable("type") String type,
@@ -158,7 +158,10 @@ public class StatsController {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<MonthlyAllContentsDTO>(HttpStatus.OK);
+        MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(memberId, type, monthParam, orderBy);
+        if (result.getCount() < 1) {
+            return new ResponseEntity<String>(MyErrorMsg.NO_CONTENTS.toString(), HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<MonthlyAllContentsDTO>(result, HttpStatus.OK);
     }
 }

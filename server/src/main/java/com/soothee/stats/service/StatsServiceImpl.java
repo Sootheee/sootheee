@@ -46,6 +46,15 @@ public class StatsServiceImpl implements StatsService{
     }
 
     @Override
+    public WeeklyStatsDTO getWeeklyStatsInfo(Long memberId, WeekParam weekParam) {
+        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, weekParam).orElse(new WeeklyStatsDTO());
+        if (result.getCount() > 2) {
+            result.setScoreList(dairyRepository.findDiaryScoresInWeekly(memberId, weekParam).orElse(new ArrayList<>()));
+        }
+        return result;
+    }
+
+    @Override
     public MonthlyConditionsDTO getMonthlyConditionList(Long memberId, MonthParam monthParam) {
         dairyRepository.findDiaryStatsInMonth(memberId, monthParam).orElseThrow(
                 () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
@@ -61,11 +70,10 @@ public class StatsServiceImpl implements StatsService{
     }
 
     @Override
-    public WeeklyStatsDTO getWeeklyStatsInfo(Long memberId, WeekParam weekParam) {
-        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, weekParam).orElse(new WeeklyStatsDTO());
-        if (result.getCount() > 2) {
-            result.setScoreList(dairyRepository.findDiaryScoresInWeekly(memberId, weekParam).orElse(new ArrayList<>()));
-        }
-        return result;
+    public MonthlyAllContentsDTO getAllContentsInMonth(Long memberId, String type, MonthParam monthParam, String orderBy) {
+        return MonthlyAllContentsDTO.builder()
+                .count(dairyRepository.findDiaryContentCntInMonth(memberId, type, monthParam).orElse(0))
+                .contentList(dairyRepository.findDiaryContentInMonthSort(memberId, type, monthParam, orderBy).orElse(new ArrayList<>()))
+                .build();
     }
 }
