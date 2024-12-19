@@ -62,6 +62,21 @@ class StatsServiceTest {
     }
 
     @Test
+    void getMonthlyConditionList() {
+        //given
+        //when
+        MonthlyConditionsDTO result = statsService.getMonthlyConditionList(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //then
+        Assertions.assertThat(result.getCount()).isEqualTo(20);
+        Assertions.assertThat(result.getCondiList().get(0).getCondId()).isEqualTo(1L);
+        Assertions.assertThat(result.getCondiList().get(0).getCondRatio()).isEqualTo(25.0);
+        Assertions.assertThat(result.getCondiList().get(1).getCondId()).isEqualTo(2L);
+        Assertions.assertThat(result.getCondiList().get(1).getCondRatio()).isEqualTo(25.0);
+        Assertions.assertThat(result.getCondiList().get(2).getCondId()).isEqualTo(7L);
+        Assertions.assertThat(result.getCondiList().get(2).getCondRatio()).isEqualTo(25.0);
+    }
+
+    @Test
     void getWeeklyStatsInfo() {
         //given
         //when
