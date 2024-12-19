@@ -89,7 +89,6 @@ public class DairyServiceImpl implements DairyService {
         if (!Objects.equals(dairy.getMember().getMemberId(), memberId)) {
             throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
         }
-
         dairyConditionService.deleteDairyConditionsOfDairy(dairy);
         dairy.deleteDairy();
     }

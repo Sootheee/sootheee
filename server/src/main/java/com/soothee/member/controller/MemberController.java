@@ -32,7 +32,7 @@ public class MemberController {
 
     /** 회원 정보 전송 */
     @GetMapping("/info")
-    @Operation(summary = "회원 정보", description = "로그인한 계정 정보로 필요한 정보를 전달", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Operation(summary = "회원 정보", description = "로그인한 계정 정보로 필요한 정보 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
             @Parameter(name = "type", description = "닉네임만 조회할 때 사용 || 없으면 회원의 모든 정보 조회함", example = "/member/info?type=name", required = false, in = ParameterIn.QUERY)
     })

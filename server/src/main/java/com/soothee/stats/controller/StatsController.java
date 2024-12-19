@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-@Tag(name = "Stats API", description = "통계 관련 처리")
+@Tag(name = "Stats API", description = "월간/주간 통계 조회")
 @RequestMapping("/stats")
 public class StatsController {
     private final MemberService memberService;
@@ -37,7 +37,7 @@ public class StatsController {
 
     /** 통계 월간 요약 */
     @GetMapping("/monthly")
-    @Operation(summary = "통계 월간 평균 요약", description = "로그인한 계정의 해당 월 일기 작성 횟수, 평균 점수, 최빈 컨디션에 대한 정보", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Operation(summary = "통계 월간 평균 요약", description = "로그인한 계정의 해당 월 일기 작성 횟수, 평균 점수, 최빈 컨디션에 대한 정보 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
             @Parameter(name = "year", description = "조회할 년도", example = "/stats/monthly?year=2024", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "month", description = "조회할 달", example = "/stats/monthly?year=2024&month=10", required = true, in = ParameterIn.QUERY)
@@ -52,7 +52,7 @@ public class StatsController {
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         Long memberId = memberService.getLoginMemberId(loginInfo);
         MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(memberId, year, month);
-        if (result.getDairyCnt() < 3) {
+        if (result.getCount() < 3) {
             return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<MonthlyStatsDTO>(result, HttpStatus.OK);
@@ -60,15 +60,15 @@ public class StatsController {
 
     /** 통계 월간 감사한/배운 일 */
     @GetMapping("/monthly/{type}")
-    @Operation(summary = "통계 월간 고마운/배운 일 요약", description = "로그인한 계정의 해당 월 고마운/배운 일 작성 횟수, 가장 높은/낮은 점수의 고마운/배운 일", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Operation(summary = "통계 월간 고마운/배운 일 요약", description = "로그인한 계정의 해당 월 고마운/배운 일 작성 횟수, 가장 높은/낮은 점수의 고마운/배운 일 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
             @Parameter(name = "type", description = "고마운(thanks)/배운(learn) 일 종류", example = "/stats/monthly/thanks", required = true, in = ParameterIn.PATH),
             @Parameter(name = "year", description = "조회할 년도", example = "/stats/monthly/thanks?year=2024", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "month", description = "조회할 달", example = "/stats/monthly/thanks?year=2024&month=10", required = true, in = ParameterIn.QUERY)
+            @Parameter(name = "month", description = "조회할 달", example = "/stats/monthly/learn?year=2024&month=10", required = true, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = MonthlyContentsDTO.class))),
-            @ApiResponse(responseCode = "204", description = "작성한 일기 수 부족", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "204", description = "작성한 고마운/배운 일 없음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> sendMonthlyContents(@PathVariable("type") String type,
@@ -78,9 +78,10 @@ public class StatsController {
         Long memberId = memberService.getLoginMemberId(loginInfo);
         MonthlyContentsDTO result = statsService.getMonthlyContents(memberId, type, year, month);
         if (result.getCount() < 1) {
-            return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<String>(MyErrorMsg.NO_CONTENTS.toString(), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<MonthlyContentsDTO>(result, HttpStatus.OK);
+    }
     }
 
     /** 통계 주간 요약 */
@@ -100,7 +101,7 @@ public class StatsController {
                                              @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         Long memberId = memberService.getLoginMemberId(loginInfo);
         WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(memberId, year, week);
-        if (result.getDairyCnt() < 3) {
+        if (result.getCount() < 3) {
             return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<WeeklyStatsDTO>(HttpStatus.OK);
