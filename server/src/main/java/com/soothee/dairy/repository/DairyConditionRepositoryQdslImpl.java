@@ -25,7 +25,7 @@ public class DairyConditionRepositoryQdslImpl implements DairyConditionRepositor
                 queryFactory.select(new QConditionRatio(dairyCondition.condition.condId,
                                                             MathExpressions.round(
                                                                     dairyCondition.condition.condId.count().doubleValue().divide(count)
-                                                                    , 2)))
+                                                                    , 3).multiply(100)))
                             .from(dairyCondition)
                             .where(dairyCondition.dairy.member.memberId.eq(memberId),
                                     dairyCondition.dairy.date.year().eq(year),
