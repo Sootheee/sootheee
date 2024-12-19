@@ -58,7 +58,7 @@ public class AuthenticatedUser implements Principal, OAuth2User {
     /**
      * Member Entity 정보와 OAuth2User 정보로 AuthenticatedUser 생성</hr>
      *
-     * @param member Member : 서버에 저장된 회원 정보
+     * @param member     Member : 서버에 저장된 회원 정보
      * @param oauth2User OAuth2User : 인증된 회원 정보
      * @return AuthenticatedUser 회원 정보
      */

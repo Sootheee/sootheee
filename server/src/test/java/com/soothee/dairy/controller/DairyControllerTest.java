@@ -1,35 +1,50 @@
 package com.soothee.dairy.controller;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.soothee.config.TestConfig;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Import;
 
+@Import(TestConfig.class)
 class DairyControllerTest {
-    @BeforeEach
-    void setUp() {
-    }
-
     @Test
     void sendAllDairyMonthly() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void sendDairyByDate() {
+        //given
+        //when
+        //then
+    }
+
+    @Test
+    void sendDairyByDairyId() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void registerDairy() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void modifyDairy() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void deleteDairy() {
-    }
-
-    @AfterEach
-    void tearDown() {
+        //given
+        //when
+        //then
     }
 }

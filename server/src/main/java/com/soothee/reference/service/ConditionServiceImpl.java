@@ -9,22 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ConditionServiceImpl implements ConditionService{
     private final ConditionRepository conditionRepository;
-    /**
-     * 컨디션 일련번호로 컨디션 정보 조회</hr>
-     *
-     * @param condId Log : 해당 컨디션 일련번호
-     * @return Condition : 해당 컨디션 정보
-     */
+
     @Override
     public Condition getConditionById(Long condId) {
-        Optional<Condition> optional = conditionRepository.findByCondId(condId);
-        return optional.orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
+        return conditionRepository.findByCondId(condId)
+                .orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
     }
 }

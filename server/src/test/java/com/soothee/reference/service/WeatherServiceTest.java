@@ -1,11 +1,13 @@
 package com.soothee.reference.service;
 
-import com.soothee.reference.domain.Condition;
+import com.soothee.config.TestConfig;
+import com.soothee.reference.domain.Weather;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -17,13 +19,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
-class ConditionServiceImplTest {
+@Import(TestConfig.class)
+class WeatherServiceTest {
     @Autowired
-    private ConditionService conditionService;
+    private WeatherService weatherService;
 
     @Test
-    void getConditionById() {
-        Condition condition = conditionService.getConditionById(1L);
-        Assertions.assertThat(condition.getCondId()).isEqualTo(1L);
+    void getWeatherById() {
+        //given
+        //when
+        Weather weather = weatherService.getWeatherById(1L);
+        //then
+        Assertions.assertThat(weather.getWeatherName()).isEqualTo("sunny");
     }
 }

@@ -1,24 +1,32 @@
 package com.soothee.dairy.repository;
 
-import com.soothee.common.constants.SnsType;
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.SortType;
+import com.soothee.common.requestParam.MonthParam;
+import com.soothee.common.requestParam.WeekParam;
+import com.soothee.config.TestConfig;
+import com.soothee.stats.dto.DateContents;
+import com.soothee.stats.dto.MonthlyStatsDTO;
+import com.soothee.util.CommonTestCode;
 import com.soothee.dairy.domain.Dairy;
-import com.soothee.member.domain.Member;
-import com.soothee.member.repository.MemberRepository;
-import com.soothee.reference.repository.WeatherRepository;
+import com.soothee.dairy.dto.DairyDTO;
+import com.soothee.dairy.dto.DairyScoresDTO;
+import com.soothee.stats.dto.DateScore;
+import com.soothee.stats.dto.WeeklyStatsDTO;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
@@ -26,63 +34,176 @@ import java.time.LocalDate;
 @SpringBootTest
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Import(TestConfig.class)
 class DairyRepositoryTest {
     @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
     private DairyRepository dairyRepository;
-    @Autowired
-    private WeatherRepository weatherRepository;
-    private final String NAME = "사용자0";
-    private final String EMAIL = "abc@def.com";
-    private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
-    private final String OAUTH2_CLIENT_ID = "111111";
-    private Member member;
-    private Dairy dairy;
-
-    @BeforeEach
-    void setUp() {
-        member = Member.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .oauth2ClientId(OAUTH2_CLIENT_ID)
-                .snsType(SNS_TYPE).build();
-        memberRepository.save(member);
-
-        dairy = Dairy.builder()
-                .member(memberRepository.findByEmail(EMAIL).orElseThrow())
-                .date(LocalDate.of(2024,10,10))
-                .score(2.0)
-                .weather(weatherRepository.findByWeatherId(1L).orElseThrow())
-                .build();
-        dairyRepository.save(dairy);
-    }
 
     @Test
-    void findByMemberMemberIdAndIsDelete() {
+    void findByMemberMemberIdAndIsDeleteOrderByDairyId() {
         //given
-        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
         //when
-        Dairy result = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N").orElseThrow().get(0);
+        List<Dairy> list = dairyRepository.findByMemberMemberIdAndIsDeleteOrderByDairyId(CommonTestCode.MEMBER_ID, "N").orElseThrow(NullPointerException::new);
         //then
+        Dairy result = Dairy.builder().build();
+        for (Dairy dairy : list) {
+            if (Objects.equals(dairy.getDairyId(), CommonTestCode.DAIRY_ID1)) {
+                result = dairy;
+            }
+        }
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
 
     @Test
     void findByDairyId() {
         //given
-        Member writer = memberRepository.findByEmail(EMAIL).orElseThrow();
-
-        Dairy savedDairy = dairyRepository.findByMemberMemberIdAndIsDelete(writer.getMemberId(), "N").orElseThrow().get(0);
         //when
-        Dairy searchDairy = dairyRepository.findByDairyId(savedDairy.getDairyId()).orElseThrow();
+        Dairy searchDairy = dairyRepository.findByDairyId(CommonTestCode.DAIRY_ID1).orElseThrow(NullPointerException::new);
         //then
-        Assertions.assertThat(savedDairy.getScore()).isEqualTo(searchDairy.getScore());
+        Assertions.assertThat(searchDairy.getScore()).isEqualTo(2.0);
     }
 
-    @AfterEach
-    void tearDown() {
-        dairyRepository.delete(dairy);
-        memberRepository.delete(member);
+
+    @Test
+    void findByMemberIdYearMonth() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DairyScoresDTO> list = dairyRepository.findByMemberIdYearMonth(CommonTestCode.MEMBER_ID, monthParam).orElseThrow(NullPointerException::new);
+        //then
+        DairyScoresDTO result = new DairyScoresDTO();
+        for (DairyScoresDTO scoresDTO : list) {
+            if (Objects.equals(scoresDTO.getDairyId(), CommonTestCode.DAIRY_ID1)) {
+                result = scoresDTO;
+            }
+        }
+        Assertions.assertThat(result.getScore()).isEqualTo(2.0);
+    }
+
+    @Test
+    void findByDate() {
+        //given
+        //when
+        DairyDTO result = dairyRepository.findByDate(CommonTestCode.MEMBER_ID, CommonTestCode.DATE1).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.getScore()).isEqualTo(2.0);
+    }
+
+    @Test
+    void findByMemberDiaryId() {
+        //given
+        //when
+        DairyDTO result = dairyRepository.findByMemberDiaryId(CommonTestCode.MEMBER_ID, CommonTestCode.DAIRY_ID1).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.getScore()).isEqualTo(2.0);
+    }
+
+    @Test
+    void findDiaryStatsInMonth() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(CommonTestCode.MEMBER_ID, monthParam).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.getCount()).isEqualTo(5);
+        Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
+    }
+
+    @Test
+    void findDiaryContentCntInMonth() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        int result = dairyRepository.findDiaryContentCntInMonth(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(), monthParam).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result).isEqualTo(3);
+    }
+
+    @Test
+    void findDiaryContentInMonth() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        DateContents result = dairyRepository.findDiaryContentInMonthHL(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(), monthParam, SortType.HIGH.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.getDairyId()).isEqualTo(CommonTestCode.DAIRY_ID2);
+        Assertions.assertThat(result.getDate()).isEqualTo(CommonTestCode.DATE2);
+        Assertions.assertThat(result.getContent()).isEqualTo("땡큐");
+    }
+
+    @Test
+    void findDiaryStatsInWeekly() {
+        //given
+        WeekParam weekParam = new WeekParam(CommonTestCode.YEAR, CommonTestCode.WEEK);
+        //when
+        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(CommonTestCode.MEMBER_ID, weekParam).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.getCount()).isEqualTo(5);
+        Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
+    }
+
+    @Test
+    void findDiaryScoresInWeekly() {
+        //given
+        WeekParam weekParam = new WeekParam(CommonTestCode.YEAR, CommonTestCode.WEEK);
+        //when
+        List<DateScore> result = dairyRepository.findDiaryScoresInWeekly(CommonTestCode.MEMBER_ID, weekParam).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getScore()).isEqualTo(2.0);
+    }
+
+    @Test
+    void findDiaryContentInMonthSortThanksDate() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(),monthParam, SortType.DATE.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("oh");
+    }
+    @Test
+    void findDiaryContentInMonthSortThanksHigh() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(),monthParam, SortType.HIGH.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("땡큐");
+    }
+    @Test
+    void findDiaryContentInMonthSortThanksLow() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(),monthParam, SortType.LOW.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("감사");
+    }
+    @Test
+    void findDiaryContentInMonthSortLearnDate() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.LEARN.toString(),monthParam, SortType.DATE.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("no");
+    }
+    @Test
+    void findDiaryContentInMonthSortLearnHigh() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.LEARN.toString(),monthParam, SortType.HIGH.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("배운");
+    }
+    @Test
+    void findDiaryContentInMonthSortLearnLow() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.LEARN.toString(),monthParam, SortType.LOW.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("공부");
     }
 }

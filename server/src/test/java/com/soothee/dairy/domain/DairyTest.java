@@ -1,27 +1,19 @@
 package com.soothee.dairy.domain;
 
-import com.soothee.common.constants.SnsType;
+import com.soothee.config.TestConfig;
+import com.soothee.util.CommonTestCode;
 import com.soothee.dairy.dto.DairyDTO;
-import com.soothee.dairy.repository.DairyRepository;
-import com.soothee.member.domain.Member;
-import com.soothee.member.repository.MemberRepository;
 import com.soothee.reference.domain.Weather;
-import com.soothee.reference.repository.ConditionRepository;
-import com.soothee.reference.repository.WeatherRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
@@ -29,74 +21,33 @@ import java.util.List;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Import(TestConfig.class)
 class DairyTest {
     @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private DairyRepository dairyRepository;
-    @Autowired
-    private WeatherRepository weatherRepository;
-    private final String NAME = "사용자0";
-    private final String EMAIL = "abc@def.com";
-    private final SnsType SNS_TYPE = SnsType.KAKAOTALK;
-    private final String OAUTH2_CLIENT_ID = "111111";
-    private Member member;
-    private Dairy dairy;
-    private Weather weather;
-    @Autowired
-    private ConditionRepository conditionRepository;
-
-    @BeforeEach
-    void setUp() {
-        weather = weatherRepository.findByWeatherId(1L).orElseThrow();
-
-        member = Member.builder()
-                        .name(NAME)
-                        .email(EMAIL)
-                        .oauth2ClientId(OAUTH2_CLIENT_ID)
-                        .snsType(SNS_TYPE).build();
-        memberRepository.save(member);
-
-        dairy = Dairy.builder()
-                    .member(member)
-                    .date(LocalDate.of(2024,10,10))
-                    .score(2.0)
-                    .weather(weather)
-                    .build();
-        dairyRepository.save(dairy);
-    }
+    private CommonTestCode commonTestCode;
 
     @Test
     void updateDairy() {
         //given
-        List<Dairy> savedDairyList = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow();
-        Dairy savedDairy = savedDairyList.get(0);
-        Weather weather = weatherRepository.findByWeatherId(1L).orElseThrow();
-        DairyDTO newDairy = DairyDTO.builder()
-                                .date(LocalDate.of(2024,10,10))
-                                .score(2.0)
-                                .thank("thanks")
-                                .build();
+        String changeThank = "thanks";
+        Dairy savedDairy = commonTestCode.getSavedDairy(CommonTestCode.DAIRY_ID1);
+        Weather weather = commonTestCode.getWeather();
+        DairyDTO changedInfo = DairyDTO.builder()
+                                        .thank(changeThank)
+                                        .build();
         //when
-        savedDairy.updateDairy(newDairy, weather);
+        savedDairy.updateDairy(changedInfo, weather);
         //then
-        Assertions.assertThat(dairy.getThank()).isEqualTo("thanks");
+        Assertions.assertThat(savedDairy.getThank()).isEqualTo(changeThank);
     }
 
     @Test
     void deleteDairy() {
         //given
-        List<Dairy> savedDairyList = dairyRepository.findByMemberMemberIdAndIsDelete(member.getMemberId(), "N").orElseThrow();
-        Dairy savedDairy = savedDairyList.get(0);
+        Dairy savedDairy = commonTestCode.getSavedDairy(CommonTestCode.DAIRY_ID1);
         //when
         savedDairy.deleteDairy();
         //then
         Assertions.assertThat(savedDairy.getIsDelete()).isEqualTo("Y");
-    }
-
-    @AfterEach
-    void tearDown() {
-        dairyRepository.delete(dairy);
-        memberRepository.delete(member);
     }
 }

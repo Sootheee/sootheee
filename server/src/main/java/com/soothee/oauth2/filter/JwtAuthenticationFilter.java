@@ -25,16 +25,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = getTokenFromRequest(request);
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            String username = jwtTokenProvider.getUsernameFromToken(token); // JWT에서 사용자 이름 추출
+            /* JWT에서 사용자 이름 추출 */
+            String username = jwtTokenProvider.getUsernameFromToken(token);
 
-            // 사용자 인증 객체 생성
+            /* 사용자 인증 객체 생성 */
             UserDetails userDetails = User.builder()
-                    .username(username)
-                    .password("") // JWT로 인증하므로 비밀번호는 비워둠
-                    .build();
+                                            .username(username)
+                                            /* JWT로 인증하므로 비밀번호는 비워둠 */
+                                            .password("")
+                                            .build();
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication); // SecurityContext에 인증 설정
+            /* SecurityContext에 인증 설정 */
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response); // 다음 필터로 요청 전달

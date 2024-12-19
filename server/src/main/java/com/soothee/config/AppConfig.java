@@ -1,5 +1,6 @@
 package com.soothee.config;
 
+import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.soothee.common.constants.ConstUrl;
 import com.soothee.oauth2.filter.JwtAuthenticationFilter;
@@ -64,7 +65,7 @@ public class AppConfig implements WebMvcConfigurer {
     private EntityManager entityManager;
     @Bean
     public JPAQueryFactory jpaQueryFactory(){
-        return new JPAQueryFactory(entityManager);
+        return new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
     }
 
     /** Front-Server & Back-Server 간 CORS 설정 */
@@ -110,7 +111,6 @@ public class AppConfig implements WebMvcConfigurer {
         return authenticationConverter;
     }
 
-
     /** Swagger 회원 API 명세서 */
     @Bean
     public GroupedOpenApi memberGroupedOpenApi() {
@@ -143,5 +143,22 @@ public class AppConfig implements WebMvcConfigurer {
                                 );
                             })
                             .build();
+    }
+
+    /** Swagger 회원 API 명세서 */
+    @Bean
+    public GroupedOpenApi statsGroupedOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("stats")
+                .pathsToMatch("/stats/**")
+                .addOpenApiCustomizer(openApi -> {
+                    openApi.setInfo(new io.swagger.v3.oas.models.info.Info().title("Stats API")
+                            .description("통계 관련 처리")
+                            .version("1.0.0"));
+                    openApi.addSecurityItem(
+                            new io.swagger.v3.oas.models.security.SecurityRequirement().addList("oauth2_auth")
+                    );
+                })
+                .build();
     }
 }
