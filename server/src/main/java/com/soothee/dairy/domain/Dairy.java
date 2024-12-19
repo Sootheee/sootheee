@@ -55,7 +55,7 @@ public class Dairy extends TimeEntity {
     @Column(name = "thank")
     private String thank;
 
-    /** 배운 점 */
+    /** 배운 일 */
     @Column(name = "learn")
     private String learn;
 
