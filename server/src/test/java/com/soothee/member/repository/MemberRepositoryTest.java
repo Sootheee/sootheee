@@ -28,16 +28,6 @@ class MemberRepositoryTest {
     private MemberRepository memberRepository;
 
     @Test
-    @DisplayName("email로 member 조회")
-    void findByEmail() {
-        //given
-        //when
-        Member savedMember = memberRepository.findByEmail(CommonTestCode.EMAIL).orElseThrow(NullPointerException::new);
-        //then
-        Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
-    }
-
-    @Test
     @DisplayName("oauth2ClientId와 SnsType으로 member 조회")
     void findByOauth2ClientIdAndIsDeleteAndSnsTypeAndIsDelete() {
         //given
@@ -57,5 +47,24 @@ class MemberRepositoryTest {
                 .orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
+    }
+
+    @Test
+    @DisplayName("email로 member 조회")
+    void findByEmail() {
+        //given
+        //when
+        Member savedMember = memberRepository.findByEmail(CommonTestCode.EMAIL).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
+    }
+
+    @Test
+    void findByMemberId() {
+        //given
+        //when
+        Member result = memberRepository.findByMemberId(CommonTestCode.MEMBER_ID).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.getName()).isEqualTo("사용자0");
     }
 }

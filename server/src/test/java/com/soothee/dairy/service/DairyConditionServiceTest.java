@@ -32,18 +32,6 @@ class DairyConditionServiceTest {
     private CommonTestCode commonTestCode;
 
     @Test
-    void getConditionsIdListByDairy() {
-        //given
-        commonTestCode.saveNewDairyCondition();
-        //when
-        List<Long> dairyConditionList = dairyConditionService.getConditionsIdListByDairy(CommonTestCode.DAIRY_ID1);
-        //then
-        Assertions.assertThat(dairyConditionList.get(0)).isEqualTo(1L);
-        Assertions.assertThat(dairyConditionList.get(1)).isEqualTo(7L);
-        Assertions.assertThat(dairyConditionList.get(2)).isEqualTo(2L);
-    }
-
-    @Test
     void saveConditions() {
         //given
         Dairy savedNewDairy = commonTestCode.saveNewDairy();
@@ -56,6 +44,18 @@ class DairyConditionServiceTest {
         //then
         List<DairyCondition> afterDcList = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(),"after");
         Assertions.assertThat(afterDcList.size()).isEqualTo(3);
+    }
+
+    @Test
+    void getConditionsIdListByDairy() {
+        //given
+        commonTestCode.saveNewDairyCondition();
+        //when
+        List<Long> dairyConditionList = dairyConditionService.getConditionsIdListByDairy(CommonTestCode.DAIRY_ID1);
+        //then
+        Assertions.assertThat(dairyConditionList.get(0)).isEqualTo(1L);
+        Assertions.assertThat(dairyConditionList.get(1)).isEqualTo(7L);
+        Assertions.assertThat(dairyConditionList.get(2)).isEqualTo(2L);
     }
 
     @Test

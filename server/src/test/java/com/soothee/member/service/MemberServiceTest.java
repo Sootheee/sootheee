@@ -108,6 +108,20 @@ class MemberServiceTest {
     }
 
     @Test
+    void getLoginMemberId() {
+        //given
+        //when
+        //then
+    }
+
+    @Test
+    void getLoginMember() {
+        //given
+        //when
+        //then
+    }
+
+    @Test
     void getMemberById() {
         //given
         //when

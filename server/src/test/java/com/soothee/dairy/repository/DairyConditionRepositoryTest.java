@@ -3,6 +3,7 @@ package com.soothee.dairy.repository;
 import com.soothee.config.TestConfig;
 import com.soothee.dairy.domain.Dairy;
 import com.soothee.stats.dto.ConditionRatio;
+import com.soothee.stats.dto.MonthlyConditionsDTO;
 import com.soothee.util.CommonTestCode;
 import com.soothee.dairy.domain.DairyCondition;
 import org.assertj.core.api.Assertions;
@@ -41,17 +42,6 @@ class DairyConditionRepositoryTest {
     }
 
     @Test
-    void findMostOneCondIdInMonth() {
-        //given
-        Double cnt = dairyConditionRepository.getAllDairyConditionCntInMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow().getCount().doubleValue();
-        //when
-        ConditionRatio result = dairyConditionRepository.findConditionRatioListInMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH ,1, cnt)
-                                                .orElseThrow(NullPointerException::new).get(0);
-        //then
-        Assertions.assertThat(result.getCondId()).isEqualTo(1L);
-    }
-
-    @Test
     void existsByDairyDairyIdN() {
         //given
         Dairy newDairy = commonTestCode.saveNewDairy();
@@ -69,5 +59,25 @@ class DairyConditionRepositoryTest {
         boolean result = dairyConditionRepository.existsByDairyDairyId(newDairy.getDairyId());
         //then
         Assertions.assertThat(result).isTrue();
+    }
+
+    @Test
+    void findMostOneCondIdInMonth() {
+        //given
+        Double cnt = dairyConditionRepository.getAllDairyConditionCntInMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow().getCount().doubleValue();
+        //when
+        ConditionRatio result = dairyConditionRepository.findConditionRatioListInMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH ,1, cnt)
+                                                .orElseThrow(NullPointerException::new).get(0);
+        //then
+        Assertions.assertThat(result.getCondId()).isEqualTo(1L);
+    }
+
+    @Test
+    void getAllDairyConditionCntInMonth() {
+        //given
+        //when
+        MonthlyConditionsDTO result = dairyConditionRepository.getAllDairyConditionCntInMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.getCount()).isEqualTo(20);
     }
 }

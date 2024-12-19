@@ -1,6 +1,8 @@
 package com.soothee.dairy.repository;
 
 import com.soothee.config.TestConfig;
+import com.soothee.stats.dto.DateContents;
+import com.soothee.stats.dto.MonthlyStatsDTO;
 import com.soothee.util.CommonTestCode;
 import com.soothee.dairy.domain.Dairy;
 import com.soothee.dairy.dto.DairyDTO;
@@ -37,8 +39,7 @@ class DairyRepositoryTest {
     void findByMemberMemberIdAndIsDeleteOrderByDairyId() {
         //given
         //when
-        List<Dairy> list = dairyRepository.findByMemberMemberIdAndIsDeleteOrderByDairyId(CommonTestCode.MEMBER_ID, "N")
-                                        .orElseThrow(NullPointerException::new);
+        List<Dairy> list = dairyRepository.findByMemberMemberIdAndIsDeleteOrderByDairyId(CommonTestCode.MEMBER_ID, "N").orElseThrow(NullPointerException::new);
         //then
         Dairy result = Dairy.builder().build();
         for (Dairy dairy : list) {
@@ -63,8 +64,7 @@ class DairyRepositoryTest {
     void findByMemberIdYearMonth() {
         //given
         //when
-        List<DairyScoresDTO> list = dairyRepository.findByMemberIdYearMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH)
-                                                .orElseThrow(NullPointerException::new);
+        List<DairyScoresDTO> list = dairyRepository.findByMemberIdYearMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow(NullPointerException::new);
         //then
         DairyScoresDTO result = new DairyScoresDTO();
         for (DairyScoresDTO scoresDTO : list) {
@@ -79,28 +79,55 @@ class DairyRepositoryTest {
     void findByDate() {
         //given
         //when
-        DairyDTO result = dairyRepository.findByDate(CommonTestCode.MEMBER_ID, CommonTestCode.DATE1)
-                                            .orElseThrow(NullPointerException::new);
+        DairyDTO result = dairyRepository.findByDate(CommonTestCode.MEMBER_ID, CommonTestCode.DATE1).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
     }
 
     @Test
-    void findByDiaryId() {
+    void findByMemberDiaryId() {
         //given
         //when
-        DairyDTO result = dairyRepository.findByMemberDiaryId(CommonTestCode.MEMBER_ID, CommonTestCode.DAIRY_ID1)
-                                            .orElseThrow(NullPointerException::new);
+        DairyDTO result = dairyRepository.findByMemberDiaryId(CommonTestCode.MEMBER_ID, CommonTestCode.DAIRY_ID1).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getScore()).isEqualTo(2.0);
+    }
+
+    @Test
+    void findDiaryStatsInMonth() {
+        //given
+        //when
+        MonthlyStatsDTO result = dairyRepository.findDiaryStatsInMonth(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.getCount()).isEqualTo(5);
+        Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
+    }
+
+    @Test
+    void findDiaryContentCntInMonth() {
+        //given
+        //when
+        int result = dairyRepository.findDiaryContentCntInMonth(CommonTestCode.MEMBER_ID, "thanks",CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result).isEqualTo(3);
+    }
+
+    @Test
+    void findDiaryContentInMonth() {
+        //given
+        //when
+        DateContents result = dairyRepository.findDiaryContentInMonth(CommonTestCode.MEMBER_ID, "thanks", CommonTestCode.YEAR, CommonTestCode.MONTH, "high").orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.getDairyId()).isEqualTo(CommonTestCode.DAIRY_ID2);
+        Assertions.assertThat(result.getDate()).isEqualTo(CommonTestCode.DATE2);
+        Assertions.assertThat(result.getContent()).isEqualTo("땡큐");
     }
 
     @Test
     void findDiaryStatsInWeekly() {
         //given
         //when
-        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK)
-                                                .orElseThrow(NullPointerException::new);
+        WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getCount()).isEqualTo(5);
         Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
@@ -110,8 +137,7 @@ class DairyRepositoryTest {
     void findDiaryScoresInWeekly() {
         //given
         //when
-        List<DateScore> result = dairyRepository.findDiaryScoresInWeekly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK)
-                                                    .orElseThrow(NullPointerException::new);
+        List<DateScore> result = dairyRepository.findDiaryScoresInWeekly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.get(0).getScore()).isEqualTo(2.0);
     }
