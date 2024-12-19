@@ -5,6 +5,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.SortType;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.common.requestParam.WeekParam;
 import com.soothee.dairy.domain.QDairy;
@@ -97,11 +99,11 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     }
 
     private BooleanExpression getContentTypeNull(String type) {
-        return StringUtils.equals(type, "thanks") ? dairy.thank.isNotNull() : dairy.learn.isNotNull();
+        return StringUtils.equals(type, ContentType.THANKS.toString()) ? dairy.thank.isNotNull() : dairy.learn.isNotNull();
     }
 
     private BooleanExpression getContentTypeEmpty(String type) {
-        return StringUtils.equals(type, "thanks") ? dairy.thank.isNotEmpty() : dairy.learn.isNotEmpty();
+        return StringUtils.equals(type, ContentType.THANKS.toString()) ? dairy.thank.isNotEmpty() : dairy.learn.isNotEmpty();
     }
 
     @Override
@@ -120,11 +122,11 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     }
 
     private Expression<String> getContentType(String type) {
-        return StringUtils.equals(type, "thanks") ? dairy.thank : dairy.learn;
+        return StringUtils.equals(type, ContentType.THANKS.toString()) ? dairy.thank : dairy.learn;
     }
 
     private OrderSpecifier<Double> getContentHighLow(String high) {
-        return StringUtils.equals(high, "high") ? dairy.score.desc() : dairy.score.asc();
+        return StringUtils.equals(high, SortType.HIGH.toString()) ? dairy.score.desc() : dairy.score.asc();
     }
 
     @Override
@@ -178,8 +180,8 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     }
 
     private OrderSpecifier<?> getOrderBy(String orderBy) {
-        return StringUtils.equals(orderBy, "date") ? dairy.date.desc()
-                : StringUtils.equals(orderBy, "high") ? dairy.score.desc() : dairy.score.asc();
+        return StringUtils.equals(orderBy, SortType.DATE.toString()) ? dairy.date.asc()
+                : StringUtils.equals(orderBy, SortType.HIGH.toString()) ? dairy.score.desc() : dairy.score.asc();
     }
 
     @Override

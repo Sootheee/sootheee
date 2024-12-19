@@ -1,5 +1,6 @@
 package com.soothee.stats.service;
 
+import com.soothee.common.constants.SortType;
 import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.common.exception.MyException;
 import com.soothee.common.requestParam.MonthParam;
@@ -40,8 +41,8 @@ public class StatsServiceImpl implements StatsService{
     public MonthlyContentsDTO getMonthlyContents(Long memberId, String type, MonthParam monthParam) {
         return MonthlyContentsDTO.builder()
                 .count(dairyRepository.findDiaryContentCntInMonth(memberId, type, monthParam).orElse(0))
-                .highest(dairyRepository.findDiaryContentInMonthHL(memberId, type, monthParam, "high").orElse(new DateContents()))
-                .lowest(dairyRepository.findDiaryContentInMonthHL(memberId, type, monthParam, "low").orElse(new DateContents()))
+                .highest(dairyRepository.findDiaryContentInMonthHL(memberId, type, monthParam, SortType.HIGH.toString()).orElse(new DateContents()))
+                .lowest(dairyRepository.findDiaryContentInMonthHL(memberId, type, monthParam, SortType.LOW.toString()).orElse(new DateContents()))
                 .build();
     }
 
