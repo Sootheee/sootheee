@@ -3,6 +3,7 @@ package com.soothee.stats.controller;
 import com.soothee.common.exception.MyErrorMsg;
 import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
+import com.soothee.stats.dto.MonthlyConditionsDTO;
 import com.soothee.stats.dto.MonthlyContentsDTO;
 import com.soothee.stats.dto.MonthlyStatsDTO;
 import com.soothee.stats.dto.WeeklyStatsDTO;
@@ -82,6 +83,28 @@ public class StatsController {
         }
         return new ResponseEntity<MonthlyContentsDTO>(result, HttpStatus.OK);
     }
+
+    /** 통계 월간 컨디션 요약 */
+    @GetMapping("/monthly/condition")
+    @Operation(summary = "통계 월간 컨디션 요약", description = "로그인한 계정의 해당 월 컨디션 기록 횟수, 가장 많은 비율로 선택된 컨디션 최대 3개 리스트 조회", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Parameters(value = {
+            @Parameter(name = "year", description = "조회할 년도", example = "/stats/monthly/condition?year=2024", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "month", description = "조회할 달", example = "/stats/monthly/condition?year=2024&month=10", required = true, in = ParameterIn.QUERY)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = MonthlyContentsDTO.class))),
+            @ApiResponse(responseCode = "204", description = "기록한 일기 및 컨디션이 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
+    })
+    public ResponseEntity<?> sendMonthlyConditionRatioList(@RequestParam("year") Integer year,
+                                                           @RequestParam("month") Integer month,
+                                                           @AuthenticationPrincipal AuthenticatedUser loginInfo) {
+        Long memberId = memberService.getLoginMemberId(loginInfo);
+        MonthlyConditionsDTO result = statsService.getMonthlyConditionList(memberId, year, month);
+        if (result.getCount() < 1) {
+            return new ResponseEntity<String>(MyErrorMsg.NO_CONTENTS.toString(), HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<MonthlyConditionsDTO>(result, HttpStatus.OK);
     }
 
     /** 통계 주간 요약 */

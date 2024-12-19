@@ -4,7 +4,9 @@ import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.soothee.dairy.domain.QDairyCondition;
 import com.soothee.stats.dto.ConditionRatio;
+import com.soothee.stats.dto.MonthlyConditionsDTO;
 import com.soothee.stats.dto.QConditionRatio;
+import com.soothee.stats.dto.QMonthlyConditionsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -39,6 +41,20 @@ public class DairyConditionRepositoryQdslImpl implements DairyConditionRepositor
                                         dairyCondition.condition.condValue.desc())
                             .limit(limit)
                             .fetch()
+        );
+    }
+
+    @Override
+    public Optional<MonthlyConditionsDTO> getAllDairyConditionCntInMonth(Long memberId, Integer year, Integer month) {
+        return Optional.ofNullable(
+                queryFactory.select(new QMonthlyConditionsDTO(dairyCondition.count().intValue()))
+                        .from(dairyCondition)
+                        .where(dairyCondition.dairy.member.memberId.eq(memberId),
+                                dairyCondition.dairy.date.year().eq(year),
+                                dairyCondition.dairy.date.month().eq(month),
+                                dairyCondition.dairy.isDelete.eq("N"),
+                                dairyCondition.isDelete.eq("N"))
+                        .fetchOne()
         );
     }
 }

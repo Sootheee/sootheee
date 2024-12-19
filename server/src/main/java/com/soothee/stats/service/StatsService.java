@@ -1,5 +1,6 @@
 package com.soothee.stats.service;
 
+import com.soothee.stats.dto.MonthlyConditionsDTO;
 import com.soothee.stats.dto.MonthlyContentsDTO;
 import com.soothee.stats.dto.MonthlyStatsDTO;
 import com.soothee.stats.dto.WeeklyStatsDTO;
@@ -36,6 +37,16 @@ public interface StatsService {
      * @return MonthlyContentsDTO : 월간 고마운/배운 일 정보
      */
     MonthlyContentsDTO getMonthlyContents(Long memberId, String type, Integer year, Integer month);
+
+    /**
+     * 월간 선택 횟수 상위 최대 3개 컨디션 리스트 조회</hr>
+     *
+     * @param memberId  Long : 현재 로그인한 계정의 일련번호
+     * @param year      Integer : 지정한 년도
+     * @param month      Integer : 지정한 월
+     * @return MonthlyConditionDTO : 월간 선택 횟수 상위 최대 3개 컨디션 리스트
+     */
+    MonthlyConditionsDTO getMonthlyConditionList(Long memberId, Integer year, Integer month);
 
     /**
      * 로그인한 계정이 지정한 년도/주의 요약 정보 조회</hr>

@@ -44,6 +44,21 @@ public class StatsServiceImpl implements StatsService{
     }
 
     @Override
+    public MonthlyConditionsDTO getMonthlyConditionList(Long memberId, Integer year, Integer month) {
+        dairyRepository.findDiaryStatsInMonth(memberId, year, month).orElseThrow(
+                () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
+        );
+        MonthlyConditionsDTO result = dairyConditionRepository.getAllDairyConditionCntInMonth(memberId, year, month).orElseThrow(
+                () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
+        );
+        List<ConditionRatio> condRatioList = dairyConditionRepository.findConditionRatioListInMonth(memberId, year, month, 3, result.getCount().doubleValue()).orElseThrow(
+                () -> new MyException(HttpStatus.NO_CONTENT, MyErrorMsg.NO_CONTENTS)
+        );
+        result.setCondiList(condRatioList);
+        return result;
+    }
+
+    @Override
     public WeeklyStatsDTO getWeeklyStatsInfo(Long memberId, Integer year, Integer week) {
         WeeklyStatsDTO result = dairyRepository.findDiaryStatsInWeekly(memberId, year, week).orElse(new WeeklyStatsDTO());
         if (result.getCount() > 2) {
