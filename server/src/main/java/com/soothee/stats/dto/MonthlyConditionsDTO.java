@@ -16,8 +16,8 @@ public class MonthlyConditionsDTO {
     @Schema(description = "월간 일기 컨디션 기록 횟수")
     private Integer count;
 
-    @NotEmpty(message = "월간 기록된 컨디션 중 비율이 높은 최대 3개의 컨디션 리스트가 없습니다.")
-    @Schema(description = "월간 기록한 컨디션 중 선택된 비율이 높은 최대 3개의 컨디션 리스트")
+    @NotEmpty(message = "월간 기록된 컨디션 중 비율이 높은 최대 3개의 컨디션 정보 리스트가 없습니다.")
+    @Schema(description = "월간 기록한 컨디션 중 선택된 비율이 높은 최대 3개의 컨디션 정보 리스트")
     private List<ConditionRatio> condiList;
 
     @QueryProjection
