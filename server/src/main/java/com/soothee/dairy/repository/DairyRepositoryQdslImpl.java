@@ -132,6 +132,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
         return Optional.ofNullable(
                 queryFactory.select(new QDateContents(dairy.dairyId,
                                                         dairy.date,
+                                                        dairy.score,
                                                         getContentType(type)))
                             .from(dairy)
                             .where(dairy.member.memberId.eq(memberId),

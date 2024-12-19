@@ -24,6 +24,10 @@ public class DateContents {
     @Schema(description = "고마운/배운 일 작성 날짜")
     private LocalDate date;
 
+    @NotEmpty(message = "오늘의 점수가 없습니다.")
+    @Schema(description = "오늘의 점수")
+    private Double score;
+
     @NotEmpty(message = "고마운/배운 일 내용이 없습니다.")
     @Schema(description = "고마운/배운 일 내용")
     private String content;
