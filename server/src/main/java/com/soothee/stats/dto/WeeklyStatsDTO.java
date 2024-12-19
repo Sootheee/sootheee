@@ -16,7 +16,7 @@ import java.util.List;
 public class WeeklyStatsDTO {
     @NotEmpty(message = "주간 작성한 일기의 개수가 없습니다.")
     @Schema(description = "주간 작성 일기 개수")
-    private Integer dairyCnt;
+    private Integer count;
 
     @NotEmpty(message = "주간 오늘의 점수 평균값이 없습니다.")
     @Schema(description = "주간 오늘의 점수 평균값")
@@ -27,8 +27,8 @@ public class WeeklyStatsDTO {
     private List<DateScore> scoreList;
 
     @QueryProjection
-    public WeeklyStatsDTO(Integer dairyCnt, Double scoreAvg) {
-        this.dairyCnt = dairyCnt;
+    public WeeklyStatsDTO(Integer count, Double scoreAvg) {
+        this.count = count;
         this.scoreAvg = scoreAvg;
     }
 }
