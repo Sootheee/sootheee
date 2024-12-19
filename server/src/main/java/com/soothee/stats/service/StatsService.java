@@ -2,10 +2,7 @@ package com.soothee.stats.service;
 
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.common.requestParam.WeekParam;
-import com.soothee.stats.dto.MonthlyConditionsDTO;
-import com.soothee.stats.dto.MonthlyContentsDTO;
-import com.soothee.stats.dto.MonthlyStatsDTO;
-import com.soothee.stats.dto.WeeklyStatsDTO;
+import com.soothee.stats.dto.*;
 
 public interface StatsService {
     /**
@@ -26,15 +23,23 @@ public interface StatsService {
     MonthlyStatsDTO getMonthlyStatsInfo(Long memberId, MonthParam monthParam);
 
     /**
-     * 로그인한 계정이 지정한 년도/달의 고마운/배운 일 통계 조회</hr>
-     * 1. 한 달간 작성한 고마운/배운 일 횟수</br>
-     * 2. 한 달간 작성한 고마운/배운 일 중 가장 높은 점수 날의 고마운/배운 일</br>
-     * 3. 한 달간 작성한 고마운/배운 일 중 가장 낮은 점수 날의 고마운/배운 일
+     * 로그인한 계정이 지정한 년도/달의 감사한/배운 일 통계 조회</hr>
+     * 1. 한 달간 작성한 감사한/배운 일 횟수</br>
+     * 2. 한 달간 작성한 감사한/배운 일 중 가장 높은 점수 날의 감사한/배운 일</br>
+     * 2-1. 가장 높은 점수 날의 일기 일련번호</br>
+     * 2-2. 가장 높은 점수 날짜</br>
+     * 2-3. 가장 높은 점수</br>
+     * 2-4. 가장 높은 점수 날의 감사한/배운 일 내용</br>
+     * 3. 한 달간 작성한 감사한/배운 일 중 가장 낮은 점수 날의 감사한/배운 일</br>
+     * 3-1. 가장 낮은 점수 날의 일기 일련번호</br>
+     * 3-2. 가장 낮은 점수 날짜</br>
+     * 3-3. 가장 낮은 점수</br>
+     * 3-4. 가장 낮은 점수 날의 감사한/배운 일 내용
      *
      * @param memberId      Long : 현재 로그인한 계정의 일련번호
-     * @param type          String : 고마운/배운 일 타입
+     * @param type          String : 감사한/배운 일 타입
      * @param monthParam    MonthParam : 지정한 년도/달
-     * @return MonthlyContentsDTO : 월간 고마운/배운 일 정보
+     * @return MonthlyContentsDTO : 월간 감사한/배운 일 정보
      */
     MonthlyContentsDTO getMonthlyContents(Long memberId, String type, MonthParam monthParam);
 

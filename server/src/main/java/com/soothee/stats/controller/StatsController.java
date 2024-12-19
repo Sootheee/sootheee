@@ -34,7 +34,7 @@ public class StatsController {
     private final MemberService memberService;
     private final StatsService statsService;
 
-    /** 통계 월간 요약 */
+    /** 통계 월간 요약 조회 */
     @GetMapping("/monthly")
     @Operation(summary = "통계 월간 평균 요약", description = "로그인한 계정의 해당 달 일기 작성 횟수, 평균 점수, 최빈 컨디션에 대한 정보 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
@@ -59,17 +59,17 @@ public class StatsController {
         return new ResponseEntity<MonthlyStatsDTO>(result, HttpStatus.OK);
     }
 
-    /** 통계 월간 감사한/배운 일 요약 */
+    /** 통계 월간 감사한/배운 일 요약 조회 */
     @GetMapping("/monthly/{type}")
-    @Operation(summary = "통계 월간 고마운/배운 일 요약", description = "로그인한 계정의 해당 달 고마운/배운 일 작성 횟수, 가장 높은/낮은 점수의 고마운/배운 일 조회", security = @SecurityRequirement(name = "oauth2_auth"))
+    @Operation(summary = "통계 월간 감사한/배운 일 요약", description = "로그인한 계정의 해당 달 감사한/배운 일 작성 횟수, 가장 높은/낮은 점수의 감사한/배운 일 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "type", description = "고마운(thanks)/배운(learn) 일 종류", example = "/stats/monthly/thanks", required = true, in = ParameterIn.PATH),
+            @Parameter(name = "type", description = "감사한(thanks)/배운(learn) 일 종류", example = "/stats/monthly/thanks", required = true, in = ParameterIn.PATH),
             @Parameter(name = "year", description = "조회할 년도", example = "/stats/monthly/thanks?year=2024", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "month", description = "조회할 달", example = "/stats/monthly/learn?year=2024&month=10", required = true, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = MonthlyContentsDTO.class))),
-            @ApiResponse(responseCode = "204", description = "작성한 고마운/배운 일 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "204", description = "작성한 감사한/배운 일 없음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> sendMonthlyContents(@PathVariable("type") String type,
@@ -86,7 +86,7 @@ public class StatsController {
         return new ResponseEntity<MonthlyContentsDTO>(result, HttpStatus.OK);
     }
 
-    /** 통계 주간 요약 */
+    /** 통계 주간 요약 조회 */
     @GetMapping("/weekly")
     @Operation(summary = "통계 주간 평균 요약", description = "로그인한 계정의 해당 주차 일기 작성 횟수, 평균 점수, 일간 점수", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
@@ -111,7 +111,7 @@ public class StatsController {
         return new ResponseEntity<WeeklyStatsDTO>(HttpStatus.OK);
     }
 
-    /** 통계 월간 컨디션 세부 */
+    /** 통계 월간 컨디션 세부 조회 */
     @GetMapping("/monthly/condition")
     @Operation(summary = "통계 월간 컨디션 요약", description = "로그인한 계정의 해당 달 컨디션 기록 횟수, 가장 많은 비율로 선택된 컨디션 최대 3개 리스트 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {

@@ -52,23 +52,25 @@ public interface DairyRepositoryQdsl {
     Optional<MonthlyStatsDTO> findDiaryStatsInMonth(Long memberId, MonthParam monthParam);
 
     /**
-     * 해당 달에 작성한 고마운/배운 일 횟수</hr>
+     * 해당 달에 작성한 감사한/배운 일 횟수</hr>
+     * 삭제한 일기 제외
      *
      * @param memberId Long : 로그인한 계정 일련번호
-     * @param type     String : 고마운/배운 일 중 타입
+     * @param type     String : 감사한/배운 일 중 타입
      * @param monthParam   MonthParam : 지정한 년도/달
      * @return Optional<Integer> :
      */
     Optional<Integer> findDiaryContentCntInMonth(Long memberId, String type, MonthParam monthParam);
 
     /**
-     * 해당 달에 작성한 고마운/배운 일 중 가장 높은/낮은 점수를 기록한 날의 고마운/배운 일</hr>
+     * 해당 달에 작성한 감사한/배운 일 중 가장 높은/낮은 점수를 기록한 날의 감사한/배운 일</hr>
+     * 삭제한 일기 제외
      *
      * @param memberId Long : 로그인한 계정 일련번호
-     * @param type     String : 고마운/배운 일 중 타입
+     * @param type     String : 감사한/배운 일 중 타입
      * @param monthParam   MonthParam : 지정한 년도/달
      * @param high     String : 가장 높은/낮은 점수 중 타입
-     * @return Optional<DateContents>
+     * @return Optional<DateContents> : 기록한 날짜, 가장 높은/낮은 점수, 감사한/배운 일 내용 정보 리스트 (null 가능)
      */
     Optional<DateContents> findDiaryContentInMonthHL(Long memberId, String type, MonthParam monthParam, String high);
 
