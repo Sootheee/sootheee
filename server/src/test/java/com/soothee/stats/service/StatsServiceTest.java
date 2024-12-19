@@ -1,5 +1,7 @@
 package com.soothee.stats.service;
 
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.SortType;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.common.requestParam.WeekParam;
 import com.soothee.config.TestConfig;
@@ -45,7 +47,7 @@ class StatsServiceTest {
         //given
         MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, "thanks", monthParam);
+        MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(), monthParam);
         //then
         Assertions.assertThat(result.getCount()).isEqualTo(3);
         Assertions.assertThat(result.getHighest().getContent()).isEqualTo("땡큐");
@@ -57,11 +59,29 @@ class StatsServiceTest {
         //given
         MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, "learn", monthParam);
+        MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, ContentType.LEARN.toString(), monthParam);
         //then
         Assertions.assertThat(result.getCount()).isEqualTo(3);
         Assertions.assertThat(result.getHighest().getContent()).isEqualTo("배운");
         Assertions.assertThat(result.getLowest().getContent()).isEqualTo("공부");
+    }
+
+    @Test
+    void getWeeklyStatsInfo() {
+        //given
+        WeekParam weekParam = new WeekParam(CommonTestCode.YEAR, CommonTestCode.WEEK);
+        //when
+        WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(CommonTestCode.MEMBER_ID, weekParam);
+        //then
+        Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
+        Assertions.assertThat(result.getCount()).isEqualTo(5);
+        Double resultScore = 0.0;
+        for (DateScore score : result.getScoreList()) {
+            if (Objects.equals(score.getDate(), CommonTestCode.DATE1)) {
+                resultScore = score.getScore();
+            }
+        }
+        Assertions.assertThat(resultScore).isEqualTo(2.0);
     }
 
     @Test
@@ -81,20 +101,68 @@ class StatsServiceTest {
     }
 
     @Test
-    void getWeeklyStatsInfo() {
+    void getAllContentsInMonthThanksDate() {
         //given
-        WeekParam weekParam = new WeekParam(CommonTestCode.YEAR, CommonTestCode.WEEK);
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(CommonTestCode.MEMBER_ID, weekParam);
+        MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(), monthParam, SortType.DATE.toString());
         //then
-        Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
-        Assertions.assertThat(result.getCount()).isEqualTo(5);
-        Double resultScore = 0.0;
-        for (DateScore score : result.getScoreList()) {
-            if (Objects.equals(score.getDate(), CommonTestCode.DATE1)) {
-                resultScore = score.getScore();
-            }
-        }
-        Assertions.assertThat(resultScore).isEqualTo(2.0);
+        Assertions.assertThat(result.getCount()).isEqualTo(3);
+        Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("oh");
+
+    }
+
+    @Test
+    void getAllContentsInMonthThanksHigh() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(), monthParam, SortType.HIGH.toString());
+        //then
+        Assertions.assertThat(result.getCount()).isEqualTo(3);
+        Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("땡큐");
+    }
+
+    @Test
+    void getAllContentsInMonthThanksLow() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(), monthParam, SortType.LOW.toString());
+        //then
+        Assertions.assertThat(result.getCount()).isEqualTo(3);
+        Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("감사");
+    }
+
+    @Test
+    void getAllContentsInMonthLearnDate() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.LEARN.toString(), monthParam, SortType.DATE.toString());
+        //then
+        Assertions.assertThat(result.getCount()).isEqualTo(3);
+        Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("no");
+    }
+
+    @Test
+    void getAllContentsInMonthLearnHigh() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.LEARN.toString(), monthParam, SortType.HIGH.toString());
+        //then
+        Assertions.assertThat(result.getCount()).isEqualTo(3);
+        Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("배운");
+    }
+    @Test
+    void getAllContentsInMonthLearnLow() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.LEARN.toString(), monthParam, SortType.LOW.toString());
+        //then
+        Assertions.assertThat(result.getCount()).isEqualTo(3);
+        Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("공부");
     }
 }

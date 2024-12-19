@@ -1,5 +1,7 @@
 package com.soothee.dairy.repository;
 
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.SortType;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.common.requestParam.WeekParam;
 import com.soothee.config.TestConfig;
@@ -112,7 +114,7 @@ class DairyRepositoryTest {
         //given
         MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        int result = dairyRepository.findDiaryContentCntInMonth(CommonTestCode.MEMBER_ID, "thanks", monthParam).orElseThrow(NullPointerException::new);
+        int result = dairyRepository.findDiaryContentCntInMonth(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(), monthParam).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result).isEqualTo(3);
     }
@@ -122,7 +124,7 @@ class DairyRepositoryTest {
         //given
         MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        DateContents result = dairyRepository.findDiaryContentInMonthHL(CommonTestCode.MEMBER_ID, "thanks", monthParam, "high").orElseThrow(NullPointerException::new);
+        DateContents result = dairyRepository.findDiaryContentInMonthHL(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(), monthParam, SortType.HIGH.toString()).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getDairyId()).isEqualTo(CommonTestCode.DAIRY_ID2);
         Assertions.assertThat(result.getDate()).isEqualTo(CommonTestCode.DATE2);
@@ -148,5 +150,60 @@ class DairyRepositoryTest {
         List<DateScore> result = dairyRepository.findDiaryScoresInWeekly(CommonTestCode.MEMBER_ID, weekParam).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.get(0).getScore()).isEqualTo(2.0);
+    }
+
+    @Test
+    void findDiaryContentInMonthSortThanksDate() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(),monthParam, SortType.DATE.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("oh");
+    }
+    @Test
+    void findDiaryContentInMonthSortThanksHigh() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(),monthParam, SortType.HIGH.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("땡큐");
+    }
+    @Test
+    void findDiaryContentInMonthSortThanksLow() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.THANKS.toString(),monthParam, SortType.LOW.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("감사");
+    }
+    @Test
+    void findDiaryContentInMonthSortLearnDate() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.LEARN.toString(),monthParam, SortType.DATE.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("no");
+    }
+    @Test
+    void findDiaryContentInMonthSortLearnHigh() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.LEARN.toString(),monthParam, SortType.HIGH.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("배운");
+    }
+    @Test
+    void findDiaryContentInMonthSortLearnLow() {
+        //given
+        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //when
+        List<DateContents> result = dairyRepository.findDiaryContentInMonthSort(CommonTestCode.MEMBER_ID, ContentType.LEARN.toString(),monthParam, SortType.LOW.toString()).orElseThrow(NullPointerException::new);
+        //then
+        Assertions.assertThat(result.get(0).getContent()).isEqualTo("공부");
     }
 }

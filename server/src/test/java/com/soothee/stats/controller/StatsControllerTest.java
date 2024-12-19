@@ -15,18 +15,37 @@ class StatsControllerTest {
 
     @Test
     void sendMonthlyStats() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void sendMonthlyContents() {
+        //given
+        //when
+        //then
     }
 
     @Test
     void sendMonthlyConditionRatioList(){
+        //given
+        //when
+        //then
     }
 
     @Test
     void sendWeeklyStats() {
+        //given
+        //when
+        //then
+    }
+
+    @Test
+    void sendMonthlyContentsList() {
+        //given
+        //when
+        //then
     }
 
     @AfterEach
