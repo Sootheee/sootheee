@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-@Schema(description = "월간 작성한 모든 감사한/배운 일 리스트 조회")
+@Schema(description = "한 달 동안 작성한 모든 감사한/배운 일 리스트 조회")
 @AllArgsConstructor
 @Builder
 public class MonthlyAllContentsDTO {

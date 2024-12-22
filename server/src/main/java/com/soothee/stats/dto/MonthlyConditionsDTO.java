@@ -7,7 +7,7 @@ import lombok.*;
 
 import java.util.List;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
 @Schema(description = "월간 컨디션 요약")

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member_del_reason")
-public class MemberDelReason extends TimeEntity {
+public class MemberDelReason extends TimeEntity implements Domain {
     /** 회원 탈퇴 사유 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

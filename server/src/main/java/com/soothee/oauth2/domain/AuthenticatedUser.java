@@ -1,10 +1,7 @@
 package com.soothee.oauth2.domain;
 
 import com.soothee.member.domain.Member;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -20,7 +17,7 @@ import java.util.stream.Stream;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class AuthenticatedUser implements Principal, OAuth2User {
     /** OAuth2 인증 회원 식별자 */

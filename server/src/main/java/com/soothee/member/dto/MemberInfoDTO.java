@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Objects;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
 @AllArgsConstructor
