@@ -44,7 +44,7 @@ public class Dairy extends TimeEntity implements Domain {
     @Column(name = "score", nullable = false)
     private Double score;
 
-    /** 하루 요약 */
+    /** 오늘의 요약 */
     @Column(name = "content", length = 600)
     private String content;
 
@@ -78,10 +78,10 @@ public class Dairy extends TimeEntity implements Domain {
     }
 
     /**
-     * 일기 수정</hr>
+     * 일기 수정
      *
-     * @param dairy   DairyDTO : 입력된 수정할 일기 정보
-     * @param weather Weather : 해당 일기 날씨 정보
+     * @param dairy 입력된 수정할 일기 정보
+     * @param weather 해당 일기 날씨 정보
      */
     public void updateDairy(DairyDTO dairy, Weather weather) {
         if (!Objects.equals(dairy.getWeatherId(), weather.getWeatherId())) {
@@ -110,12 +110,12 @@ public class Dairy extends TimeEntity implements Domain {
     }
 
     /**
-     * 일기 생성</hr>
+     * 일기 생성
      *
-     * @param inputInfo DairyRegisterDTO : 입력된 등록할 일기 정보
-     * @param member    Member : 로그인한 계정 정보
-     * @param weather   Weather : 해당 일기 날씨 정보
-     * @return Dairy
+     * @param inputInfo 입력된 등록할 일기 정보
+     * @param member 로그인한 계정 정보
+     * @param weather 해당 일기 날씨 정보
+     * @return Dairy entity
      */
     public static Dairy of(DairyRegisterDTO inputInfo, Member member, Weather weather) {
         return Dairy.builder()

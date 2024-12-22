@@ -12,9 +12,9 @@ public class GoogleUser {
     private final OAuth2User oauth2User;
 
     /**
-     * 인증된 회원 정보를 받아서 Member 생성</hr>
+     * 인증된 회원 정보를 받아서 Member 생성
      *
-     * @return Member : 회원 엔티티
+     * @return Member entity
      */
     public Member toMember() {
         return Member.builder()

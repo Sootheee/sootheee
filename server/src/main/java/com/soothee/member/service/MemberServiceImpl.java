@@ -95,10 +95,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
-     * 로그인한 회원의 정보와 입력된 회원의 정보가 일치하지 않는지 확인</hr>
+     * 로그인한 회원의 정보와 입력된 회원의 정보가 일치하지 않는지 확인
      *
-     * @param loginInfo Member : 로그인한 회원 정보
-     * @param inputMemberId Long : 입력한 회원 일련번호
+     * @param loginInfo 로그인한 회원 정보
+     * @param inputMemberId 입력한 회원 일련번호
      * @return 일치하면 false, 아니면 true
      */
     private boolean isNotLoginMemberInfo(Member loginInfo, Long inputMemberId) {

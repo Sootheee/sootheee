@@ -68,18 +68,18 @@ public class Member extends TimeEntity implements Domain {
     }
 
     /**
-     * 회원 정보 수정</hr>
+     * 회원 정보 수정
      *
-     * @param updateName String: 바꿀 회원 닉네임
+     * @param updateName 바꿀 회원 닉네임
      */
     public void updateName(String updateName) {
         this.name = updateName;
     }
 
     /**
-     * 회원 화면 모드 수정</hr>
+     * 회원 화면 모드 수정
      *
-     * @param isDark String: 바꿀 화면 모드가 다크모드면 Y 아니면 N
+     * @param isDark 바꿀 화면 모드가 다크모드면 Y 아니면 N
      */
     public void updateDarkModeYN(String isDark) {
         this.isDark = isDark;

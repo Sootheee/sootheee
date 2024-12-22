@@ -95,10 +95,10 @@ public class DairyServiceImpl implements DairyService {
     }
 
     /**
-     * 일기 일련변호로 일기 가져오기</hr>
+     * 일기 일련변호로 일기 가져오기
      *
-     * @param dairyId Long : 가져올 일기 일련번호
-     * @return Dairy : 가져온 일기
+     * @param dairyId 가져올 일기 일련번호
+     * @return 가져온 일기
      */
     private Dairy getDairyByDairyId(Long dairyId) {
         return dairyRepository.findByDairyId(dairyId)

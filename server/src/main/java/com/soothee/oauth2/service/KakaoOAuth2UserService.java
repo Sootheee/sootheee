@@ -22,7 +22,7 @@ public class KakaoOAuth2UserService implements CustomOAuth2UserService {
     private final MemberService memberService;
 
     /**
-     * 해당 SNS OAuth2을 지원하는지 확인</hr>
+     * 해당 SNS OAuth2을 지원하는지 확인
      * "kakao"인 경우에만 true
      *
      * @param request
@@ -35,12 +35,12 @@ public class KakaoOAuth2UserService implements CustomOAuth2UserService {
     }
 
     /**
-     * 인증된 회원 엔티티 조회 및 생성</hr>
+     * 인증된 회원 엔티티 조회 및 생성
      * 기존 회원 -> 조회
      * 신규 회원 -> 생성
      *
-     * @param authenticatedUser OAuth2User : 인증된 회원
-     * @return AuthenticatedUser : 인증된 회원 정보를 담은 토큰 반환
+     * @param authenticatedUser 인증된 회원
+     * @return 인증된 회원 정보를 담은 토큰 반환
      */
     @Override
     public AuthenticatedUser createOrLoadUser(OAuth2User authenticatedUser) {

@@ -36,7 +36,7 @@ public class StatsController {
     private final MemberService memberService;
     private final StatsService statsService;
 
-    /** 통계 월간 요약 조회 */
+    /** 월간 일기 통계 요약 조회 */
     @GetMapping("/monthly")
     @Operation(summary = "월간 일기 통계 요약 조회", description = "로그인한 계정의 해당 달 일기 작성 횟수, 평균 점수, 최빈 컨디션에 대한 정보 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
@@ -62,7 +62,7 @@ public class StatsController {
         return new ResponseEntity<MonthlyStatsDTO>(result, HttpStatus.OK);
     }
 
-    /** 통계 월간 감사한/배운 일 요약 조회 */
+    /** 월간 감사한/배운 일 통계 요약 조회 */
     @GetMapping("/monthly/{type}")
     @Operation(summary = "월간 감사한/배운 일 통계 요약 조회", description = "로그인한 계정의 해당 달 감사한/배운 일 작성 횟수, 가장 높은/낮은 점수의 감사한/배운 일 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
@@ -89,7 +89,7 @@ public class StatsController {
         return new ResponseEntity<MonthlyContentsDTO>(result, HttpStatus.OK);
     }
 
-    /** 통계 주간 요약 조회 */
+    /**  한 주 동안 일기 통계 요약 조회 */
     @GetMapping("/weekly")
     @Operation(summary = "주간 일기 통계 요약 조회", description = "로그인한 계정의 해당 주차 일기 작성 횟수, 평균 점수, 일간 점수", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
@@ -115,7 +115,7 @@ public class StatsController {
         return new ResponseEntity<WeeklyStatsDTO>(HttpStatus.OK);
     }
 
-    /** 통계 월간 컨디션 세부 조회 */
+    /** 월간 컨디션 통계 세부 조회 */
     @GetMapping("/monthly/condition")
     @Operation(summary = "월간 컨디션 통계 세부 조회", description = "로그인한 계정의 해당 달 컨디션 기록 횟수, 가장 많은 비율로 선택된 컨디션 최대 3개 리스트 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
@@ -141,7 +141,7 @@ public class StatsController {
         return new ResponseEntity<MonthlyConditionsDTO>(result, HttpStatus.OK);
     }
 
-    /** 통계 월간 감사한/배운 일 세부 조회 */
+    /** 월간 감사한/배운 일 통계 세부 조회 */
     @GetMapping("/monthly/detail/{type}")
     @Operation(summary = "월간 감사한/배운 일 통계 세부 조회", description = "로그인한 계정의 해당 달 감사한/배운 일 작성 횟수, 작성한 모든 감사한/배운 일 리스트 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {

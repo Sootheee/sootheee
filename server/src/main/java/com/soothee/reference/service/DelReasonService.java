@@ -4,10 +4,10 @@ import com.soothee.reference.domain.DelReason;
 
 public interface DelReasonService {
     /**
-     * 탈퇴 사유 일련번호로 탈퇴 사유 조회</hr>
+     * 탈퇴 사유 일련번호로 탈퇴 사유 조회
      *
-     * @param reasonId Long : 조회할 탈퇴 사유 일련번호
-     * @return DelReason : 조회된 탈퇴 사유
+     * @param reasonId 조회할 탈퇴 사유 일련번호
+     * @return 조회된 탈퇴 사유
      */
     DelReason getDelReasonById(Long reasonId);
 }
