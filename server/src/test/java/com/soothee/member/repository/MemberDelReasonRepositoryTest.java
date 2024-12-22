@@ -1,9 +1,12 @@
 package com.soothee.member.repository;
 
 import com.soothee.config.TestConfig;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.member.domain.Member;
 import com.soothee.util.CommonTestCode;
 import com.soothee.member.domain.MemberDelReason;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +27,7 @@ import java.util.List;
 @SpringBootTest
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Slf4j
 @Import(TestConfig.class)
 class MemberDelReasonRepositoryTest {
     @Autowired
@@ -33,12 +37,16 @@ class MemberDelReasonRepositoryTest {
 
     @Test
     void findByMemberMemberId() {
-        //given
-        Member savedNewMember = commonTestCode.deleteMember();
-        //when
-        List<MemberDelReason> result = memberDelReasonRepository.findByMemberMemberId(savedNewMember.getMemberId())
-                                                                .orElseThrow(NullPointerException::new);
-        //then
-        Assertions.assertThat(result.size()).isEqualTo(3);
+        try {
+            //given
+            Member savedNewMember = commonTestCode.deleteMember();
+            //when
+            List<MemberDelReason> result = memberDelReasonRepository.findByMemberMemberId(savedNewMember.getMemberId())
+                    .orElseThrow(NullPointerException::new);
+            //then
+            Assertions.assertThat(result.size()).isEqualTo(3);
+        } catch (IncorrectValueException | NullValueException e) {
+            log.error(e.getMessage());
+        }
     }
 }

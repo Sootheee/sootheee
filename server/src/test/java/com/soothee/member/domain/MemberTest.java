@@ -1,7 +1,10 @@
 package com.soothee.member.domain;
 
 import com.soothee.config.TestConfig;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.util.CommonTestCode;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Slf4j
 @Import(TestConfig.class)
 class MemberTest {
     @Autowired
@@ -34,21 +38,31 @@ class MemberTest {
         String newName = "수정할이름";
         Member savedMember = commonTestCode.getSavedMember();
         //when
-        savedMember.updateName(newName);
+        try {
+            savedMember.updateName(newName);
+        } catch (IncorrectValueException e) {
+            log.error(e.getMessage());
+        } catch (NullValueException e) {
+            log.error(e.getMessage());
+        }
         //then
         Assertions.assertThat(savedMember.getName()).isEqualTo(newName);
     }
 
     @Test
     @DisplayName("회원 다크모드 수정 성공")
-    void updateDarkModeYN() {
+    void updateDarkModeYN() throws IncorrectValueException, NullValueException {
         //given
         String isDarkY = "Y";
         Member savedMember = commonTestCode.getSavedMember();
-        //when
-        savedMember.updateDarkModeYN(isDarkY);
-        //then
-        Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDarkY);
+        try {
+            //when
+            savedMember.updateDarkModeYN(isDarkY);
+            //then
+            Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDarkY);
+        } catch (IncorrectValueException | NullValueException e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Test

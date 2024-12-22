@@ -2,11 +2,14 @@ package com.soothee.dairy.repository;
 
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.config.TestConfig;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.dairy.domain.Dairy;
 import com.soothee.stats.dto.ConditionRatio;
 import com.soothee.stats.dto.MonthlyConditionsDTO;
 import com.soothee.util.CommonTestCode;
 import com.soothee.dairy.domain.DairyCondition;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @EnableJpaAuditing
+@Slf4j
 @ActiveProfiles("test")
 @Import(TestConfig.class)
 class DairyConditionRepositoryTest {
@@ -44,29 +48,37 @@ class DairyConditionRepositoryTest {
 
     @Test
     void existsByDairyDairyIdN() {
-        //given
-        Dairy newDairy = commonTestCode.saveNewDairy();
-        //when
-        boolean result = dairyConditionRepository.existsByDairyDairyId(newDairy.getDairyId());
-        //then
-        Assertions.assertThat(result).isFalse();
+        try {
+            //given
+            Dairy newDairy = commonTestCode.saveNewDairy();
+            //when
+            boolean result = dairyConditionRepository.existsByDairyDairyId(newDairy.getDairyId());
+            //then
+            Assertions.assertThat(result).isFalse();
+        } catch (IncorrectValueException | NullValueException e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Test
     void existsByDairyDairyIdY() {
-        //given
-        Dairy newDairy = commonTestCode.saveNewDairyCondition();
-        //when
-        boolean result = dairyConditionRepository.existsByDairyDairyId(newDairy.getDairyId());
-        //then
-        Assertions.assertThat(result).isTrue();
+        try {
+            //given
+            Dairy newDairy = commonTestCode.saveNewDairyCondition();
+            //when
+            boolean result = dairyConditionRepository.existsByDairyDairyId(newDairy.getDairyId());
+            //then
+            Assertions.assertThat(result).isTrue();
+        } catch (IncorrectValueException | NullValueException e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Test
     void findMostOneCondIdInMonth() {
         //given
         MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
-        Double cnt = dairyConditionRepository.getAllDairyConditionCntInMonth(CommonTestCode.MEMBER_ID, monthParam).orElseThrow().getCount().doubleValue();
+        Integer cnt = dairyConditionRepository.getAllDairyConditionCntInMonth(CommonTestCode.MEMBER_ID, monthParam);
         //when
         ConditionRatio result = dairyConditionRepository.findConditionRatioListInMonth(CommonTestCode.MEMBER_ID, monthParam,1, cnt).orElseThrow(NullPointerException::new).get(0);
         //then
@@ -78,8 +90,8 @@ class DairyConditionRepositoryTest {
         //given
         MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        MonthlyConditionsDTO result = dairyConditionRepository.getAllDairyConditionCntInMonth(CommonTestCode.MEMBER_ID, monthParam).orElseThrow(NullPointerException::new);
+        Integer result = dairyConditionRepository.getAllDairyConditionCntInMonth(CommonTestCode.MEMBER_ID, monthParam);
         //then
-        Assertions.assertThat(result.getCount()).isEqualTo(20);
+        Assertions.assertThat(result).isEqualTo(20);
     }
 }

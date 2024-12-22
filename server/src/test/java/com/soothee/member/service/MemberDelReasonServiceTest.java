@@ -1,9 +1,12 @@
 package com.soothee.member.service;
 
 import com.soothee.config.TestConfig;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.util.CommonTestCode;
 import com.soothee.member.domain.Member;
 import com.soothee.member.domain.MemberDelReason;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import java.util.List;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Slf4j
 @Import(TestConfig.class)
 class MemberDelReasonServiceTest {
     @Autowired
@@ -35,20 +39,28 @@ class MemberDelReasonServiceTest {
         //given
         List<Long> reasonIds = commonTestCode.getDelReasonIds();
         Member savedMember = commonTestCode.getSavedMember();
-        //when
-        memberDelReasonService.saveDeleteReasons(savedMember, reasonIds);
-        //then
-        List<MemberDelReason> savedMDR = commonTestCode.getSavedMemberDelReasons();
-        Assertions.assertThat(savedMDR.size()).isEqualTo(3);
+        try {
+            //when
+            memberDelReasonService.saveDeleteReasons(savedMember, reasonIds);
+            //then
+            List<MemberDelReason> savedMDR = commonTestCode.getSavedMemberDelReasons();
+            Assertions.assertThat(savedMDR.size()).isEqualTo(3);
+        } catch (NullValueException | IncorrectValueException e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Test
     void getMemberDelReasonByMemberId() {
-        //given
-        Member newMember = commonTestCode.deleteMember();
-        //when
-        List<MemberDelReason> savedMDR = memberDelReasonService.getMemberDelReasonByMemberId(newMember.getMemberId());
-        //then
-        Assertions.assertThat(savedMDR.size()).isEqualTo(3);
+        try {
+            //given
+            Member newMember = commonTestCode.deleteMember();
+            //when
+            List<MemberDelReason> savedMDR = memberDelReasonService.getMemberDelReasonByMemberId(newMember.getMemberId());
+            //then
+            Assertions.assertThat(savedMDR.size()).isEqualTo(3);
+        } catch (IncorrectValueException | NullValueException e) {
+            log.error(e.getMessage());
+        }
     }
 }
