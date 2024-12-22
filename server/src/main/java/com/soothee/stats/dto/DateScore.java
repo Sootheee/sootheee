@@ -1,6 +1,12 @@
 package com.soothee.stats.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.DoubleType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
+import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -17,7 +23,6 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Schema(description = "일기 작성 날짜와 해당 일기의 오늘의 점수")
-@AllArgsConstructor(onConstructor = @__(@QueryProjection))
 public class DateScore {
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
     @Positive(message = "일련번호는 양수만 입력 가능합니다.")
@@ -33,4 +38,19 @@ public class DateScore {
     @PositiveOrZero(message = "오늘의 점수는 0을 포함한 양수만 입력 가능합니다.")
     @Schema(description = "오늘의 점수")
     private Double score;
+
+    @QueryProjection
+    public DateScore(Long dairyId, LocalDate date, Double score) throws IncorrectValueException, NullValueException {
+        checkConstructorDateScore(dairyId, date, score);
+        this.dairyId = dairyId;
+        this.date = date;
+        this.score = score;
+    }
+
+    /** validation */
+    private static void checkConstructorDateScore(Long dairyId, LocalDate date, Double score) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(dairyId, DomainType.DAIRY);
+        SootheeValidation.checkDate(date);
+        SootheeValidation.checkDouble(score, DoubleType.SCORE);
+    }
 }

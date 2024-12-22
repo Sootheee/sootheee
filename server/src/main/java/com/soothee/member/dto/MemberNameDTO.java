@@ -1,10 +1,15 @@
 package com.soothee.member.dto;
 
-import com.soothee.common.exception.MyErrorMsg;
-import com.soothee.common.exception.MyException;
+import com.soothee.common.constants.DomainType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.member.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 /**
@@ -28,14 +33,16 @@ public class MemberNameDTO implements MemberDTO {
     @NotBlank(message = "회원 닉네임이 없습니다.")
     private String name;
 
-    public static MemberNameDTO fromMember(Member member) {
-        if (Objects.isNull(member.getMemberId())
-                || StringUtils.isBlank(member.getName())) {
-            throw new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE);
-        }
+    public static MemberNameDTO fromMember(Member member) throws IncorrectValueException, NullValueException {
+        checkConstructorMemberNameDTO(member);
         return MemberNameDTO.builder()
                 .memberId(member.getMemberId())
                 .name(member.getName())
                 .build();
+    }
+
+    private static void checkConstructorMemberNameDTO(Member member) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomain(member, DomainType.MEMBER);
+        SootheeValidation.checkName(member.getName());
     }
 }

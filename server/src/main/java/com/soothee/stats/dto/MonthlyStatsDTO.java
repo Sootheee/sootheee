@@ -1,6 +1,11 @@
 package com.soothee.stats.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.DoubleType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -34,7 +39,9 @@ public class MonthlyStatsDTO {
     private Double mostCondRatio;
 
     @QueryProjection
-    public MonthlyStatsDTO(Integer count, Double scoreAvg) {
+    public MonthlyStatsDTO(Integer count, Double scoreAvg) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkInteger(count, DomainType.DAIRY);
+        SootheeValidation.checkDouble(scoreAvg, DoubleType.AVG);
         this.count = count;
         this.scoreAvg = scoreAvg;
     }

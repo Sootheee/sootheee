@@ -1,7 +1,12 @@
 package com.soothee.dairy.domain;
 
+import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.StringType;
 import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.reference.domain.Condition;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -38,7 +43,8 @@ public class DairyCondition extends TimeEntity implements Domain {
     private String isDelete;
 
     @Builder
-    public DairyCondition(Dairy dairy, Condition condition, Integer orderNo) {
+    public DairyCondition(Dairy dairy, Condition condition, Integer orderNo) throws IncorrectValueException, NullValueException {
+        checkConstructorDairyCondition(dairy, condition, orderNo);
         this.dairy = dairy;
         this.condition = condition;
         this.orderNo = orderNo;
@@ -53,5 +59,12 @@ public class DairyCondition extends TimeEntity implements Domain {
     @Override
     public Long getId() {
         return dairyCondId;
+    }
+
+    /** validation */
+    private static void checkConstructorDairyCondition(Dairy dairy, Condition condition, Integer orderNo) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomain(dairy, DomainType.DAIRY);
+        SootheeValidation.checkDomain(condition, DomainType.CONDITION);
+        SootheeValidation.checkInteger(orderNo, StringType.ORDER_NO);
     }
 }

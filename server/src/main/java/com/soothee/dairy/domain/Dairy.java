@@ -1,7 +1,13 @@
 package com.soothee.dairy.domain;
 
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.DoubleType;
 import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
 import com.soothee.member.domain.Member;
@@ -65,7 +71,8 @@ public class Dairy extends TimeEntity implements Domain {
     private String isDelete;
 
     @Builder
-    public Dairy(Member member, LocalDate date, Weather weather, Double score, String content, String hope, String thank, String learn) {
+    public Dairy(Member member, LocalDate date, Weather weather, Double score, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
+        checkConstructDairy(member, date, weather, score, content, hope, thank, learn);
         this.member = member;
         this.date = date;
         this.weather = weather;
@@ -83,7 +90,8 @@ public class Dairy extends TimeEntity implements Domain {
      * @param dairy 입력된 수정할 일기 정보
      * @param weather 해당 일기 날씨 정보
      */
-    public void updateDairy(DairyDTO dairy, Weather weather) {
+    public void updateDairy(DairyDTO dairy, Weather weather) throws IncorrectValueException, NullValueException {
+        checkUpdateDairy(dairy, weather);
         if (!Objects.equals(dairy.getWeatherId(), weather.getWeatherId())) {
             this.weather = weather;
         }
@@ -117,21 +125,56 @@ public class Dairy extends TimeEntity implements Domain {
      * @param weather 해당 일기 날씨 정보
      * @return Dairy entity
      */
-    public static Dairy of(DairyRegisterDTO inputInfo, Member member, Weather weather) {
+    public static Dairy of(DairyRegisterDTO inputInfo, Member member, Weather weather) throws IncorrectValueException, NullValueException {
+        checkDiaryOfDiaryRegisterDTO(inputInfo, member, weather);
         return Dairy.builder()
-                .date(inputInfo.getDate())
-                .member(member)
-                .weather(weather)
-                .score(inputInfo.getScore())
-                .content(inputInfo.getContent())
-                .hope(inputInfo.getHope())
-                .thank(inputInfo.getThank())
-                .learn(inputInfo.getLearn())
-                .build();
+                    .date(inputInfo.getDate())
+                    .member(member)
+                    .weather(weather)
+                    .score(inputInfo.getScore())
+                    .content(inputInfo.getContent())
+                    .hope(inputInfo.getHope())
+                    .thank(inputInfo.getThank())
+                    .learn(inputInfo.getLearn())
+                    .build();
     }
 
     @Override
     public Long getId() {
         return dairyId;
+    }
+
+    /** validation */
+    private void checkConstructDairy(Member member, LocalDate date, Weather weather, Double score, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomain(member, DomainType.MEMBER);
+        SootheeValidation.checkDate(date);
+        SootheeValidation.checkDomain(weather, DomainType.WEATHER);
+        SootheeValidation.checkDouble(score, DoubleType.SCORE);
+        SootheeValidation.checkContent(content);
+        SootheeValidation.checkOptionalContent(hope, ContentType.HOPE);
+        SootheeValidation.checkOptionalContent(thank, ContentType.THANKS);
+        SootheeValidation.checkOptionalContent(learn, ContentType.LEARN);
+    }
+
+    /** validation */
+    private static void checkDiaryOfDiaryRegisterDTO(DairyRegisterDTO inputInfo, Member member, Weather weather) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDate(inputInfo.getDate());
+        SootheeValidation.checkDomain(member, DomainType.MEMBER);
+        SootheeValidation.checkDomain(weather, DomainType.WEATHER);
+        SootheeValidation.checkDouble(inputInfo.getScore(), DoubleType.SCORE);
+        SootheeValidation.checkContent(inputInfo.getContent());
+        SootheeValidation.checkOptionalContent(inputInfo.getHope(), ContentType.HOPE);
+        SootheeValidation.checkOptionalContent(inputInfo.getThank(), ContentType.THANKS);
+        SootheeValidation.checkOptionalContent(inputInfo.getLearn(), ContentType.LEARN);
+    }
+
+    /** validation */
+    private void checkUpdateDairy(DairyDTO dairy, Weather weather) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomain(weather, DomainType.WEATHER);
+        SootheeValidation.checkDouble(score, DoubleType.SCORE);
+        SootheeValidation.checkContent(dairy.getContent());
+        SootheeValidation.checkOptionalContent(dairy.getHope(), ContentType.HOPE);
+        SootheeValidation.checkOptionalContent(dairy.getThank(), ContentType.THANKS);
+        SootheeValidation.checkOptionalContent(dairy.getLearn(), ContentType.LEARN);
     }
 }

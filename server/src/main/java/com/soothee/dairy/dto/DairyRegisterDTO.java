@@ -1,5 +1,12 @@
 package com.soothee.dairy.dto;
 
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.DoubleType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
+import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -23,7 +30,6 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
-@AllArgsConstructor
 @Schema(description = "일기 등록에 사용되는 DTO")
 public class DairyRegisterDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -60,4 +66,32 @@ public class DairyRegisterDTO {
     @Size(max = 200, message = "배운 일은 최대 600자까지 입력 가능합니다.")
     @Schema(description = "배운 일")
     private String learn;
+
+    public DairyRegisterDTO(LocalDate date, Long weatherId, Double score, List<Long> condIdList, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
+        checkConstructorDairyRegisterDTO(date, weatherId, score, condIdList, content, hope, thank, learn);
+        this.date = date;
+        this.weatherId = weatherId;
+        this.score = score;
+        this.condIdList = condIdList;
+        this.content = content;
+        this.hope = hope;
+        this.thank = thank;
+        this.learn = learn;
+    }
+
+    /** validation */
+    private static void checkConstructorDairyRegisterDTO(LocalDate date, Long weatherId, Double score, List<Long> condIdList, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDate(date);
+        SootheeValidation.checkDomainId(weatherId, DomainType.WEATHER);
+        SootheeValidation.checkDouble(score, DoubleType.SCORE);
+        if (Objects.nonNull(condIdList)) {
+            for (Long condId : condIdList) {
+                SootheeValidation.checkDomainId(condId, DomainType.CONDITION);
+            }
+        }
+        SootheeValidation.checkContent(content);
+        SootheeValidation.checkOptionalContent(hope, ContentType.HOPE);
+        SootheeValidation.checkOptionalContent(thank, ContentType.THANKS);
+        SootheeValidation.checkOptionalContent(learn, ContentType.LEARN);
+    }
 }

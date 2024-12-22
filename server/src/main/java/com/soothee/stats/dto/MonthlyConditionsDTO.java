@@ -1,6 +1,10 @@
 package com.soothee.stats.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.soothee.common.constants.DomainType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -23,7 +27,8 @@ public class MonthlyConditionsDTO {
     private List<ConditionRatio> condiList;
 
     @QueryProjection
-    public MonthlyConditionsDTO(Integer count) {
+    public MonthlyConditionsDTO(Integer count) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkInteger(count, DomainType.DAIRY_CONDITION);
         this.count = count;
     }
 }

@@ -1,6 +1,13 @@
 package com.soothee.stats.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.DoubleType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
+import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -15,7 +22,6 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Schema(description = "해당 날짜의 감사한/배운 일 조회")
-@AllArgsConstructor(onConstructor = @__(@QueryProjection))
 public class DateContents {
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
     @Positive(message = "일련번호는 양수만 입력 가능합니다.")
@@ -36,4 +42,21 @@ public class DateContents {
     @Size(max = 200, message = "바랐던 방향성은 최대 200자까지 입력 가능합니다.")
     @Schema(description = "감사한/배운 일 내용")
     private String content;
+
+    @QueryProjection
+    public DateContents(Long dairyId, LocalDate date, Double score, String content, ContentType type) throws IncorrectValueException, NullValueException {
+        checkConstructorDateContents(dairyId, date, score, content, type);
+        this.dairyId = dairyId;
+        this.date = date;
+        this.score = score;
+        this.content = content;
+    }
+
+    /** validation */
+    private static void checkConstructorDateContents(Long dairyId, LocalDate date, Double score, String content, ContentType type) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(dairyId, DomainType.DAIRY);
+        SootheeValidation.checkDate(date);
+        SootheeValidation.checkDouble(score, DoubleType.SCORE);
+        SootheeValidation.checkOptionalContent(content, type);
+    }
 }

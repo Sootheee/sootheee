@@ -1,16 +1,19 @@
 package com.soothee.member.domain;
 
+import com.soothee.common.constants.BooleanType;
 import com.soothee.common.constants.Role;
 import com.soothee.common.constants.SnsType;
+import com.soothee.common.constants.StringType;
 import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
-import com.soothee.common.exception.MyErrorMsg;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.Assert;
 
 @Getter
 @Entity
@@ -53,11 +56,8 @@ public class Member extends TimeEntity implements Domain {
     private Role role;
 
     @Builder
-    public Member(String email, String name, SnsType snsType, String oauth2ClientId) {
-        Assert.notNull(email, MyErrorMsg.NULL_VALUE.makeValue("아이디(이메일) "));
-        Assert.notNull(name, MyErrorMsg.NULL_VALUE.makeValue("닉네임 "));
-        Assert.notNull(snsType, MyErrorMsg.NULL_VALUE.makeValue("SNS 타입 "));
-        Assert.notNull(oauth2ClientId, MyErrorMsg.NULL_VALUE.makeValue("OAuth2 구분 "));
+    public Member(String email, String name, SnsType snsType, String oauth2ClientId) throws IncorrectValueException, NullValueException {
+        checkConstructorMember(email, name, snsType, oauth2ClientId);
         this.email = email;
         this.name = name;
         this.isDark = "N";
@@ -72,7 +72,8 @@ public class Member extends TimeEntity implements Domain {
      *
      * @param updateName 바꿀 회원 닉네임
      */
-    public void updateName(String updateName) {
+    public void updateName(String updateName) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkName(updateName);
         this.name = updateName;
     }
 
@@ -81,7 +82,8 @@ public class Member extends TimeEntity implements Domain {
      *
      * @param isDark 바꿀 화면 모드가 다크모드면 Y 아니면 N
      */
-    public void updateDarkModeYN(String isDark) {
+    public void updateDarkModeYN(String isDark) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkBoolean(isDark, BooleanType.DARK_MODE);
         this.isDark = isDark;
     }
 
@@ -93,5 +95,13 @@ public class Member extends TimeEntity implements Domain {
     @Override
     public Long getId() {
         return memberId;
+    }
+
+    /** validation */
+    private static void checkConstructorMember(String email, String name, SnsType snsType, String oauth2ClientId) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkEmail(email);
+        SootheeValidation.checkName(name);
+        SootheeValidation.checkSnsType(snsType);
+        SootheeValidation.checkNullForNecessaryString(oauth2ClientId, StringType.OAUTH2);
     }
 }

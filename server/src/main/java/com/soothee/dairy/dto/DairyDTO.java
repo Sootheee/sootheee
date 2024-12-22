@@ -1,6 +1,13 @@
 package com.soothee.dairy.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.DoubleType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
+import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -64,7 +71,8 @@ public class DairyDTO {
 
     @Builder
     @QueryProjection
-    public DairyDTO(Long dairyId, LocalDate date, Long weatherId, Double score, String content, String hope, String thank, String learn) {
+    public DairyDTO(Long dairyId, LocalDate date, Long weatherId, Double score, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
+        checkConstructorDairyDTO(dairyId, date, weatherId, score, content, hope, thank, learn);
         this.dairyId = dairyId;
         this.date = date;
         this.weatherId = weatherId;
@@ -73,5 +81,17 @@ public class DairyDTO {
         this.hope = hope;
         this.thank = thank;
         this.learn = learn;
+    }
+
+    /** validation */
+    private static void checkConstructorDairyDTO(Long dairyId, LocalDate date, Long weatherId, Double score, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(dairyId, DomainType.DAIRY);
+        SootheeValidation.checkDate(date);
+        SootheeValidation.checkDomainId(weatherId, DomainType.WEATHER);
+        SootheeValidation.checkDouble(score, DoubleType.SCORE);
+        SootheeValidation.checkContent(content);
+        SootheeValidation.checkOptionalContent(hope, ContentType.HOPE);
+        SootheeValidation.checkOptionalContent(thank, ContentType.THANKS);
+        SootheeValidation.checkOptionalContent(learn, ContentType.LEARN);
     }
 }

@@ -1,7 +1,10 @@
 package com.soothee.member.dto;
 
-import com.soothee.common.exception.MyErrorMsg;
-import com.soothee.common.exception.MyException;
+import com.soothee.common.constants.BooleanType;
+import com.soothee.common.constants.DomainType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.member.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
@@ -39,16 +42,18 @@ public class MemberInfoDTO implements MemberDTO {
     @Schema(description = "회원 다크모드 || Y : dark mode / N : normal mode")
     private String isDark;
 
-    public static MemberInfoDTO fromMember(Member info) {
-        if (Objects.isNull(info.getMemberId())
-                || Strings.isBlank(info.getEmail())
-                || Strings.isBlank(info.getName())) {
-            throw new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE);
-        }
+    public static MemberInfoDTO fromMember(Member info) throws IncorrectValueException, NullValueException {
+        checkFromMember(info);
         return MemberInfoDTO.builder()
                 .memberId(info.getMemberId())
                 .email(info.getEmail())
                 .isDark(info.getIsDark())
                 .build();
+    }
+
+    private static void checkFromMember(Member info) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(info.getMemberId(), DomainType.MEMBER);
+        SootheeValidation.checkEmail(info.getEmail());
+        SootheeValidation.checkBoolean(info.getIsDark(), BooleanType.DARK_MODE);
     }
 }

@@ -1,7 +1,11 @@
 package com.soothee.member.domain;
 
+import com.soothee.common.constants.DomainType;
 import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.reference.domain.DelReason;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,7 +34,8 @@ public class MemberDelReason extends TimeEntity implements Domain {
     private DelReason delReason;
 
     @Builder
-    public MemberDelReason(Member member, DelReason delReason) {
+    public MemberDelReason(Member member, DelReason delReason) throws IncorrectValueException, NullValueException {
+        checkConstructorMemberDelReason(member, delReason);
         this.member = member;
         this.delReason = delReason;
     }
@@ -40,4 +45,9 @@ public class MemberDelReason extends TimeEntity implements Domain {
         return memberDelReasonId;
     }
 
+    /** validation */
+    private static void checkConstructorMemberDelReason(Member member, DelReason delReason) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomain(member, DomainType.MEMBER);
+        SootheeValidation.checkDomain(delReason, DomainType.DEL_REASON);
+    }
 }
