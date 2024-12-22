@@ -1,5 +1,6 @@
 package com.soothee.reference.domain;
 
+import com.soothee.common.domain.Domain;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "weather")
-public class Weather {
+public class Weather implements Domain {
     /** 날씨 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,4 +23,9 @@ public class Weather {
     /** 날씨 이름 */
     @Column(name = "weather_name", nullable = false, length = 10)
     private String weatherName;
+
+    @Override
+    public Long getId() {
+        return weatherId;
+    }
 }

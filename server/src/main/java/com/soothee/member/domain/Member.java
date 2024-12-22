@@ -2,6 +2,7 @@ package com.soothee.member.domain;
 
 import com.soothee.common.constants.Role;
 import com.soothee.common.constants.SnsType;
+import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
 import com.soothee.common.exception.MyErrorMsg;
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ import org.springframework.util.Assert;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
-public class Member extends TimeEntity {
+public class Member extends TimeEntity implements Domain {
     /** 회원 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -87,5 +88,10 @@ public class Member extends TimeEntity {
     /** 회원 삭제 */
     public void deleteMember() {
         this.isDelete = "Y";
+    }
+
+    @Override
+    public Long getId() {
+        return memberId;
     }
 }

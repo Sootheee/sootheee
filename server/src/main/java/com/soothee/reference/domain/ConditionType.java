@@ -1,5 +1,6 @@
 package com.soothee.reference.domain;
 
+import com.soothee.common.domain.Domain;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "condition_type")
-public class ConditionType {
+public class ConditionType implements Domain {
     /** 컨디션 타입 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,4 +27,9 @@ public class ConditionType {
     /** 컨디션 타입 부여 점수 */
     @Column(name = "cond_type_value", nullable = false)
     private Integer condTypeValue;
+
+    @Override
+    public Long getId() {
+        return condTypeId;
+    }
 }

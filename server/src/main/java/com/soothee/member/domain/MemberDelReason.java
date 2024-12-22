@@ -1,5 +1,6 @@
 package com.soothee.member.domain;
 
+import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
 import com.soothee.reference.domain.DelReason;
 import jakarta.persistence.*;
@@ -33,4 +34,10 @@ public class MemberDelReason extends TimeEntity {
         this.member = member;
         this.delReason = delReason;
     }
+
+    @Override
+    public Long getId() {
+        return memberDelReasonId;
+    }
+
 }

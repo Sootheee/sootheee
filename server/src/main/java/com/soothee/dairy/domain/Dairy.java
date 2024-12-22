@@ -1,5 +1,6 @@
 package com.soothee.dairy.domain;
 
+import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
@@ -19,7 +20,7 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "dairy")
-public class Dairy extends TimeEntity {
+public class Dairy extends TimeEntity implements Domain {
     /** 일기 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -127,5 +128,10 @@ public class Dairy extends TimeEntity {
                 .thank(inputInfo.getThank())
                 .learn(inputInfo.getLearn())
                 .build();
+    }
+
+    @Override
+    public Long getId() {
+        return dairyId;
     }
 }
