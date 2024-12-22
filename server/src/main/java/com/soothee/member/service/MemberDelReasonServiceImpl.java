@@ -8,14 +8,12 @@ import com.soothee.member.repository.MemberDelReasonRepository;
 import com.soothee.reference.domain.DelReason;
 import com.soothee.reference.service.DelReasonService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor

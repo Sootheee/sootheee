@@ -10,15 +10,12 @@ import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.member.repository.MemberRepository;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
 
-@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor

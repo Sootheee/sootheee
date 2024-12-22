@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,7 @@ import java.util.Objects;
 @Controller
 @RequiredArgsConstructor
 @Tag(name = "Dairy API", description = "일기 관련 처리")
+@Slf4j
 @RequestMapping("/dairy")
 public class DairyController {
     private final MemberService memberService;

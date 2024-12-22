@@ -7,7 +7,8 @@ import com.soothee.member.dto.MemberInfoDTO;
 import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
-import io.micrometer.common.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @Tag(name = "Member API", description = "회원 관련 처리")
+@Slf4j
 @RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
@@ -39,7 +41,7 @@ public class MemberController {
     @GetMapping("/info")
     @Operation(summary = "회원 정보", description = "로그인한 계정 정보로 필요한 정보 조회", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "type", description = "닉네임만 조회할 때 사용 || 없으면 회원의 모든 정보 조회함", example = "/member/info?type=name", required = false, in = ParameterIn.QUERY)
+            @Parameter(name = "type", description = "값은 name만 가능, 닉네임만 조회할 때 사용\ntype 파라미터가 없으면 회원의 모든 정보 조회함", example = "/member/info?type=name", in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = MemberInfoDTO.class))),
