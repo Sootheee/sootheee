@@ -49,19 +49,19 @@ public class Dairy extends TimeEntity implements Domain {
     private String content;
 
     /** 바랐던 방향성 */
-    @Column(name = "hope")
+    @Column(name = "hope", length = 200)
     private String hope;
 
     /** 감사한 일 */
-    @Column(name = "thank")
+    @Column(name = "thank", length = 200)
     private String thank;
 
     /** 배운 일 */
-    @Column(name = "learn")
+    @Column(name = "learn", length = 200)
     private String learn;
 
     /** 소프트 삭제 */
-    @Column(name = "is_delete")
+    @Column(name = "is_delete", nullable = false, length = 1)
     private String isDelete;
 
     @Builder

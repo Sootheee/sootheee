@@ -27,11 +27,11 @@ public class Member extends TimeEntity implements Domain {
     private String email;
 
     /** 회원 닉네임 */
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 6)
     private String name;
 
     /** 다크 모드 */
-    @Column(name = "is_dark", nullable = false)
+    @Column(name = "is_dark", nullable = false, length = 1)
     private String isDark;
 
     /** 소프트 삭제 */

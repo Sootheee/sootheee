@@ -21,20 +21,20 @@ public class DairyCondition extends TimeEntity implements Domain {
 
     /** 해당 일기 일련번호 */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dairy_id")
+    @JoinColumn(name = "dairy_id", nullable = false)
     private Dairy dairy;
 
     /** 해당 컨디션 일련번호 */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cond_id")
+    @JoinColumn(name = "cond_id", nullable = false)
     private Condition condition;
 
     /** 선택 순서 */
-    @Column(name = "order_no")
+    @Column(name = "order_no", nullable = false)
     private Integer orderNo;
 
     /** 소프트 삭제 */
-    @Column(name = "is_delete")
+    @Column(name = "is_delete", nullable = false, length = 1)
     private String isDelete;
 
     @Builder
