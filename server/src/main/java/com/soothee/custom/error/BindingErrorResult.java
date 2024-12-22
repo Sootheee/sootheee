@@ -1,4 +1,4 @@
-package com.soothee.common.exception;
+package com.soothee.custom.error;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,6 +1,7 @@
 package com.soothee.dairy.controller;
 
-import com.soothee.common.exception.MyErrorMsg;
+import com.soothee.custom.error.BindingErrorResult;
+import com.soothee.custom.error.BindingErrorUtil;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
@@ -39,6 +40,7 @@ import java.util.Objects;
 public class DairyController {
     private final MemberService memberService;
     private final DairyService dairyService;
+    private final BindingErrorUtil bindingErrorUtil;
 
     /** 달력(홈)에 표시될 해당 월의 모든 일기 점수 조회 */
     @GetMapping("/calendar")
@@ -54,9 +56,10 @@ public class DairyController {
     })
     public ResponseEntity<?> sendAllDairyMonthly(@ModelAttribute @Valid MonthParam monthParam, BindingResult bindingResult,
                                                  @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long memberId = memberService.getLoginMemberId(loginInfo);
+        /* year || month query paramter에 오류가 있는 경우 */
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         List<DairyScoresDTO> infos = dairyService.getAllDairyMonthly(memberId, monthParam);
         if (infos.isEmpty()) {
@@ -130,9 +133,10 @@ public class DairyController {
     })
     public ResponseEntity<?> registerDairy(@ModelAttribute @Valid DairyRegisterDTO inputInfo, BindingResult bindingResult,
                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long memberId = memberService.getLoginMemberId(loginInfo);
+        /* 일기 등록 query paramter에 오류가 있는 경우 */
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         dairyService.registerDairy(memberId, inputInfo);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -163,9 +167,10 @@ public class DairyController {
     public ResponseEntity<?> modifyDairy(@PathVariable("dairy_id") Long dairyId,
                                          @ModelAttribute @Valid DairyDTO inputInfo, BindingResult bindingResult,
                                          @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long memberId = memberService.getLoginMemberId(loginInfo);
+        /* 일기 수정 query paramter에 오류가 있는 경우 */
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         dairyService.modifyDairy(memberId, dairyId, inputInfo);
         return new ResponseEntity<>(HttpStatus.OK);

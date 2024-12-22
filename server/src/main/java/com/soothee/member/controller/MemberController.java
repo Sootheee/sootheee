@@ -1,5 +1,7 @@
 package com.soothee.member.controller;
 
+import com.soothee.custom.error.BindingErrorResult;
+import com.soothee.custom.error.BindingErrorUtil;
 import com.soothee.member.dto.MemberDelDTO;
 import com.soothee.member.dto.MemberInfoDTO;
 import com.soothee.member.dto.MemberNameDTO;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
+    private final BindingErrorUtil bindingErrorUtil;
 
     /** 회원 정보 전송 */
     @GetMapping("/info")
@@ -108,9 +111,10 @@ public class MemberController {
     })
     public ResponseEntity<?> deleteMember(@ModelAttribute @Valid MemberDelDTO memberDelDTO, BindingResult bindingResult,
                                           @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long loginMemberId = memberService.getLoginMemberId(loginInfo);
+        /* member_id || del_reason_list query paramter에 오류가 있는 경우 */
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         memberService.deleteMember(loginMemberId, memberDelDTO);
         return new ResponseEntity<String>(HttpStatus.OK);

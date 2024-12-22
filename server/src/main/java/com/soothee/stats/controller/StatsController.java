@@ -1,6 +1,8 @@
 package com.soothee.stats.controller;
 
 import com.soothee.common.exception.MyErrorMsg;
+import com.soothee.custom.error.BindingErrorResult;
+import com.soothee.custom.error.BindingErrorUtil;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.common.requestParam.WeekParam;
 import com.soothee.member.service.MemberService;
@@ -48,9 +50,10 @@ public class StatsController {
     })
     public ResponseEntity<?> sendMonthlyStats(@ModelAttribute @Valid MonthParam monthParam, BindingResult bindingResult,
                                                 @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long memberId = memberService.getLoginMemberId(loginInfo);
+        /* year || month query paramter에 오류가 있는 경우 */
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(memberId, monthParam);
         if (result.getCount() < 3) {
@@ -75,11 +78,11 @@ public class StatsController {
     public ResponseEntity<?> sendMonthlyContents(@PathVariable("type") String type,
                                                  @ModelAttribute @Valid MonthParam monthParam, BindingResult bindingResult,
                                                  @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long memberId = memberService.getLoginMemberId(loginInfo);
+        /* year || month query paramter에 오류가 있는 경우 */
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-        MonthlyContentsDTO result = statsService.getMonthlyContents(memberId, type, monthParam);
         if (result.getCount() < 1) {
             return new ResponseEntity<String>(MyErrorMsg.NO_CONTENTS.toString(), HttpStatus.NO_CONTENT);
         }
@@ -100,9 +103,10 @@ public class StatsController {
     })
     public ResponseEntity<?> sendWeeklyStats(@ModelAttribute @Valid WeekParam weekParam, BindingResult bindingResult,
                                              @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long memberId = memberService.getLoginMemberId(loginInfo);
+        /* year || week query paramter에 오류가 있는 경우 */
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(memberId, weekParam);
         if (result.getCount() < 3) {
@@ -125,9 +129,10 @@ public class StatsController {
     })
     public ResponseEntity<?> sendMonthlyConditionRatioList(@ModelAttribute @Valid MonthParam monthParam, BindingResult bindingResult,
                                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long memberId = memberService.getLoginMemberId(loginInfo);
+        /* year || month query paramter에 오류가 있는 경우 */
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         MonthlyConditionsDTO result = statsService.getMonthlyConditionList(memberId, monthParam);
         if (result.getCount() < 1) {
@@ -154,11 +159,11 @@ public class StatsController {
                                                      @ModelAttribute @Valid MonthParam monthParam, BindingResult bindingResult,
                                                      @RequestParam("order_by") String orderBy,
                                                      @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long memberId = memberService.getLoginMemberId(loginInfo);
+        /* year || month query paramter에 오류가 있는 경우 */
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<BindingResult>(bindingResult, HttpStatus.BAD_REQUEST);
+            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-        MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(memberId, type, monthParam, orderBy);
         if (result.getCount() < 1) {
             return new ResponseEntity<String>(MyErrorMsg.NO_CONTENTS.toString(), HttpStatus.NO_CONTENT);
         }
