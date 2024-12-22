@@ -3,6 +3,7 @@ package com.soothee.stats.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,18 +14,20 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
-@Schema(description = "주간 일기 작성 요약")
+@Schema(description = "한 주 동안 작성한 일기 통계 요약")
 public class WeeklyStatsDTO {
-    @NotEmpty(message = "주간 작성한 일기의 개수가 없습니다.")
-    @Schema(description = "주간 작성 일기 개수")
+    @NotEmpty(message = "한 주 동안 작성한 일기의 갯수가 없습니다.")
+    @PositiveOrZero(message = "작성 일기 갯수는 0을 포함한 양수만 입력 가능합니다.")
+    @Schema(description = "한 주 동안 작성 일기 갯수")
     private Integer count;
 
-    @NotEmpty(message = "주간 오늘의 점수 평균값이 없습니다.")
-    @Schema(description = "주간 오늘의 점수 평균값")
+    @NotEmpty(message = "한 주 동안 오늘의 점수 평균값이 없습니다.")
+    @PositiveOrZero(message = "오늘의 점수 평균값은 0을 포함한 양수만 입력 가능합니다.")
+    @Schema(description = "한 주 동안 오늘의 점수 평균값")
     private Double scoreAvg;
 
     @NotEmpty(message = "일주일 동안 작성된 오늘의 점수이 없습니다.")
-    @Schema(description = "주간 작성된 해당 날짜의 오늘의 점수 Map")
+    @Schema(description = "한 주 동안 작성된 해당 날짜의 오늘의 점수 Map")
     private List<DateScore> scoreList;
 
     @QueryProjection

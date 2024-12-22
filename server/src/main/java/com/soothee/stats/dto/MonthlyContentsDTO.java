@@ -2,16 +2,18 @@ package com.soothee.stats.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
-@Schema(description = "월간 감사한/배운 일 요약")
+@Schema(description = "한 달 동안 감사한/배운 일 요약")
 @AllArgsConstructor
 @Builder
 public class MonthlyContentsDTO {
-    @NotEmpty(message = "월간 작성 횟수가 없습니다.")
+    @NotEmpty(message = "한 달 동안 작성 횟수가 없습니다.")
+    @PositiveOrZero(message = "작성 횟수는 0을 포함한 양수만 입력 가능합니다.")
     @Schema(description = "한 달 동안 작성한 감사한/배운 일 횟수")
     private Integer count;
 

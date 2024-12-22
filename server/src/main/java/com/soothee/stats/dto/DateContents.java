@@ -2,15 +2,13 @@ package com.soothee.stats.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.*;
 import lombok.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
-@NoArgsConstructor
+/**
+ */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
@@ -18,18 +16,22 @@ import java.time.LocalDate;
 @AllArgsConstructor(onConstructor = @__(@QueryProjection))
 public class DateContents {
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
+    @Positive(message = "일련번호는 양수만 입력 가능합니다.")
     @Schema(description = "일기 일련번호")
     private Long dairyId;
 
     @NotEmpty(message = "감사한/배운 일 작성 날짜가 없습니다.")
-    @Schema(description = "감사한/배운 일 작성 날짜")
+    @YearRange(message = "날짜는 2024년부터, 2100년까지 입력 가능 합니다.")
+    @Schema(description = "감사한/배운 일 작성 날짜, format = yyyy-MM-dd")
     private LocalDate date;
 
     @NotEmpty(message = "오늘의 점수가 없습니다.")
+    @PositiveOrZero(message = "오늘의 점수는 0을 포함한 양수만 입력 가능합니다.")
     @Schema(description = "오늘의 점수")
     private Double score;
 
-    @NotEmpty(message = "감사한/배운 일 내용이 없습니다.")
+    @NotBlank(message = "감사한/배운 일 내용이 없습니다.")
+    @Size(max = 200, message = "바랐던 방향성은 최대 200자까지 입력 가능합니다.")
     @Schema(description = "감사한/배운 일 내용")
     private String content;
 }
