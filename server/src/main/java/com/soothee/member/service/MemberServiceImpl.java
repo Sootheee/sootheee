@@ -1,8 +1,11 @@
 package com.soothee.member.service;
 
+import com.soothee.common.constants.DomainType;
 import com.soothee.common.constants.SnsType;
-import com.soothee.common.exception.MyErrorMsg;
-import com.soothee.common.exception.MyException;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NotExistMemberException;
+import com.soothee.custom.exception.NotMatchedException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.member.domain.Member;
 import com.soothee.member.dto.MemberDelDTO;
 import com.soothee.member.dto.MemberInfoDTO;
@@ -34,61 +37,50 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateName(Long loginMemberId, Long memberId, String updateName) {
+    public void updateName(Long loginMemberId, Long memberId, String updateName) throws NotExistMemberException, IncorrectValueException, NullValueException, NotMatchedException {
         Member loginMember = this.getMemberById(loginMemberId);
-        if (this.isNotLoginMemberInfo(loginMember, memberId)) {
-            throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
-        }
+        this.isNotLoginMemberInfo(loginMember, memberId);
         loginMember.updateName(updateName);
     }
 
     @Override
-    public void updateDarkMode(Long loginMemberId, Long memberId, String updateMode) {
+    public void updateDarkMode(Long loginMemberId, Long memberId, String updateMode) throws NotExistMemberException, IncorrectValueException, NullValueException, NotMatchedException {
         Member loginMember = this.getMemberById(loginMemberId);
-        if (this.isNotLoginMemberInfo(loginMember, memberId)) {
-            throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
-        }
+        this.isNotLoginMemberInfo(loginMember, memberId);
         loginMember.updateDarkModeYN(updateMode);
     }
 
     @Override
-    public void deleteMember(Long memberId, MemberDelDTO memberDelDTO) {
+    public void deleteMember(Long memberId, MemberDelDTO memberDelDTO) throws NotExistMemberException, NotMatchedException, NullValueException, IncorrectValueException {
         Member loginMember =  this.getMemberById(memberId);
-        if (this.isNotLoginMemberInfo(loginMember, memberDelDTO.getMemberId())) {
-            throw new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.MISS_MATCH_MEMBER);
-        }
+        this.isNotLoginMemberInfo(loginMember, memberDelDTO.getMemberId());
         memberDelReasonService.saveDeleteReasons(loginMember, memberDelDTO.getDelReasonList());
         loginMember.deleteMember();
     }
 
     @Override
-    public MemberInfoDTO getAllMemberInfo(Long memberId) {
+    public MemberInfoDTO getAllMemberInfo(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException {
         Member member = this.getMemberById(memberId);
         return MemberInfoDTO.fromMember(member);
     }
 
     @Override
-    public MemberNameDTO getNicknameInfo(Long memberId) {
+    public MemberNameDTO getNicknameInfo(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException {
         Member member = this.getMemberById(memberId);
         return MemberNameDTO.fromMember(member);
     }
 
     @Override
-    public Long getLoginMemberId(AuthenticatedUser loginInfo) {
-        return this.getLoginMember(loginInfo).getMemberId();
-    }
-
-    @Override
-    public Member getLoginMember(AuthenticatedUser loginInfo) {
+    public Long getLoginMemberId(AuthenticatedUser loginInfo) throws NotExistMemberException {
         String oauth2Id = loginInfo.getName();
         return memberRepository.findByOauth2ClientIdAndIsDelete(oauth2Id, "N")
-                .orElseThrow(() -> new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new NotExistMemberException(loginInfo)).getMemberId();
     }
 
     @Override
-    public Member getMemberById(Long memberId) {
+    public Member getMemberById(Long memberId) throws NotExistMemberException {
         return memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new MyException(HttpStatus.BAD_REQUEST, MyErrorMsg.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new NotExistMemberException(memberId));
     }
 
     /**
@@ -96,9 +88,10 @@ public class MemberServiceImpl implements MemberService {
      *
      * @param loginInfo 로그인한 회원 정보
      * @param inputMemberId 입력한 회원 일련번호
-     * @return 일치하면 false, 아니면 true
      */
-    private boolean isNotLoginMemberInfo(Member loginInfo, Long inputMemberId) {
-        return !Objects.equals(loginInfo.getMemberId(), inputMemberId);
+    private void isNotLoginMemberInfo(Member loginInfo, Long inputMemberId) throws NotMatchedException {
+        if (!Objects.equals(loginInfo.getMemberId(), inputMemberId)) {
+            throw new NotMatchedException(loginInfo.getMemberId(), inputMemberId, DomainType.MEMBER);
+        }
     }
 }

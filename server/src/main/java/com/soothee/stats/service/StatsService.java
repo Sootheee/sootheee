@@ -1,7 +1,10 @@
 package com.soothee.stats.service;
 
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.SortType;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.common.requestParam.WeekParam;
+import com.soothee.custom.exception.*;
 import com.soothee.stats.dto.*;
 
 public interface StatsService {
@@ -18,9 +21,9 @@ public interface StatsService {
      *
      * @param memberId 현재 로그인한 계정의 일련번호
      * @param monthParam 지정한 년도/달
-     * @return  한 달 동안 요약 정보
+     * @return 한 달 동안 요약 정보
      */
-    MonthlyStatsDTO getMonthlyStatsInfo(Long memberId, MonthParam monthParam);
+    MonthlyStatsDTO getMonthlyStatsInfo(Long memberId, MonthParam monthParam) throws NotExistDairyException, DuplicatedResultException, NoStatsResultException;
 
     /**
      * 로그인한 계정이 지정한 년도/달의 감사한/배운 일 통계 조회
@@ -41,7 +44,7 @@ public interface StatsService {
      * @param monthParam 지정한 년도/달
      * @return 한 달 동안 감사한/배운 일 정보
      */
-    MonthlyContentsDTO getMonthlyContents(Long memberId, String type, MonthParam monthParam);
+    MonthlyContentsDTO getMonthlyContents(Long memberId, ContentType type, MonthParam monthParam) throws NotExistDairyException, DuplicatedResultException, NoContentsException, IncorrectValueException, NullValueException;
 
     /**
      * 로그인한 계정이 지정한 년도/주차의 요약 정보 조회
@@ -53,7 +56,7 @@ public interface StatsService {
      * @param weekParam 지정한 년도/주차
      * @return 한 주 동안 요약 정보
      */
-    WeeklyStatsDTO getWeeklyStatsInfo(Long memberId, WeekParam weekParam);
+    WeeklyStatsDTO getWeeklyStatsInfo(Long memberId, WeekParam weekParam) throws NoStatsResultException, DuplicatedResultException;
 
     /**
      * 한 달 동안 선택 횟수 상위 최대 3개 컨디션 리스트 조회
@@ -66,7 +69,7 @@ public interface StatsService {
      * @param monthParam 지정한 년도/달
      * @return 한 달 동안 선택 횟수 상위 최대 3개 컨디션 리스트
      */
-    MonthlyConditionsDTO getMonthlyConditionList(Long memberId, MonthParam monthParam);
+    MonthlyConditionsDTO getMonthlyConditionList(Long memberId, MonthParam monthParam) throws IncorrectValueException, NullValueException, NoStatsResultException;
 
     /**
      * 로그인한 계정이 지정한 년도/달에 작성한 모든 감사한/배운 일 리스트 조회
@@ -83,5 +86,5 @@ public interface StatsService {
      * @param orderBy 조회 순서
      * @return 한 달 동안 작성한 모든 감사한/배운 일의 갯수와 정보 리스트
      */
-    MonthlyAllContentsDTO getAllContentsInMonth(Long memberId, String type, MonthParam monthParam, String orderBy);
+    MonthlyAllContentsDTO getAllContentsInMonth(Long memberId, ContentType type, MonthParam monthParam, SortType orderBy) throws NoContentsException, IncorrectValueException, NullValueException;
 }

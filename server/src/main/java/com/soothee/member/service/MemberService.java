@@ -1,6 +1,10 @@
 package com.soothee.member.service;
 
 import com.soothee.common.constants.SnsType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NotExistMemberException;
+import com.soothee.custom.exception.NotMatchedException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.member.domain.Member;
 import com.soothee.member.dto.MemberDelDTO;
 import com.soothee.member.dto.MemberInfoDTO;
@@ -33,7 +37,7 @@ public interface MemberService {
      * @param memberId 입력한 회원 일련번호
      * @param updateMode 변경할 모드
      */
-    void updateName(Long loginMemberId, Long memberId, String updateMode);
+    void updateName(Long loginMemberId, Long memberId, String updateMode) throws NotExistMemberException, IncorrectValueException, NullValueException, NotMatchedException;
 
     /**
      * 회원 다크모드 수정
@@ -42,7 +46,7 @@ public interface MemberService {
      * @param memberId 입력한 회원 일련번호
      * @param updateMode 변경할 모드
      */
-    void updateDarkMode(Long loginMemberId, Long memberId, String updateMode);
+    void updateDarkMode(Long loginMemberId, Long memberId, String updateMode) throws NotExistMemberException, IncorrectValueException, NullValueException, NotMatchedException;
 
     /**
      * 회원 탈퇴
@@ -50,7 +54,7 @@ public interface MemberService {
      * @param memberId 현재 로그인한 계정의 일련번호
      * @param memberDelDTO 입력된 탈퇴 정보
      */
-    void deleteMember(Long memberId, MemberDelDTO memberDelDTO);
+    void deleteMember(Long memberId, MemberDelDTO memberDelDTO) throws NotExistMemberException, NullValueException, NotMatchedException, IncorrectValueException;
 
     /**
      * 로그인한 회원의 모든 정보 조회
@@ -58,7 +62,7 @@ public interface MemberService {
      * @param memberId 현재 로그인한 계정의 일련번호
      * @return 회원의 모든 정보
      */
-    MemberInfoDTO getAllMemberInfo(Long memberId);
+    MemberInfoDTO getAllMemberInfo(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException;
 
     /**
      * 로그인한 회원의 닉네임만 조회
@@ -66,7 +70,7 @@ public interface MemberService {
      * @param memberId 현재 로그인한 계정의 일련번호
      * @return 회원 일련번호와 닉네임 정보
      */
-    MemberNameDTO getNicknameInfo(Long memberId);
+    MemberNameDTO getNicknameInfo(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException;
 
     /**
      * 현재 로그인한 회원의 일련번호 조회
@@ -74,15 +78,7 @@ public interface MemberService {
      * @param loginInfo 현재 로그인 계정 정보
      * @return 로그인한 회원의 일련번호
      */
-    Long getLoginMemberId(AuthenticatedUser loginInfo);
-
-    /**
-     * 현재 로그인한 회원 정보 조회</hr>
-     *
-     * @param loginInfo AuthenticatedUser : 현재 로그인 계정 정보
-     * @return Member: 로그인한 회원의 정보
-     */
-    Member getLoginMember(AuthenticatedUser loginInfo);
+    Long getLoginMemberId(AuthenticatedUser loginInfo) throws NotExistMemberException;
 
     /**
      * 회원 일련번호로 회원 정보 조회
@@ -90,5 +86,5 @@ public interface MemberService {
      * @param memberId 조회할 회원 일련번호
      * @return 조회한 회원 정보
      */
-    Member getMemberById(Long memberId);
+    Member getMemberById(Long memberId) throws NotExistMemberException;
 }

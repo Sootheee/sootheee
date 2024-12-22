@@ -1,5 +1,6 @@
 package com.soothee.reference.service;
 
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.DelReason;
 
 public interface DelReasonService {
@@ -9,5 +10,5 @@ public interface DelReasonService {
      * @param reasonId 조회할 탈퇴 사유 일련번호
      * @return 조회된 탈퇴 사유
      */
-    DelReason getDelReasonById(Long reasonId);
+    DelReason getDelReasonById(Long reasonId) throws NullValueException;
 }

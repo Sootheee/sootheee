@@ -1,8 +1,11 @@
 package com.soothee.util;
 
 import com.soothee.common.constants.SnsType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.dairy.domain.Dairy;
 import com.soothee.dairy.domain.DairyCondition;
+import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.repository.DairyConditionRepository;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
@@ -131,8 +134,9 @@ public class CommonTestCode {
     }
 
     public Dairy getSavedNewDairy(LocalDate newDairyDate) {
-        Long newDairyId = dairyRepository.findByDate(CommonTestCode.MEMBER_ID, newDairyDate).orElseThrow(NullPointerException::new).getDairyId();
-        return getSavedNewDairy(newDairyId);
+        List<DairyDTO> list = dairyRepository.findByDate(CommonTestCode.MEMBER_ID, newDairyDate).orElseThrow(NullPointerException::new);
+        DairyDTO dairyDTO = list.get(0);
+        return getSavedNewDairy(dairyDTO.getDairyId());
     }
 
     public List<DairyCondition> getSavedDairyConditions() {
@@ -160,7 +164,7 @@ public class CommonTestCode {
         return newDairyConditions;
     }
 
-    public Dairy getNewDairy() {
+    public Dairy getNewDairy() throws IncorrectValueException, NullValueException {
         return Dairy.builder()
                 .date(NEW_DATE)
                 .member(getSavedMember())
@@ -169,7 +173,7 @@ public class CommonTestCode {
                 .build();
     }
 
-    public Member getNewMember() {
+    public Member getNewMember() throws IncorrectValueException, NullValueException {
         return Member.builder()
                 .email(NEW_EMAIL)
                 .name(NEW_NAME)
@@ -178,26 +182,26 @@ public class CommonTestCode {
                 .build();
     }
 
-    public Member deleteMember() {
+    public Member deleteMember() throws IncorrectValueException, NullValueException {
         Member newMember = saveNewMember();
         newMember.deleteMember();
         memberDelReasonService.saveDeleteReasons(newMember, getDelReasonIds());
         return newMember;
     }
 
-    public Member saveNewMember() {
+    public Member saveNewMember() throws IncorrectValueException, NullValueException {
         Member newMember = getNewMember();
         memberRepository.save(newMember);
         return newMember;
     }
 
-    public Dairy saveNewDairy() {
+    public Dairy saveNewDairy() throws IncorrectValueException, NullValueException {
         Dairy newDairy = getNewDairy();
         dairyRepository.save(newDairy);
         return newDairy;
     }
 
-    public Dairy saveNewDairyCondition(){
+    public Dairy saveNewDairyCondition() throws IncorrectValueException, NullValueException {
         int index = 0;
         Dairy newDairy = saveNewDairy();
         for (Condition condition : getNewConditions()) {

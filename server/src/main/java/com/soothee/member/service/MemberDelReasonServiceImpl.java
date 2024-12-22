@@ -1,14 +1,14 @@
 package com.soothee.member.service;
 
-import com.soothee.common.exception.MyErrorMsg;
-import com.soothee.common.exception.MyException;
+import com.soothee.common.constants.DomainType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.member.domain.Member;
 import com.soothee.member.domain.MemberDelReason;
 import com.soothee.member.repository.MemberDelReasonRepository;
 import com.soothee.reference.domain.DelReason;
 import com.soothee.reference.service.DelReasonService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +22,7 @@ public class MemberDelReasonServiceImpl implements MemberDelReasonService {
     private final DelReasonService delReasonService;
 
     @Override
-    public void saveDeleteReasons(Member loginMember, List<Long> delReasonList) {
+    public void saveDeleteReasons(Member loginMember, List<Long> delReasonList) throws NullValueException, IncorrectValueException {
         for (Long delReasonId : delReasonList) {
             DelReason delReason = delReasonService.getDelReasonById(delReasonId);
             memberDelReasonRepository.save(MemberDelReason.builder()
@@ -33,8 +33,8 @@ public class MemberDelReasonServiceImpl implements MemberDelReasonService {
     }
 
     @Override
-    public List<MemberDelReason> getMemberDelReasonByMemberId(Long memberId) {
+    public List<MemberDelReason> getMemberDelReasonByMemberId(Long memberId) throws NullValueException {
         return memberDelReasonRepository.findByMemberMemberId(memberId)
-                .orElseThrow(() -> new MyException(HttpStatus.NOT_FOUND, MyErrorMsg.NULL_VALUE));
+                .orElseThrow(() -> new NullValueException(DomainType.MEMBER_DEL_REASON));
     }
 }

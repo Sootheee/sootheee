@@ -1,5 +1,7 @@
 package com.soothee.oauth2.service;
 
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -21,5 +23,5 @@ public interface CustomOAuth2UserService {
      * @param authenticatedUser 인증된 회원
      * @return 인증된 회원 정보를 담은 토큰 반환
      */
-    AuthenticatedUser createOrLoadUser(OAuth2User authenticatedUser);
+    AuthenticatedUser createOrLoadUser(OAuth2User authenticatedUser) throws IncorrectValueException, NullValueException;
 }

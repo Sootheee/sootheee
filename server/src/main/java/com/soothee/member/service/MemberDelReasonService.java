@@ -1,5 +1,7 @@
 package com.soothee.member.service;
 
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.member.domain.Member;
 import com.soothee.member.domain.MemberDelReason;
 
@@ -12,7 +14,7 @@ public interface MemberDelReasonService {
      * @param loginMember 현재 로그인한 계정 정보
      * @param delReasonList 탈퇴 사유 일련번호 리스트
      */
-    void saveDeleteReasons(Member loginMember, List<Long> delReasonList);
+    void saveDeleteReasons(Member loginMember, List<Long> delReasonList) throws NullValueException, IncorrectValueException;
 
     /**
      * 회원의 일련번호로 탈퇴 사유 조회
@@ -20,5 +22,5 @@ public interface MemberDelReasonService {
      * @param memberId 조회할 회원의 일련번호
      * @return 탈퇴 사유 리스트
      */
-    List<MemberDelReason> getMemberDelReasonByMemberId(Long memberId);
+    List<MemberDelReason> getMemberDelReasonByMemberId(Long memberId) throws NullValueException;
 }

@@ -1,5 +1,7 @@
 package com.soothee.oauth2.service;
 
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -33,7 +35,7 @@ public class DelegatingOAuth2Service extends DefaultOAuth2UserService {
      * @return 요청한 회원 정보
      */
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(OAuth2UserRequest request) throws IncorrectValueException, NullValueException, OAuth2AuthenticationException {
         for (CustomOAuth2UserService oauth2UserService : oauth2UserServices) {
             if (!oauth2UserService.supports(request)) {
                 continue;

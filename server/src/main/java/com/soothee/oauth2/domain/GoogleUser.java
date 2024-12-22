@@ -1,6 +1,8 @@
 package com.soothee.oauth2.domain;
 
 import com.soothee.common.constants.SnsType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -16,7 +18,7 @@ public class GoogleUser {
      *
      * @return Member entity
      */
-    public Member toMember() {
+    public Member toMember() throws IncorrectValueException, NullValueException {
         return Member.builder()
                     .email(this.getEmail())
                     .name(this.getNickName())
