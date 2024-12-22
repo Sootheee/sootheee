@@ -2,7 +2,6 @@ package com.soothee.dairy.repository;
 
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.stats.dto.ConditionRatio;
-import com.soothee.stats.dto.MonthlyConditionsDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,7 @@ public interface DairyConditionRepositoryQdsl {
      * @param count 지정한 년도/달에 선택한 컨디션의 총 갯수
      * @return 지정한 달에 가장 많이 선택된 최대 3개의 컨디션-비율 리스트 (null 가능)
      */
-    Optional<List<ConditionRatio>> findConditionRatioListInMonth(Long memberId, MonthParam monthParam, Integer limit, Double count);
+    Optional<List<ConditionRatio>> findConditionRatioListInMonth(Long memberId, MonthParam monthParam, Integer limit, Integer count)  ;
 
     /**
      * 현재 로그인한 계정이 지정한 년도/달에 선택한 컨디션의 총 갯수
@@ -30,5 +29,5 @@ public interface DairyConditionRepositoryQdsl {
      * @param monthParam 지정한 년도/달
      * @return 지정한 년도/달에 선택한 컨디션의 총 갯수 (null 가능)
      */
-    Optional<MonthlyConditionsDTO> getAllDairyConditionCntInMonth(Long memberId, MonthParam monthParam);
+    Integer getAllDairyConditionCntInMonth(Long memberId, MonthParam monthParam)  ;
 }
