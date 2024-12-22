@@ -8,6 +8,8 @@ import lombok.*;
 import java.time.LocalDate;
 
 /**
+ * 감사한/배운 일 조회
+ * 1. 일기 일련번호 2. 작성 날짜 3. 오늘의 점수 4. 감사한/배운 일
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter

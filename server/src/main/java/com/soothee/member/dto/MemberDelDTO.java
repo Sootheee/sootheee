@@ -8,6 +8,8 @@ import lombok.*;
 import java.util.List;
 
 /**
+ * 회원 탈퇴
+ * 1. 회원 일련번호 2. 선택한 탈퇴 사유 일련번호 리스트
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter

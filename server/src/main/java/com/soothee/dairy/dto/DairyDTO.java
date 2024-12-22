@@ -13,6 +13,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
+ * 일기 조회/수정
+ * 1. 일기 일련번호 2. 작성날짜 3. 날씨 일련번호 3. 오늘의 점수 4. 선택한 컨디션 일련번호 리스트
+ * 5. 오늘의 요약 6. 바랐던 방향성 7. 감사한 일 8. 배운 일
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter

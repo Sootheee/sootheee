@@ -10,6 +10,8 @@ import lombok.*;
 import java.time.LocalDate;
 
 /**
+ * 지정한 날짜에 작성한 일기와 오늘의 점수
+ * 1. 일기 일련번호 2. 작성 날짜 3. 오늘의 점수
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter

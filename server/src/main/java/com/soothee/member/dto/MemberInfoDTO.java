@@ -6,11 +6,11 @@ import com.soothee.member.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.http.HttpStatus;
 
-import java.util.Objects;
-
+/**
+ * 회원
+ * 1. 회원 일련번호 2. 회원 아이디 3. 회원 닉네임 4. 회원 다크모드 정보
+ */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter

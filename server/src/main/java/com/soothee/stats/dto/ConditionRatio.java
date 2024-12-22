@@ -8,6 +8,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 /**
+ *  한 달 동안 컨디션 통계
+ * 1. 컨디션 일련번호 2. 한 달 동안 선택한 모든 컨디션 중 해당 컨디션의 비율
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter

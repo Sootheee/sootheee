@@ -8,6 +8,9 @@ import lombok.*;
 import java.util.List;
 
 /**
+ *  한 달 동안 작성한 모든 감사한/배운 일 리스트
+ *  1. 한 달 동안 감사한/배운 일 작성 횟수
+ *  2. 한 달 동안 작성한 모든 감사한/배운 일 정보
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter

@@ -11,6 +11,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 /**
+ * 해당 월에 작성한 모든 일기
+ * 1. 일기 일련번호 2. 작성 날짜 3. 오늘의 점수
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
