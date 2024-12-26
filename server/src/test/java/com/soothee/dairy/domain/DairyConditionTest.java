@@ -1,7 +1,9 @@
 package com.soothee.dairy.domain;
 
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.config.TestConfig;
 import com.soothee.util.CommonTestCode;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Slf4j
 @Import(TestConfig.class)
 class DairyConditionTest {
     @Autowired
@@ -31,6 +34,6 @@ class DairyConditionTest {
         //when
         savedDairyCondition.deleteDairyCondition();
         //then
-        Assertions.assertThat(savedDairyCondition.getIsDelete()).isEqualTo("Y");
+        Assertions.assertThat(savedDairyCondition.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
     }
 }

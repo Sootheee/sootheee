@@ -1,7 +1,11 @@
 package com.soothee.reference.service;
 
 import com.soothee.config.TestConfig;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.DelReason;
+import com.soothee.util.CommonTestCode;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +23,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Slf4j
 @Import(TestConfig.class)
 class DelReasonServiceTest {
     @Autowired
     private DelReasonService delReasonService;
     @Test
     void getDelReasonById() {
-        //given
-        //when
-        DelReason result = delReasonService.getDelReasonById(1L);
-        //then
-        Assertions.assertThat(result.getContent()).isNotNull();
+        try {
+            //given
+            //when
+            DelReason result = delReasonService.getDelReasonById(CommonTestCode.DEL_REASON_ID1);
+            //then
+            Assertions.assertThat(result.getContent()).isNotNull();
+        } catch (NullValueException | IncorrectValueException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

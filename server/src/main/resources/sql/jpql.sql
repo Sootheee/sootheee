@@ -8,7 +8,7 @@ drop table del_reason, member_del_reason, member, dairy, dairy_condition, weathe
 
 
 
-INSERT INTO member VALUES (NULL, 'abc@abc.com', '작성자1', 'N', 'N', NULL, '2024-11-01', '2024-11-11', 'KAKAOTALK', '3333','USER');
+INSERT INTO member VALUES (NULL, 'abc@abc.com', '작성자1', 'N', 'N', '2024-11-01', '2024-11-11', 'KAKAOTALK', '3333','USER');
 INSERT INTO dairy VALUES  (NULL, '2024-10-10', 1, 3, 2.4, 'dkdkd', '', '', '', 'N', '2024-11-01', '2024-11-11'),
                             (NULL, '2024-10-11', 1, 3, 6.5, 'agc', '', '', '', 'N', '2024-11-01', '2024-11-11'),
                             (NULL, '2024-10-12', 1, 3, 8.8, 'efe', '', '', '', 'N', '2024-11-01', '2024-11-11'),
@@ -34,7 +34,7 @@ SELECT COUNT(d.dairy_id), AVG(d.score)
     WHERE d.member_id = 1
         AND YEAR(d.date) = 2024
         AND MONTH(d.date) = 10
-        AND d.is_delete like 'N';
+        AND d.is_delete LIKE 'N';
 
 /* findMostOneCondIdInMonth */
 SELECT dc.cond_id,

@@ -1,34 +1,66 @@
 package com.soothee.stats.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.DoubleType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
+import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@NoArgsConstructor
+/**
+ * 감사한/배운 일 조회
+ * 1. 일기 일련번호 2. 작성 날짜 3. 오늘의 점수 4. 감사한/배운 일
+ */
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
 @Schema(description = "해당 날짜의 감사한/배운 일 조회")
-@AllArgsConstructor(onConstructor = @__(@QueryProjection))
 public class DateContents {
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
+    @Positive(message = "일련번호는 양수만 입력 가능합니다.")
     @Schema(description = "일기 일련번호")
     private Long dairyId;
 
     @NotEmpty(message = "감사한/배운 일 작성 날짜가 없습니다.")
-    @Schema(description = "감사한/배운 일 작성 날짜")
+    @YearRange(message = "날짜는 2024년부터, 2100년까지 입력 가능 합니다.")
+    @Schema(description = "감사한/배운 일 작성 날짜, format = yyyy-MM-dd")
     private LocalDate date;
 
     @NotEmpty(message = "오늘의 점수가 없습니다.")
+    @PositiveOrZero(message = "오늘의 점수는 0을 포함한 양수만 입력 가능합니다.")
     @Schema(description = "오늘의 점수")
     private Double score;
 
-    @NotEmpty(message = "감사한/배운 일 내용이 없습니다.")
+    @NotBlank(message = "감사한/배운 일 내용이 없습니다.")
+    @Size(max = 200, message = "바랐던 방향성은 최대 200자까지 입력 가능합니다.")
     @Schema(description = "감사한/배운 일 내용")
     private String content;
+
+    @QueryProjection
+    public DateContents(Long dairyId, LocalDate date, Double score, String content) {
+        this.dairyId = dairyId;
+        this.date = date;
+        this.score = score;
+        this.content = content;
+    }
+
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     *
+     * @param type 감사한/배운 일 종류
+     */
+    public void valid(ContentType type) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(getDairyId(), DomainType.DAIRY);
+        SootheeValidation.checkDate(getDate());
+        SootheeValidation.checkDouble(getScore(), DoubleType.SCORE);
+        SootheeValidation.checkOptionalContent(getContent(), type);
+    }
 }

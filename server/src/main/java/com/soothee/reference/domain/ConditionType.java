@@ -1,5 +1,10 @@
 package com.soothee.reference.domain;
 
+import com.soothee.common.constants.ReferenceType;
+import com.soothee.common.domain.Reference;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.SootheeValidation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,11 +18,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "condition_type")
-public class ConditionType {
+public class ConditionType implements Reference {
     /** 컨디션 타입 일련번호 */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long condTypeId;
+    private String condTypeId;
 
     /** 컨디션 타입 */
     @Column(name = "cond_type_name", nullable = false, length = 10)
@@ -26,4 +30,18 @@ public class ConditionType {
     /** 컨디션 타입 부여 점수 */
     @Column(name = "cond_type_value", nullable = false)
     private Integer condTypeValue;
+
+    @Override
+    public String getId() {
+        return condTypeId;
+    }
+
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     */
+    public void valid() throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkReferenceId(getCondTypeId(), ReferenceType.CONDITION_TYPE);
+        SootheeValidation.checkInteger(getCondTypeValue(), ReferenceType.CONDITION_TYPE);
+    }
 }

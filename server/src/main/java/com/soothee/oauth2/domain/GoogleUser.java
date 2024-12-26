@@ -12,14 +12,14 @@ public class GoogleUser {
     private final OAuth2User oauth2User;
 
     /**
-     * 인증된 회원 정보를 받아서 Member 생성</hr>
+     * 인증된 회원 정보를 받아서 Member 생성
      *
-     * @return Member : 회원 엔티티
+     * @return Member entity
      */
     public Member toMember() {
         return Member.builder()
-                    .email(this.getEmail())
-                    .name(this.getNickName())
+                    .email(getEmail())
+                    .name(getNickName())
                     .snsType(SnsType.GOOGLE)
                     .oauth2ClientId(oauth2User.getName())
                     .build();
@@ -32,11 +32,11 @@ public class GoogleUser {
 
     /** 인증 회원 정보 중 닉네임 가져오기 */
     private String getNickName() {
-        return String.valueOf(this.getAttributes().get("name"));
+        return String.valueOf(getAttributes().get("name"));
     }
 
     /** 인증 회원 정보 중 아이디(이메일) 가져오기 */
     private String getEmail() {
-        return String.valueOf(this.getAttributes().get("email"));
+        return String.valueOf(getAttributes().get("email"));
     }
 }

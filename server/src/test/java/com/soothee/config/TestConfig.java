@@ -21,15 +21,13 @@ public class TestConfig {
                                          DairyRepository dairyRepository,
                                          MemberRepository memberRepository,
                                          DairyConditionRepository dairyConditionRepository,
-                                         MemberDelReasonRepository memberDelReasonRepository,
-                                         MemberDelReasonService memberDelReasonService) {
+                                         MemberDelReasonRepository memberDelReasonRepository) {
         return new CommonTestCode(weatherRepository,
                                     conditionRepository,
                                     delReasonRepository,
                                     dairyRepository,
                                     memberRepository,
                                     dairyConditionRepository,
-                                    memberDelReasonRepository,
-                                    memberDelReasonService);
+                                    memberDelReasonRepository);
     }
 }

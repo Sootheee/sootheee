@@ -1,10 +1,7 @@
 package com.soothee.oauth2.domain;
 
 import com.soothee.member.domain.Member;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -20,7 +17,7 @@ import java.util.stream.Stream;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class AuthenticatedUser implements Principal, OAuth2User {
     /** OAuth2 인증 회원 식별자 */
@@ -37,7 +34,7 @@ public class AuthenticatedUser implements Principal, OAuth2User {
     /** 인증된 회원 식별자 가져오기 */
     @Override
     public String getName() {
-        return this.oauth2Id;
+        return oauth2Id;
     }
 
     @Override
@@ -47,7 +44,7 @@ public class AuthenticatedUser implements Principal, OAuth2User {
 
     @Override
     public Map<String, Object> getAttributes() {
-        return this.attributes;
+        return attributes;
     }
 
     @Override
@@ -56,10 +53,10 @@ public class AuthenticatedUser implements Principal, OAuth2User {
     }
 
     /**
-     * Member Entity 정보와 OAuth2User 정보로 AuthenticatedUser 생성</hr>
+     * Member Entity 정보와 OAuth2User 정보로 AuthenticatedUser 생성
      *
-     * @param member     Member : 서버에 저장된 회원 정보
-     * @param oauth2User OAuth2User : 인증된 회원 정보
+     * @param member 서버에 등록된 회원 정보
+     * @param oauth2User 인증된 회원 정보
      * @return AuthenticatedUser 회원 정보
      */
     public static AuthenticatedUser of(Member member, OAuth2User oauth2User) {

@@ -1,11 +1,11 @@
 package com.soothee.reference.service;
 
-import com.soothee.common.exception.MyErrorMsg;
-import com.soothee.common.exception.MyException;
+import com.soothee.common.constants.ReferenceType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.Condition;
 import com.soothee.reference.repository.ConditionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +16,10 @@ public class ConditionServiceImpl implements ConditionService{
     private final ConditionRepository conditionRepository;
 
     @Override
-    public Condition getConditionById(Long condId) {
-        return conditionRepository.findByCondId(condId)
-                .orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
+    public Condition getConditionById(String condId) throws NullValueException, IncorrectValueException {
+        Condition result = conditionRepository.findByCondId(condId)
+                .orElseThrow(() -> new NullValueException(condId, ReferenceType.CONDITION));
+        result.valid();
+        return result;
     }
 }

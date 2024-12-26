@@ -1,5 +1,7 @@
 package com.soothee.dairy.repository;
 
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.SortType;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.common.requestParam.WeekParam;
 import com.soothee.dairy.dto.DairyDTO;
@@ -12,97 +14,97 @@ import java.util.Optional;
 
 public interface DairyRepositoryQdsl {
     /**
-     * 로그인한 계정이 지정한 년도-월에 작성한 일기 정보 조회</hr>
-     * 삭제한 일기 제외
+     * 로그인한 계정이 지정한 년도-월에 작성한 일기 정보 조회
+     * - 삭제한 일기 제외
      *
-     * @param memberId      Long : 로그인한 계정 일련번호
-     * @param monthParam    MonthParam : 지정한 년도/달
-     * @return Optional<List<DairyScoresDTO>> : 조회된 (일기 일련번호, 일기 날짜, 오늘의 점수) 정보 리스트 (null 가능)
+     * @param memberId 로그인한 계정 일련번호
+     * @param monthParam 지정한 년도/달
+     * @return 조회된 (일기 일련번호, 일기 날짜, 오늘의 점수) 정보 리스트 (null 가능)
      */
     Optional<List<DairyScoresDTO>> findByMemberIdYearMonth(Long memberId, MonthParam monthParam);
 
     /**
-     * 로그인한 계정이 지정한 날에 작성한 일기 정보 조회</hr>
-     * 삭제한 일기 제외
+     * 로그인한 계정이 지정한 날에 작성한 일기 정보 조회
+     * - 삭제한 일기 제외
      *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param date     LocalDate : 지정한 날짜
-     * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
+     * @param memberId 로그인한 계정 일련번호
+     * @param date     지정한 날짜
+     * @return 조회된 일기 모든 정보 (null 가능)
      */
-    Optional<DairyDTO> findByDate(Long memberId, LocalDate date);
+    Optional<List<DairyDTO>> findByDate(Long memberId, LocalDate date);
 
     /**
-     * 로그인한 계정이 작성한 해당 일련번호의 일기 정보 조회</hr>
-     * 삭제한 일기 제외
+     * 로그인한 계정이 작성한 해당 일련번호의 일기 정보 조회
+     * - 삭제한 일기 제외
      *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param dairyId  Long : 조회할 일기 일련번호
-     * @return Optional<DairyDTO> : 조회된 일기 모든 정보 (null 가능)
+     * @param memberId 로그인한 계정 일련번호
+     * @param dairyId  조회할 일기 일련번호
+     * @return 조회된 일기 모든 정보 (null 가능)
      */
-    Optional<DairyDTO> findByMemberDiaryId(Long memberId, Long dairyId);
+    Optional<List<DairyDTO>> findByMemberDiaryId(Long memberId, Long dairyId)  ;
 
     /**
-     * 로그인한 계정이 지정한 년도/달에 작성한 일기 개수 & 오늘의 점수 평균 조회</hr>
-     * 삭제한 일기 제외
+     * 로그인한 계정이 지정한 년도/달에 작성한 일기 갯수 & 오늘의 점수 평균 조회
+     * - 삭제한 일기 제외
      *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param monthParam   MonthParam : 지정한 년도/달
-     * @return Optional<MonthlyStatsDTO> : 지정한 년도/달 동안 작성한 일기 개수와 오늘의 점수 평균 (null 가능)
+     * @param memberId   로그인한 계정 일련번호
+     * @param monthParam 지정한 년도/달
+     * @return 지정한 년도/달 동안 작성한 일기 갯수와 오늘의 점수 평균 (null 가능)
      */
-    Optional<MonthlyStatsDTO> findDiaryStatsInMonth(Long memberId, MonthParam monthParam);
+    Optional<List<MonthlyStatsDTO>> findDiaryStatsInMonth(Long memberId, MonthParam monthParam)  ;
 
     /**
-     * 해당 달에 작성한 감사한/배운 일 횟수</hr>
-     * 삭제한 일기 제외
+     * 해당 달에 작성한 감사한/배운 일 횟수
+     * - 삭제한 일기 제외
      *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param type     String : 감사한/배운 일 중 타입
-     * @param monthParam   MonthParam : 지정한 년도/달
-     * @return Optional<Integer> :
+     * @param memberId   로그인한 계정 일련번호
+     * @param type       감사한/배운 일 중 타입
+     * @param monthParam 지정한 년도/달
+     * @return 작성한 감사한/배운 일 횟수 (null 가능)
      */
-    Optional<Integer> findDiaryContentCntInMonth(Long memberId, String type, MonthParam monthParam);
+    Optional<Integer> findDiaryContentCntInMonth(Long memberId, ContentType type, MonthParam monthParam);
 
     /**
-     * 해당 달에 작성한 감사한/배운 일 중 가장 높은/낮은 점수를 기록한 날의 감사한/배운 일</hr>
-     * 삭제한 일기 제외
+     * 해당 달에 작성한 감사한/배운 일 중 가장 높은/낮은 점수를 기록한 날의 감사한/배운 일
+     * - 삭제한 일기 제외
      *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param type     String : 감사한/배운 일 중 타입
-     * @param monthParam   MonthParam : 지정한 년도/달
-     * @param high     String : 가장 높은/낮은 점수 중 타입
-     * @return Optional<DateContents> : 기록한 날짜, 가장 높은/낮은 점수, 감사한/배운 일 내용 정보 리스트 (null 가능)
+     * @param memberId   로그인한 계정 일련번호
+     * @param type       감사한/배운 일 중 타입
+     * @param monthParam 지정한 년도/달
+     * @param sort       가장 높은/낮은 점수 중 타입
+     * @return 기록한 날짜, 가장 높은/낮은 점수, 감사한/배운 일 내용 정보 리스트 (null 가능)
      */
-    Optional<DateContents> findDiaryContentInMonthHL(Long memberId, String type, MonthParam monthParam, String high);
+    Optional<List<DateContents>> findDiaryContentInMonthHL(Long memberId, ContentType type, MonthParam monthParam, SortType sort)  ;
 
     /**
-     * 로그인한 계정이 지정한 년도/주차에 작성한 일기 개수 & 오늘의 점수 평균 조회</hr>
-     * 삭제한 일기 제외
+     * 로그인한 계정이 지정한 년도/주차에 작성한 일기 갯수 & 오늘의 점수 평균 조회
+     * - 삭제한 일기 제외
      *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param weekParam   WeekParam : 지정한 년도/주차
-     * @return Optional<WeeklyStatsDTO> : 지정한 년도/주차 동안 작성한 일기 개수와 오늘의 점수 평균 (null 가능)
+     * @param memberId  로그인한 계정 일련번호
+     * @param weekParam 지정한 년도/주차
+     * @return 지정한 년도/주차 동안 작성한 일기 갯수와 오늘의 점수 평균 (null 가능)
      */
-    Optional<WeeklyStatsDTO> findDiaryStatsInWeekly(Long memberId, WeekParam weekParam);
+    Optional<List<WeeklyStatsDTO>> findDiaryStatsInWeekly(Long memberId, WeekParam weekParam)  ;
 
     /**
-     * 로그인한 계정이 지정한 년도/주차에 작성한 일기 날짜와 점수 리스트</hr>
-     * 삭제한 일기 제외
+     * 로그인한 계정이 지정한 년도/주차에 작성한 일기 날짜와 점수 리스트
+     * - 삭제한 일기 제외
      *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param weekParam   WeekParam : 지정한 년도/주차
-     * @return Optional<List<DateScore>> : 지정한 년도/주차 동안 작성한 일기 날짜와 점수 리스트 (null 가능)
+     * @param memberId 로그인한 계정 일련번호
+     * @param weekParam 지정한 년도/주차
+     * @return 지정한 년도/주차 동안 작성한 일기 날짜와 점수 리스트 (null 가능)
      */
-    Optional<List<DateScore>> findDiaryScoresInWeekly(Long memberId, WeekParam weekParam);
+    Optional<List<DateScore>> findDiaryScoresInWeekly(Long memberId, WeekParam weekParam)  ;
 
     /**
-     * 해당 달에 작성한 모든 감사한/배운 일 정보 리스트 조회</hr>
-     * 삭제한 일기 제외
+     * 해당 달에 작성한 모든 감사한/배운 일 정보 리스트 조회
+     * - 삭제한 일기 제외
      *
-     * @param memberId Long : 로그인한 계정 일련번호
-     * @param type     String : 감사한/배운 일 중 타입
-     * @param monthParam   MonthParam : 지정한 년도/달
-     * @param orderBy     String : 조회 순서 타입
-     * @return Optional<DateContents> : 기록한 날짜, 오늘의 점수, 감사한/배운 일 내용 정보 리스트 (null 가능)
+     * @param memberId 로그인한 계정 일련번호
+     * @param type 감사한/배운 일 중 타입
+     * @param monthParam 지정한 년도/달
+     * @param orderBy 조회 순서 타입
+     * @return 기록한 날짜, 오늘의 점수, 감사한/배운 일 내용 정보 리스트 (null 가능)
      */
-    Optional<List<DateContents>> findDiaryContentInMonthSort(Long memberId, String type, MonthParam monthParam, String orderBy);
+    Optional<List<DateContents>> findDiaryContentInMonthSort(Long memberId, ContentType type, MonthParam monthParam, SortType orderBy)  ;
 }

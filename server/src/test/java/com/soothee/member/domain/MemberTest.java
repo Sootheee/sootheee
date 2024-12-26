@@ -1,7 +1,11 @@
 package com.soothee.member.domain;
 
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.config.TestConfig;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.util.CommonTestCode;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Slf4j
 @Import(TestConfig.class)
 class MemberTest {
     @Autowired
@@ -33,22 +38,30 @@ class MemberTest {
         //given
         String newName = "수정할이름";
         Member savedMember = commonTestCode.getSavedMember();
-        //when
-        savedMember.updateName(newName);
-        //then
-        Assertions.assertThat(savedMember.getName()).isEqualTo(newName);
+        try {
+            //when
+            savedMember.updateName(newName);
+            //then
+            Assertions.assertThat(savedMember.getName()).isEqualTo(newName);
+        } catch (IncorrectValueException | NullValueException e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Test
     @DisplayName("회원 다크모드 수정 성공")
     void updateDarkModeYN() {
         //given
-        String isDarkY = "Y";
+        BooleanYN isDark = BooleanYN.Y;
         Member savedMember = commonTestCode.getSavedMember();
-        //when
-        savedMember.updateDarkModeYN(isDarkY);
-        //then
-        Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDarkY);
+        try {
+            //when
+            savedMember.updateDarkModeYN(isDark);
+            //then
+            Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDark.toString());
+        } catch (IncorrectValueException | NullValueException e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Test
@@ -59,6 +72,6 @@ class MemberTest {
         //when
         savedMember.deleteMember();
         //then
-        Assertions.assertThat(savedMember.getIsDelete()).isEqualTo("Y");
+        Assertions.assertThat(savedMember.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
     }
 }

@@ -1,5 +1,7 @@
 package com.soothee.oauth2.service;
 
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -17,24 +19,23 @@ public class DelegatingOAuth2Service extends DefaultOAuth2UserService {
     private final List<CustomOAuth2UserService> oauth2UserServices;
 
     /**
-     * OAuth2 로그인 회원 정보 로드</hr>
+     * OAuth2 로그인 회원 정보 로드
      *
-     * @param request OAuth2UserRequest : OAuth2 로그인 요청
-     * @return OAuth2User : 요청한 회원 정보
+     * @param request OAuth2 로그인 요청
+     * @return 요청한 회원 정보
      */
     public OAuth2User loadUserFromParent(OAuth2UserRequest request) {
         return super.loadUser(request);
     }
 
     /**
-     * 각 SNS 로그인 서비스의 지원 여부 확인 후, OAuth2 로그인 요청한 회원 정보 로드</hr>
+     * 각 SNS 로그인 서비스의 지원 여부 확인 후, OAuth2 로그인 요청한 회원 정보 로드
      *
-     * @param request OAuth2UserRequest : OAuth2 로그인 요청
-     * @return OAuth2User : 요청한 회원 정보
-     * @throws OAuth2AuthenticationException
+     * @param request OAuth2 로그인 요청
+     * @return 요청한 회원 정보
      */
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(OAuth2UserRequest request) throws IncorrectValueException, NullValueException, OAuth2AuthenticationException {
         for (CustomOAuth2UserService oauth2UserService : oauth2UserServices) {
             if (!oauth2UserService.supports(request)) {
                 continue;

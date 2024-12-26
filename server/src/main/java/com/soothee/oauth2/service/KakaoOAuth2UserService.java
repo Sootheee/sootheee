@@ -1,6 +1,8 @@
 package com.soothee.oauth2.service;
 
 import com.soothee.common.constants.SnsType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import com.soothee.oauth2.domain.KakaoUser;
 import com.soothee.member.domain.Member;
@@ -10,7 +12,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
 
@@ -22,11 +24,11 @@ public class KakaoOAuth2UserService implements CustomOAuth2UserService {
     private final MemberService memberService;
 
     /**
-     * 해당 SNS OAuth2을 지원하는지 확인</hr>
+     * 해당 SNS OAuth2을 지원하는지 확인
      * "kakao"인 경우에만 true
      *
-     * @param request
-     * @return
+     * @param request OAuth2 로그인 요청
+     * @return 맞으면 true / 아니면 false
      */
     @Override
     public boolean supports(OAuth2UserRequest request) {
@@ -35,15 +37,15 @@ public class KakaoOAuth2UserService implements CustomOAuth2UserService {
     }
 
     /**
-     * 인증된 회원 엔티티 조회 및 생성</hr>
+     * 인증된 회원 엔티티 조회 및 생성
      * 기존 회원 -> 조회
      * 신규 회원 -> 생성
      *
-     * @param authenticatedUser OAuth2User : 인증된 회원
-     * @return AuthenticatedUser : 인증된 회원 정보를 담은 토큰 반환
+     * @param authenticatedUser 인증된 회원
+     * @return 인증된 회원 정보를 담은 토큰 반환
      */
     @Override
-    public AuthenticatedUser createOrLoadUser(OAuth2User authenticatedUser) {
+    public AuthenticatedUser createOrLoadUser(OAuth2User authenticatedUser) throws IncorrectValueException, NullValueException {
         String oauth2ClientId = authenticatedUser.getName();
         Optional<Member> optional = memberService.getMemberForOAuth2(oauth2ClientId, SnsType.KAKAOTALK);
         Member member;

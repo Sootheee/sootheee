@@ -39,7 +39,7 @@ public class JwtTokenProvider {
     }
 
     /**
-     * JWT에서 사용자 이름 추출</hr>
+     * JWT에서 사용자 이름 추출
      *
      * @param token 토큰
      * @return JWT

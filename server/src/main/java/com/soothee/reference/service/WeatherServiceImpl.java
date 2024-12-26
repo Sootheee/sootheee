@@ -1,11 +1,11 @@
 package com.soothee.reference.service;
 
-import com.soothee.common.exception.MyErrorMsg;
-import com.soothee.common.exception.MyException;
+import com.soothee.common.constants.ReferenceType;
+import com.soothee.custom.exception.IncorrectValueException;
+import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.Weather;
 import com.soothee.reference.repository.WeatherRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +16,12 @@ public class WeatherServiceImpl implements WeatherService {
     private final WeatherRepository weatherRepository;
 
     @Override
-    public Weather getWeatherById(Long weatherId) {
-       return weatherRepository.findByWeatherId(weatherId)
-               .orElseThrow(() -> new MyException(HttpStatus.INTERNAL_SERVER_ERROR, MyErrorMsg.NULL_VALUE));
+    public Weather getWeatherById(String weatherId) throws NullValueException, IncorrectValueException {
+        /* 날씨 일련번호로 날씨 정보 조회 */
+       Weather result = weatherRepository.findByWeatherId(weatherId)
+               /* 해당 날씨 일련번호로 조회된 날씨가 없는 경우 Exception 발생 */
+               .orElseThrow(() -> new NullValueException(weatherId, ReferenceType.WEATHER));
+       result.valid();
+       return result;
     }
 }
