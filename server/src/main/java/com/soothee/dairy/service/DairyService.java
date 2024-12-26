@@ -11,18 +11,18 @@ import java.util.List;
 
 public interface DairyService {
     /**
-     * 지정한 달에 작성한 모든 일기의 오늘의 점수 리스트 조회
-     * 삭제된 일기 제외
+     * 현재 로그인한 계정이 지정된 년도/월에 작성한 모든 일기의 작성 날짜와 오늘의 점수 리스트 조회
+     * - 삭제된 일기 제외
      *
      * @param memberId 현재 로그인한 계정의 일련번호
      * @param monthParam 지정한 년도/달
-     * @return 일기 일련번호와 날짜, 오늘의 점수 리스트
+     * @return 일기 일련번호와 날짜, 오늘의 점수 리스트 || 지정된 년도/월에 작성한 일기가 없는 경우 빈 리스트 리턴
      */
     List<DairyScoresDTO> getAllDairyMonthly(Long memberId, MonthParam monthParam) throws NotExistDairyException;
 
     /**
-     * 해당 날짜 일기 조회
-     * 삭제된 일기 제외
+     * 현재 로그인한 계정이 지정한 날짜에 작성한 고유한 하나의 일기 조회
+     * - 삭제된 일기 제외
      *
      * @param memberId 현재 로그인한 계정의 일련번호
      * @param date 조회할 날짜
@@ -31,8 +31,8 @@ public interface DairyService {
     DairyDTO getDairyByDate(Long memberId, LocalDate date) throws NotExistDairyException, DuplicatedResultException, NoDairyConditionException;
 
     /**
-     * 해당 일기 일련번호 일기 조회
-     * 삭제된 일기 제외
+     * 현재 로그인한 계정이 작성한 지정한 일기 일련번호를 가진 고유한 하나의 일기 조회
+     * - 삭제된 일기 제외
      *
      * @param memberId 현재 로그인한 계정의 일련번호
      * @param dairyId 조회할 일기 일련번호
@@ -51,7 +51,7 @@ public interface DairyService {
 
     /**
      * 기존 일기 수정
-     * 1. path의 일련번호와 query의 일련번호가 다르면 수정 불가
+     * - 삭제된 일기 제외
      * 2. 기존 dairy의 date와 query의 date가 다르면 수정 불가
      *
      * @param memberId 현재 로그인한 계정의 일련번호
@@ -62,6 +62,7 @@ public interface DairyService {
 
     /**
      * 작성된 일기 삭제
+     * - 삭제된 일기 제외
      *
      * @param memberId 현재 로그인한 계정의 일련번호
      * @param dairyId 삭제할 일기 일련번호

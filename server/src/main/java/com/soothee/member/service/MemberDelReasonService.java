@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface MemberDelReasonService {
     /**
-     * 로그인한 회원의 탈퇴 사유 저장
+     * 로그인한 회원의 탈퇴 사유 등록
      *
      * @param loginMember 현재 로그인한 계정 정보
-     * @param delReasonList 탈퇴 사유 일련번호 리스트
+     * @param delReasonIdList 탈퇴 사유 일련번호 리스트
      */
     void saveDeleteReasons(Member loginMember, List<Long> delReasonList) throws NullValueException, IncorrectValueException;
 

@@ -27,8 +27,8 @@ public class KakaoOAuth2UserService implements CustomOAuth2UserService {
      * 해당 SNS OAuth2을 지원하는지 확인
      * "kakao"인 경우에만 true
      *
-     * @param request
-     * @return
+     * @param request OAuth2 로그인 요청
+     * @return 맞으면 true / 아니면 false
      */
     @Override
     public boolean supports(OAuth2UserRequest request) {

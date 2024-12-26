@@ -10,8 +10,8 @@ public interface CustomOAuth2UserService {
     /**
      * 해당 SNS OAuth2을 지원하는지 확인
      *
-     * @param request
-     * @return
+     * @param request 인증 요청
+     * @return 맞으면 true / 아니면 false
      */
     boolean supports(OAuth2UserRequest request);
 

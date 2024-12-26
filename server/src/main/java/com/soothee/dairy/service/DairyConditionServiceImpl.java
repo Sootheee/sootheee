@@ -80,8 +80,8 @@ public class DairyConditionServiceImpl implements DairyConditionService {
                     || !Objects.equals(curCondition.getOrderNo(), i)) {
                 /* 일기의 컨디션을 업데이트 하기 위해 기존의 컨디션은 소프트 삭제 처리 */
                 curCondition.deleteDairyCondition();
-                /* 새 일기-컨디션 저장 */
-                this.saveNewDairyCondition(curDairy, inputCondIds.get(i), i);
+                /* 새 일기-컨디션 등록 */
+                saveNewDairyCondition(curDairy, inputCondIds.get(i), i);
             }
         }
         /* 현재 컨디션 갯수가 입력된 컨디션 갯수보다 많으면 -> 입력된 컨대션 갯수보다 많은 현재 컨디션은 삭제됨 */
@@ -90,11 +90,11 @@ public class DairyConditionServiceImpl implements DairyConditionService {
                 curList.get(i).deleteDairyCondition();
             }
         }
-        /* 현재 컨디션 갯수보다 입력된 컨디션 갯수가 많으면 -> 초과로 입력된 컨디션 저장 */
+        /* 현재 컨디션 갯수보다 입력된 컨디션 갯수가 많으면 -> 초과로 입력된 새 일기-컨디션 등록 */
         if (curSize < inputSize) {
             for (int i = curSize; i < inputSize; i++) {
-                /* 새 일기-컨디션 저장 */
-                this.saveNewDairyCondition(curDairy, inputCondIds.get(i), i);
+                /* 새 일기-컨디션 등록 */
+                saveNewDairyCondition(curDairy, inputCondIds.get(i), i);
             }
         }
     }
@@ -112,7 +112,7 @@ public class DairyConditionServiceImpl implements DairyConditionService {
     }
 
     /**
-     * 새 일기-컨디션 저장
+     * 새 일기-컨디션 등록
      *
      * @param dairy 해당 일기
      * @param condId 해당 컨디션 일련번호

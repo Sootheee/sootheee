@@ -1,8 +1,6 @@
 package com.soothee.dairy.domain;
 
-import com.soothee.common.constants.ContentType;
-import com.soothee.common.constants.DomainType;
-import com.soothee.common.constants.DoubleType;
+import com.soothee.common.constants.*;
 import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
 import com.soothee.custom.exception.IncorrectValueException;
@@ -95,19 +93,19 @@ public class Dairy extends TimeEntity implements Domain {
         if (!Objects.equals(dairy.getWeatherId(), weather.getWeatherId())) {
             this.weather = weather;
         }
-        if (!Objects.equals(this.score, dairy.getScore())) {
+        if (!Objects.equals(score, dairy.getScore())) {
             this.score = dairy.getScore();
         }
-        if (!StringUtils.equals(this.content, dairy.getContent())) {
+        if (!StringUtils.equals(content, dairy.getContent())) {
             this.content = dairy.getContent();
         }
-        if (!StringUtils.equals(this.hope, dairy.getHope())) {
+        if (!StringUtils.equals(hope, dairy.getHope())) {
             this.hope = dairy.getHope();
         }
-        if (!StringUtils.equals(this.thank, dairy.getThank())) {
+        if (!StringUtils.equals(thank, dairy.getThank())) {
             this.thank = dairy.getThank();
         }
-        if (!StringUtils.equals(this.learn, dairy.getLearn())) {
+        if (!StringUtils.equals(learn, dairy.getLearn())) {
             this.learn = dairy.getLearn();
         }
     }

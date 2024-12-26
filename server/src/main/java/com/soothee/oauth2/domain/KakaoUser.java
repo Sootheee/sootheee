@@ -20,8 +20,8 @@ public class KakaoUser {
      */
     public Member toMember() throws IncorrectValueException, NullValueException {
         return Member.builder()
-                    .email(this.getEmail())
-                    .name(this.getNickName())
+                    .email(getEmail())
+                    .name(getNickName())
                     .snsType(SnsType.KAKAOTALK)
                     .oauth2ClientId(oauth2User.getName())
                     .build();
@@ -39,11 +39,11 @@ public class KakaoUser {
 
     /** 인증 회원 프로퍼티 정보 중 닉네임 가져오기 */
     private String getNickName() {
-        return String.valueOf(this.getProperties().get("name"));
+        return String.valueOf(getProperties().get("name"));
     }
 
     /** 인증 회원 계정 정보 중 아이디(이메일) 가져오기 */
     private String getEmail() {
-        return String.valueOf(this.getAccount().get("email"));
+        return String.valueOf(getAccount().get("email"));
     }
 }

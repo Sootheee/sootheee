@@ -9,7 +9,6 @@ import java.util.List;
 
 @Component
 public class BindingErrorUtil {
-
     /**
      * 입력받은 각 파라미터의 validate 중 실패한 결과 response
      *

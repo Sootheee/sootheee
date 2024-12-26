@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -40,6 +39,8 @@ public class MemberServiceImpl implements MemberService {
     public void updateName(Long loginMemberId, Long memberId, String updateName) throws NotExistMemberException, IncorrectValueException, NullValueException, NotMatchedException {
         Member loginMember = this.getMemberById(loginMemberId);
         this.isNotLoginMemberInfo(loginMember, memberId);
+        Member loginMember = getMemberById(loginMemberId);
+        SootheeValidation.checkMatchedId(loginMemberId, memberId, DomainType.MEMBER);
         loginMember.updateName(updateName);
     }
 
@@ -48,6 +49,8 @@ public class MemberServiceImpl implements MemberService {
         Member loginMember = this.getMemberById(loginMemberId);
         this.isNotLoginMemberInfo(loginMember, memberId);
         loginMember.updateDarkModeYN(updateMode);
+        Member loginMember = getMemberById(loginMemberId);
+        SootheeValidation.checkMatchedId(loginMemberId, memberId, DomainType.MEMBER);
     }
 
     @Override
@@ -55,18 +58,23 @@ public class MemberServiceImpl implements MemberService {
         Member loginMember =  this.getMemberById(memberId);
         this.isNotLoginMemberInfo(loginMember, memberDelDTO.getMemberId());
         memberDelReasonService.saveDeleteReasons(loginMember, memberDelDTO.getDelReasonList());
+        Member loginMember =  getMemberById(memberId);
+
         loginMember.deleteMember();
     }
 
     @Override
     public MemberInfoDTO getAllMemberInfo(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException {
-        Member member = this.getMemberById(memberId);
+        /* 회원 일련번호로 회원 정보 조회
+         * - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
+        Member member = getMemberById(memberId);
         return MemberInfoDTO.fromMember(member);
     }
 
     @Override
     public MemberNameDTO getNicknameInfo(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException {
         Member member = this.getMemberById(memberId);
+        Member member = getMemberById(memberId);
         return MemberNameDTO.fromMember(member);
     }
 
