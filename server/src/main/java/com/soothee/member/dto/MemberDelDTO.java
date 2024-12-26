@@ -16,7 +16,6 @@ import java.util.List;
 @Setter
 @Getter
 @AllArgsConstructor
-@Builder
 @Schema(description = "회원 탈퇴 DTO")
 public class MemberDelDTO {
     @NotEmpty(message = "회원 일련번호가 없습니다.")

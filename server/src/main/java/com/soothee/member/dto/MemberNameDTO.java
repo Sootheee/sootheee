@@ -41,6 +41,7 @@ public class MemberNameDTO implements MemberDTO {
                 .build();
     }
 
+    /** validation */
     private static void checkConstructorMemberNameDTO(Member member) throws IncorrectValueException, NullValueException {
         SootheeValidation.checkDomain(member, DomainType.MEMBER);
         SootheeValidation.checkName(member.getName());
