@@ -44,14 +44,15 @@ public class DairyConditionRepositoryQdslImpl implements DairyConditionRepositor
     }
 
     @Override
-    public Integer getAllDairyConditionCntInMonth(Long memberId, MonthParam monthParam)   {
-        return queryFactory.select(dairyCondition.count().intValue())
+    public Optional<Integer> getAllDairyConditionCntInMonth(Long memberId, MonthParam monthParam)   {
+        return Optional.ofNullable(
                         .from(dairyCondition)
                         .where(dairyCondition.dairy.member.memberId.eq(memberId),
                                 dairyCondition.dairy.date.year().eq(monthParam.getYear()),
                                 dairyCondition.dairy.date.month().eq(monthParam.getMonth()),
                                 dairyCondition.dairy.isDelete.eq("N"),
                                 dairyCondition.isDelete.eq("N"))
-                        .fetchOne();
+                        .fetchOne()
+        );
     }
 }

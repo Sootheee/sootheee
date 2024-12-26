@@ -108,8 +108,8 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     }
 
     @Override
-    public Integer findDiaryContentCntInMonth(Long memberId, ContentType type, MonthParam monthParam) {
-        return queryFactory.select(dairy.dairyId.count().intValue())
+    public Optional<Integer> findDiaryContentCntInMonth(Long memberId, ContentType type, MonthParam monthParam) {
+        return Optional.ofNullable(
                             .from(dairy)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(monthParam.getYear()),
@@ -117,7 +117,8 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                     getContentTypeNull(type),
                                     getContentTypeEmpty(type),
                                     dairy.isDelete.eq("N"))
-                            .fetchOne();
+                            .fetchOne()
+        );
     }
 
     private Expression<String> getContentType(ContentType type) {

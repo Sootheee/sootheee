@@ -31,5 +31,5 @@ public interface DairyConditionRepositoryQdsl {
      * @param monthParam 지정한 년도/달
      * @return 지정한 년도/달에 선택한 컨디션의 총 갯수 (null 가능)
      */
-    Integer getAllDairyConditionCntInMonth(Long memberId, MonthParam monthParam)  ;
+    Optional<Integer> getAllDairyConditionCntInMonth(Long memberId, MonthParam monthParam)  ;
 }

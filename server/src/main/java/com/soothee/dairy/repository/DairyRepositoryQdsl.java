@@ -62,7 +62,7 @@ public interface DairyRepositoryQdsl {
      * @param monthParam 지정한 년도/달
      * @return 작성한 감사한/배운 일 횟수 (null 가능)
      */
-    Integer findDiaryContentCntInMonth(Long memberId, ContentType type, MonthParam monthParam);
+    Optional<Integer> findDiaryContentCntInMonth(Long memberId, ContentType type, MonthParam monthParam);
 
     /**
      * 해당 달에 작성한 감사한/배운 일 중 가장 높은/낮은 점수를 기록한 날의 감사한/배운 일
