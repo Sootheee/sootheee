@@ -27,9 +27,10 @@ class WeatherServiceTest {
     @Test
     void getWeatherById() {
         //given
-        //when
-        Weather weather = weatherService.getWeatherById(1L);
-        //then
-        Assertions.assertThat(weather.getWeatherName()).isEqualTo("sunny");
+            //given
+            //when
+            Weather weather = weatherService.getWeatherById(CommonTestCode.WEATHER_ID);
+            //then
+            Assertions.assertThat(weather.getWeatherName()).isEqualTo("sunny");
     }
 }

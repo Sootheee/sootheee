@@ -26,9 +26,10 @@ class DelReasonServiceTest {
     @Test
     void getDelReasonById() {
         //given
-        //when
-        DelReason result = delReasonService.getDelReasonById(1L);
-        //then
-        Assertions.assertThat(result.getContent()).isNotNull();
+            //given
+            //when
+            DelReason result = delReasonService.getDelReasonById(CommonTestCode.DEL_REASON_ID1);
+            //then
+            Assertions.assertThat(result.getContent()).isNotNull();
     }
 }

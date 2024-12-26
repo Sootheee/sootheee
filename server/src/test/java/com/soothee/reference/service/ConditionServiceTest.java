@@ -27,9 +27,10 @@ class ConditionServiceTest {
     @Test
     void getConditionById() {
         //given
-        //when
-        Condition condition = conditionService.getConditionById(1L);
-        //then
-        Assertions.assertThat(condition.getCondValue()).isEqualTo(15);
+            //given
+            //when
+            Condition condition = conditionService.getConditionById(CommonTestCode.COND_ID1);
+            //then
+            Assertions.assertThat(condition.getCondValue()).isEqualTo(15);
     }
 }

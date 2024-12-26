@@ -1,8 +1,10 @@
 package com.soothee.member.repository;
 
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.config.TestConfig;
 import com.soothee.util.CommonTestCode;
 import com.soothee.member.domain.Member;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Slf4j
 @Import(TestConfig.class)
 class MemberRepositoryTest {
     @Autowired
@@ -29,10 +32,10 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("oauth2ClientId와 SnsType으로 member 조회")
-    void findByOauth2ClientIdAndIsDeleteAndSnsTypeAndIsDelete() {
+    void findByOauth2ClientIdAndIsDeleteAndIsDeleteAndSnsType() {
         //given
         //when
-        Member savedMember = memberRepository.findByOauth2ClientIdAndSnsTypeAndIsDelete(CommonTestCode.OAUTH2, CommonTestCode.SNS_TYPE, "N")
+        Member savedMember = memberRepository.findByOauth2ClientIdAndSnsTypeAndIsDelete(CommonTestCode.OAUTH2, CommonTestCode.SNS_TYPE, BooleanYN.N.toString())
                 .orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
@@ -43,7 +46,7 @@ class MemberRepositoryTest {
     void findByOauth2ClientIdAndIsDelete() {
         //given
         //when
-        Member savedMember = memberRepository.findByOauth2ClientIdAndIsDelete(CommonTestCode.OAUTH2, "N")
+        Member savedMember = memberRepository.findByOauth2ClientIdAndIsDelete(CommonTestCode.OAUTH2, BooleanYN.N.toString())
                 .orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
@@ -51,19 +54,19 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("email로 member 조회")
-    void findByEmail() {
+    void findByEmailAndIsDelete() {
         //given
         //when
-        Member savedMember = memberRepository.findByEmail(CommonTestCode.EMAIL).orElseThrow(NullPointerException::new);
+        Member savedMember = memberRepository.findByEmailAndIsDelete(CommonTestCode.EMAIL, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
     }
 
     @Test
-    void findByMemberId() {
+    void findByMemberIdAndIsDelete() {
         //given
         //when
-        Member result = memberRepository.findByMemberId(CommonTestCode.MEMBER_ID).orElseThrow(NullPointerException::new);
+        Member result = memberRepository.findByMemberIdAndIsDelete(CommonTestCode.MEMBER_ID, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getName()).isEqualTo("사용자0");
     }

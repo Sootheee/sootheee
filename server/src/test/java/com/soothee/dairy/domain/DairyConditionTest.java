@@ -1,5 +1,6 @@
 package com.soothee.dairy.domain;
 
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.config.TestConfig;
 import com.soothee.util.CommonTestCode;
 import org.assertj.core.api.Assertions;
@@ -31,6 +32,6 @@ class DairyConditionTest {
         //when
         savedDairyCondition.deleteDairyCondition();
         //then
-        Assertions.assertThat(savedDairyCondition.getIsDelete()).isEqualTo("Y");
+        Assertions.assertThat(savedDairyCondition.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
     }
 }

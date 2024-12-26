@@ -1,5 +1,6 @@
 package com.soothee.member.repository;
 
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.config.TestConfig;
 import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
@@ -36,12 +37,12 @@ class MemberDelReasonRepositoryTest {
     private CommonTestCode commonTestCode;
 
     @Test
-    void findByMemberMemberId() {
+    void findByMemberMemberIdAndMemberIsDelete() {
         try {
             //given
             Member savedNewMember = commonTestCode.deleteMember();
             //when
-            List<MemberDelReason> result = memberDelReasonRepository.findByMemberMemberId(savedNewMember.getMemberId())
+            List<MemberDelReason> result = memberDelReasonRepository.findByMemberMemberIdAndMemberIsDelete(savedNewMember.getMemberId(), BooleanYN.N.toString())
                     .orElseThrow(NullPointerException::new);
             //then
             Assertions.assertThat(result.size()).isEqualTo(3);

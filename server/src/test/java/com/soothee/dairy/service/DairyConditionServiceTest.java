@@ -42,10 +42,10 @@ class DairyConditionServiceTest {
         try {
             //given
             Dairy savedNewDairy = commonTestCode.saveNewDairy();
-            List<Long> condIds = new ArrayList<>();
-            condIds.add(1L);
-            condIds.add(2L);
-            condIds.add(3L);
+            List<String> condIds = new ArrayList<>();
+            condIds.add("COND001");
+            condIds.add("COND002");
+            condIds.add("COND003");
             //when
             dairyConditionService.saveConditions(condIds, savedNewDairy);
             //then
@@ -60,13 +60,12 @@ class DairyConditionServiceTest {
     void getConditionsIdListByDairy() {
         try {
             //given
-            commonTestCode.saveNewDairyCondition();
             //when
-            List<Long> dairyConditionList = dairyConditionService.getConditionsIdListByDairy(CommonTestCode.DAIRY_ID1);
+            List<String> conditionIdList = dairyConditionService.getConditionsIdListByDairy(CommonTestCode.DAIRY_ID1);
             //then
-            Assertions.assertThat(dairyConditionList.get(0)).isEqualTo(1L);
-            Assertions.assertThat(dairyConditionList.get(1)).isEqualTo(7L);
-            Assertions.assertThat(dairyConditionList.get(2)).isEqualTo(2L);
+            Assertions.assertThat(conditionIdList.get(0)).isEqualTo(CommonTestCode.COND_ID1);
+            Assertions.assertThat(conditionIdList.get(1)).isEqualTo(CommonTestCode.COND_ID2);
+            Assertions.assertThat(conditionIdList.get(2)).isEqualTo(CommonTestCode.COND_ID3);
         } catch (NoDairyConditionException | IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }
@@ -79,17 +78,17 @@ class DairyConditionServiceTest {
             Dairy savedNewDairy = commonTestCode.saveNewDairyCondition();
             commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "before");
             //when
-            List<Long> newCondIds = new ArrayList<>();
-            newCondIds.add(4L);
-            newCondIds.add(2L);
-            newCondIds.add(1L);
+            List<String> newCondIds = new ArrayList<>();
+            newCondIds.add("COND004");
+            newCondIds.add("COND002");
+            newCondIds.add("COND001");
             dairyConditionService.updateConditions(savedNewDairy, newCondIds);
             //then
             List<DairyCondition> afterDcList = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "after");
             Assertions.assertThat(afterDcList.size()).isEqualTo(3);
-            Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo(4L);
-            Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo(2L);
-            Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo(1L);
+            Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo("COND004");
+            Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo("COND002");
+            Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo("COND001");
         } catch (NullValueException | NotMatchedException | IncorrectValueException e) {
             log.error(e.getMessage());
         }
@@ -102,21 +101,21 @@ class DairyConditionServiceTest {
             //when
             Dairy savedNewDairy = commonTestCode.saveNewDairyCondition();
             commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "before");
-            List<Long> newCondIds = new ArrayList<>();
-            newCondIds.add(4L);
-            newCondIds.add(2L);
-            newCondIds.add(1L);
-            newCondIds.add(5L);
-            newCondIds.add(6L);
+            List<String> newCondIds = new ArrayList<>();
+            newCondIds.add("COND004");
+            newCondIds.add("COND002");
+            newCondIds.add("COND001");
+            newCondIds.add("COND005");
+            newCondIds.add("COND006");
             dairyConditionService.updateConditions(savedNewDairy, newCondIds);
             //then
             List<DairyCondition> afterDcList = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "after");
             Assertions.assertThat(afterDcList.size()).isEqualTo(5);
-            Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo(4L);
-            Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo(2L);
-            Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo(1L);
-            Assertions.assertThat(afterDcList.get(3).getCondition().getCondId()).isEqualTo(5L);
-            Assertions.assertThat(afterDcList.get(4).getCondition().getCondId()).isEqualTo(6L);
+            Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo("COND004");
+            Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo("COND002");
+            Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo("COND001");
+            Assertions.assertThat(afterDcList.get(3).getCondition().getCondId()).isEqualTo("COND005");
+            Assertions.assertThat(afterDcList.get(4).getCondition().getCondId()).isEqualTo("COND006");
         } catch (NullValueException | NotMatchedException | IncorrectValueException e) {
             log.error(e.getMessage());
         }
@@ -129,17 +128,17 @@ class DairyConditionServiceTest {
             //when
             Dairy savedNewDairy = commonTestCode.saveNewDairyCondition();
             commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "before");
-            List<Long> newCondIds = new ArrayList<>();
-            newCondIds.add(4L);
-            newCondIds.add(2L);
-            newCondIds.add(1L);
+            List<String> newCondIds = new ArrayList<>();
+            newCondIds.add("COND004");
+            newCondIds.add("COND002");
+            newCondIds.add("COND001");
             dairyConditionService.updateConditions(savedNewDairy, newCondIds);
             //then
             List<DairyCondition> afterDcList = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "after");
             Assertions.assertThat(afterDcList.size()).isEqualTo(3);
-            Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo(4L);
-            Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo(2L);
-            Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo(1L);
+            Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo("COND004");
+            Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo("COND002");
+            Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo("COND001");
         } catch (NullValueException | NotMatchedException | IncorrectValueException e) {
             log.error(e.getMessage());
         }

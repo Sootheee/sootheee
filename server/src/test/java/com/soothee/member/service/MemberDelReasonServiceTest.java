@@ -37,7 +37,7 @@ class MemberDelReasonServiceTest {
     @Test
     void saveDeleteReasons() {
         //given
-        List<Long> reasonIds = commonTestCode.getDelReasonIds();
+        List<String> reasonIds = commonTestCode.getDelReasonIds();
         Member savedMember = commonTestCode.getSavedMember();
         try {
             //when

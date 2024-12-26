@@ -1,5 +1,6 @@
 package com.soothee.member.service;
 
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.config.TestConfig;
 import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NotExistMemberException;
@@ -84,13 +85,13 @@ class MemberServiceTest {
     @DisplayName("회원 다크모드 수정")
     void updateDarkMode() {
         //given
-        String isDarkY = "Y";
+        BooleanYN isDark = BooleanYN.Y;
         Member savedMember = commonTestCode.getSavedMember();
         try {
             //when
-            savedMember.updateDarkModeYN(isDarkY);
+            savedMember.updateDarkModeYN(isDark);
             //then
-            Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDarkY);
+            Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDark.toString());
         } catch (IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }
@@ -105,7 +106,7 @@ class MemberServiceTest {
             //when
             newMember.deleteMember();
             //then
-            Assertions.assertThat(newMember.getIsDelete()).isEqualTo("Y");
+            Assertions.assertThat(newMember.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
         } catch (IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }

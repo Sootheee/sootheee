@@ -43,7 +43,7 @@ class StatsServiceTest {
             MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(CommonTestCode.MEMBER_ID, monthParam);
             //then
             Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
-            Assertions.assertThat(result.getMostCondId()).isEqualTo(1L);
+            Assertions.assertThat(result.getMostCondId()).isEqualTo(CommonTestCode.COND_ID1);
         } catch (DuplicatedResultException | NotExistDairyException | NoStatsResultException e) {
             log.error(e.getMessage());
         }
@@ -91,13 +91,12 @@ class StatsServiceTest {
             //then
             Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
             Assertions.assertThat(result.getCount()).isEqualTo(5);
-            Double resultScore = 0.0;
             for (DateScore score : result.getScoreList()) {
                 if (Objects.equals(score.getDate(), CommonTestCode.DATE1)) {
-                    resultScore = score.getScore();
+                    Assertions.assertThat(score.getScore()).isEqualTo(2.0);
                 }
             }
-            Assertions.assertThat(resultScore).isEqualTo(2.0);
+        } catch (DuplicatedResultException | ErrorToSearchStatsException |
         } catch (DuplicatedResultException | NoStatsResultException e) {
             log.error(e.getMessage());
         }
@@ -112,11 +111,11 @@ class StatsServiceTest {
             MonthlyConditionsDTO result = statsService.getMonthlyConditionList(CommonTestCode.MEMBER_ID, monthParam);
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(20);
-            Assertions.assertThat(result.getCondiList().get(0).getCondId()).isEqualTo(1L);
+            Assertions.assertThat(result.getCondiList().get(0).getCondId()).isEqualTo(CommonTestCode.COND_ID1);
             Assertions.assertThat(result.getCondiList().get(0).getCondRatio()).isEqualTo(25.0);
-            Assertions.assertThat(result.getCondiList().get(1).getCondId()).isEqualTo(2L);
+            Assertions.assertThat(result.getCondiList().get(1).getCondId()).isEqualTo(CommonTestCode.COND_ID3);
             Assertions.assertThat(result.getCondiList().get(1).getCondRatio()).isEqualTo(25.0);
-            Assertions.assertThat(result.getCondiList().get(2).getCondId()).isEqualTo(7L);
+            Assertions.assertThat(result.getCondiList().get(2).getCondId()).isEqualTo(CommonTestCode.COND_ID2);
             Assertions.assertThat(result.getCondiList().get(2).getCondRatio()).isEqualTo(25.0);
         } catch (IncorrectValueException | NoStatsResultException | NullValueException e) {
             log.error(e.getMessage());
@@ -197,6 +196,7 @@ class StatsServiceTest {
             log.error(e.getMessage());
         }
     }
+
     @Test
     void getAllContentsInMonthLearnLow() {
         //given

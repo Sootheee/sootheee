@@ -1,5 +1,6 @@
 package com.soothee.dairy.repository;
 
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.common.constants.ContentType;
 import com.soothee.common.constants.SortType;
 import com.soothee.common.requestParam.MonthParam;
@@ -45,7 +46,7 @@ class DairyRepositoryTest {
     void findByMemberMemberIdAndIsDeleteOrderByDairyId() {
         //given
         //when
-        List<Dairy> list = dairyRepository.findByMemberMemberIdAndIsDeleteOrderByDairyId(CommonTestCode.MEMBER_ID, "N").orElseThrow(NullPointerException::new);
+        List<Dairy> list = dairyRepository.findByMemberMemberIdAndIsDeleteOrderByDairyId(CommonTestCode.MEMBER_ID, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
         //then
         for (Dairy dairy : list) {
             if (Objects.equals(dairy.getDairyId(), CommonTestCode.DAIRY_ID1)) {
@@ -55,10 +56,10 @@ class DairyRepositoryTest {
     }
 
     @Test
-    void findByDairyId() {
+    void findByDairyIdAndIsDelete() {
         //given
         //when
-        Dairy searchDairy = dairyRepository.findByDairyId(CommonTestCode.DAIRY_ID1).orElseThrow(NullPointerException::new);
+        Dairy searchDairy = dairyRepository.findByDairyIdAndIsDelete(CommonTestCode.DAIRY_ID1, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(searchDairy.getScore()).isEqualTo(2.0);
     }
@@ -124,7 +125,7 @@ class DairyRepositoryTest {
         //given
         MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
         //when
-        int result = dairyRepository.findDiaryContentCntInMonth(CommonTestCode.MEMBER_ID, ContentType.THANKS, monthParam);
+        int result = dairyRepository.findDiaryContentCntInMonth(CommonTestCode.MEMBER_ID, ContentType.THANKS, monthParam).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result).isEqualTo(3);
     }

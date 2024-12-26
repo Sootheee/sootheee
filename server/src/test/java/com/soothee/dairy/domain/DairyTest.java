@@ -1,5 +1,6 @@
 package com.soothee.dairy.domain;
 
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.config.TestConfig;
 import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
@@ -58,6 +59,6 @@ class DairyTest {
         //when
         savedDairy.deleteDairy();
         //then
-        Assertions.assertThat(savedDairy.getIsDelete()).isEqualTo("Y");
+        Assertions.assertThat(savedDairy.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
     }
 }

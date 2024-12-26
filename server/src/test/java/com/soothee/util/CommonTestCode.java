@@ -1,5 +1,6 @@
 package com.soothee.util;
 
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.common.constants.SnsType;
 import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
@@ -80,17 +81,17 @@ public class CommonTestCode {
     public static final LocalDate DATE4 = LocalDate.of(YEAR, MONTH, 4);
     public static final LocalDate DATE5 = LocalDate.of(YEAR, MONTH, 5);
     public static final LocalDate NEW_DATE = LocalDate.of(YEAR, MONTH + 1, NEW_DAY);
-    public static final Long WEATHER_ID = 1L;
-    public static final Long COND_ID1 = 1L;
-    public static final Long COND_ID2 = 7L;
-    public static final Long COND_ID3 = 2L;
-    public static final Long COND_ID4 = 10L;
-    public static final Long NEW_COND_ID1 = 11L;
-    public static final Long NEW_COND_ID2 = 12L;
-    public static final Long NEW_COND_ID3 = 13L;
-    public static final Long DEL_REASON_ID1 = 1L;
-    public static final Long DEL_REASON_ID2 = 2L;
-    public static final Long DEL_REASON_ID3 = 3L;
+    public static final String WEATHER_ID = "WEAT001";
+    public static final String COND_ID1 = "COND001";
+    public static final String COND_ID2 = "COND007";
+    public static final String COND_ID3 = "COND002";
+    public static final String COND_ID4 = "COND010";
+    public static final String NEW_COND_ID1 = "COND011";
+    public static final String NEW_COND_ID2 = "COND012";
+    public static final String NEW_COND_ID3 = "COND013";
+    public static final String DEL_REASON_ID1 = "DERE001";
+    public static final String DEL_REASON_ID2 = "DERE002";
+    public static final String DEL_REASON_ID3 = "DERE003";
 
     public List<Condition> getConditions() {
         List<Condition> conditions = new ArrayList<>();
@@ -105,8 +106,8 @@ public class CommonTestCode {
         return weatherRepository.findByWeatherId(WEATHER_ID).orElseThrow(NullPointerException::new);
     }
 
-    public List<Long> getDelReasonIds() {
-        List<Long> delReasonIds = new ArrayList<>();
+    public List<String> getDelReasonIds() {
+        List<String> delReasonIds = new ArrayList<>();
         delReasonIds.add(DEL_REASON_ID1);
         delReasonIds.add(DEL_REASON_ID2);
         delReasonIds.add(DEL_REASON_ID3);
@@ -122,15 +123,15 @@ public class CommonTestCode {
     }
 
     public Member getSavedMember() {
-        return memberRepository.findByMemberId(MEMBER_ID).orElseThrow(NullPointerException::new);
+        return memberRepository.findByMemberIdAndIsDelete(MEMBER_ID, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
     }
 
     public Dairy getSavedDairy(Long dairyId) {
-        return dairyRepository.findByDairyId(dairyId).orElseThrow(NullPointerException::new);
+        return dairyRepository.findByDairyIdAndIsDelete(dairyId, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
     }
 
     public Dairy getSavedNewDairy(Long newDairyId) {
-        return dairyRepository.findByDairyId(newDairyId).orElseThrow(NullPointerException::new);
+        return dairyRepository.findByDairyIdAndIsDelete(newDairyId, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
     }
 
     public Dairy getSavedNewDairy(LocalDate newDairyDate) {
@@ -140,11 +141,11 @@ public class CommonTestCode {
     }
 
     public List<DairyCondition> getSavedDairyConditions() {
-        return dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(DAIRY_ID1, "N").orElseThrow(NullPointerException::new);
+        return dairyConditionRepository.findByDairyDairyIdAndDairyIsDeleteAndIsDeleteOrderByOrderNoAsc(DAIRY_ID1, BooleanYN.N.toString(), BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
     }
 
     public List<MemberDelReason> getSavedMemberDelReasons() {
-        return memberDelReasonRepository.findByMemberMemberId(MEMBER_ID).orElseThrow(NullPointerException::new);
+        return memberDelReasonRepository.findByMemberMemberIdAndMemberIsDelete(MEMBER_ID, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
     }
 
     public List<Condition> getNewConditions() {
@@ -156,7 +157,7 @@ public class CommonTestCode {
     }
 
     public List<DairyCondition> getNewDairyConditions(Long newDairyId, String type) {
-        List<DairyCondition> newDairyConditions = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(newDairyId, "N")
+        List<DairyCondition> newDairyConditions = dairyConditionRepository.findByDairyDairyIdAndDairyIsDeleteAndIsDeleteOrderByOrderNoAsc(newDairyId, BooleanYN.N.toString(), BooleanYN.N.toString())
                                                         .orElseThrow(NullPointerException::new);
         for (int i = 0; i < newDairyConditions.size(); i++) {
             log.info("{} {} : {}, {}", type, i + 1, newDairyConditions.get(i).getDairyCondId(), newDairyConditions.get(i).getOrderNo());

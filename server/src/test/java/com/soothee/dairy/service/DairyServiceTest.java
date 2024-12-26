@@ -1,5 +1,6 @@
 package com.soothee.dairy.service;
 
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.config.TestConfig;
 import com.soothee.custom.exception.*;
@@ -60,7 +61,7 @@ class DairyServiceTest {
             DairyDTO result = dairyService.getDairyByDate(CommonTestCode.MEMBER_ID, CommonTestCode.DATE4);
             //then
             Assertions.assertThat(result.getScore()).isEqualTo(9.5);
-            Assertions.assertThat(result.getCondIds().get(2)).isEqualTo(7L);
+            Assertions.assertThat(result.getCondIdList().get(2)).isEqualTo(CommonTestCode.COND_ID2);
         } catch (DuplicatedResultException | NotExistDairyException | NoDairyConditionException e) {
             log.error(e.getMessage());
         }
@@ -74,7 +75,7 @@ class DairyServiceTest {
             DairyDTO result = dairyService.getDairyByDairyId(CommonTestCode.MEMBER_ID, CommonTestCode.DAIRY_ID2);
             //then
             Assertions.assertThat(result.getScore()).isEqualTo(5.5);
-            Assertions.assertThat(result.getCondIds().get(2)).isEqualTo(2L);
+            Assertions.assertThat(result.getCondIdList().get(2)).isEqualTo(CommonTestCode.COND_ID3);
         } catch (DuplicatedResultException | NotExistDairyException | NoDairyConditionException e) {
             log.error(e.getMessage());
         }
@@ -107,11 +108,11 @@ class DairyServiceTest {
                     .weatherId(CommonTestCode.WEATHER_ID)
                     .content("contents")
                     .build();
-            List<Long> modifyCondIds = new ArrayList<>();
+            List<String> modifyCondIds = new ArrayList<>();
             modifyCondIds.add(CommonTestCode.NEW_COND_ID1);
             modifyCondIds.add(CommonTestCode.NEW_COND_ID2);
             modifyCondIds.add(CommonTestCode.NEW_COND_ID3);
-            modifyInfo.setCondIds(modifyCondIds);
+            modifyInfo.setCondIdList(modifyCondIds);
             //when
             dairyService.modifyDairy(CommonTestCode.MEMBER_ID, CommonTestCode.DAIRY_ID3, modifyInfo);
             //then
@@ -151,7 +152,7 @@ class DairyServiceTest {
             //when
             dairyService.deleteDairy(CommonTestCode.MEMBER_ID, newDairy.getDairyId());
             //then
-            Assertions.assertThat(newDairy.getIsDelete()).isEqualTo("Y");
+            Assertions.assertThat(newDairy.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
         } catch (IncorrectValueException | NotMatchedException | NullValueException | NotExistDairyException |
                  NoDairyConditionException e) {
             log.error(e.getMessage());
