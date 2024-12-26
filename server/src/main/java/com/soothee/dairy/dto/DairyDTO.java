@@ -30,7 +30,7 @@ import java.util.List;
 @Setter
 @Getter
 @Schema(description = "일기 수정/조회에 사용되는 DTO")
-public class DairyDTO {
+public class DairyDTO implements InputDairyDTO{
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
     @Positive(message = "일련번호는 양수만 입력 가능합니다.")
     @Schema(description = "일기 일련번호")

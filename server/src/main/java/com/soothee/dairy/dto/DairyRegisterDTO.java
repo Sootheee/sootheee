@@ -33,7 +33,7 @@ import java.util.Objects;
 @Setter
 @Getter
 @Schema(description = "일기 등록에 사용되는 DTO")
-public class DairyRegisterDTO {
+public class DairyRegisterDTO implements InputDairyDTO{
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotEmpty(message = "일기의 날짜가 없습니다.")
     @YearRange(message = "날짜는 2024년부터, 2100년까지 입력 가능 합니다.")
