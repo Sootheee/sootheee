@@ -38,16 +38,14 @@ class MemberTest {
         //given
         String newName = "수정할이름";
         Member savedMember = commonTestCode.getSavedMember();
-        //when
         try {
+            //when
             savedMember.updateName(newName);
-        } catch (IncorrectValueException e) {
-            log.error(e.getMessage());
-        } catch (NullValueException e) {
+            //then
+            Assertions.assertThat(savedMember.getName()).isEqualTo(newName);
+        } catch (IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }
-        //then
-        Assertions.assertThat(savedMember.getName()).isEqualTo(newName);
     }
 
     @Test

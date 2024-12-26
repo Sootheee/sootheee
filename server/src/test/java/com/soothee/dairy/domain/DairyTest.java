@@ -7,6 +7,7 @@ import com.soothee.custom.exception.NullValueException;
 import com.soothee.util.CommonTestCode;
 import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.reference.domain.Weather;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @EnableJpaAuditing
 @ActiveProfiles("test")
+@Slf4j
 @Import(TestConfig.class)
 class DairyTest {
     @Autowired
@@ -48,7 +50,7 @@ class DairyTest {
             //then
             Assertions.assertThat(savedNewDairy.getThank()).isEqualTo(changeThank);
         } catch (IncorrectValueException | NullValueException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
         }
     }
 

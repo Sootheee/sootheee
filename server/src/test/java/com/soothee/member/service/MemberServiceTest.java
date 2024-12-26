@@ -121,7 +121,7 @@ class MemberServiceTest {
             MemberInfoDTO savedMember = memberService.getAllMemberInfo(CommonTestCode.MEMBER_ID);
             //then
             Assertions.assertThat(savedMember.getEmail()).isEqualTo("abc@def.com");
-        } catch (NotExistMemberException e) {
+        } catch (NotExistMemberException | IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }
     }
@@ -135,7 +135,7 @@ class MemberServiceTest {
             MemberNameDTO savedMember = memberService.getNicknameInfo(CommonTestCode.MEMBER_ID);
             //then
             Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
-        } catch (NotExistMemberException e) {
+        } catch (NotExistMemberException | IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }
         //then
@@ -163,7 +163,7 @@ class MemberServiceTest {
             Member savedMember = memberService.getMemberById(CommonTestCode.MEMBER_ID);
             //then
             Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
-        } catch (NotExistMemberException e) {
+        } catch (NotExistMemberException | IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }
     }

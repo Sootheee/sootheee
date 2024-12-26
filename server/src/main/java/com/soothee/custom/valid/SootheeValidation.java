@@ -114,7 +114,9 @@ public class SootheeValidation {
      * @param content 길이를 검증할 오늘의 요약
      */
     public static void checkContent(String content) throws IncorrectValueException {
-        checkNullForNotNecessaryString(content);
+        if (checkNullForNotNecessaryString(content)) {
+            return;
+        }
         checkCorrectLength(content, StringType.CONTENT, 0, 600);
     }
 
@@ -125,7 +127,9 @@ public class SootheeValidation {
      * @param content 길이를 검증할 바랐던 방향성/감사한 일/배운 일
      */
     public static void checkOptionalContent(String content, ContentType type) throws IncorrectValueException {
-        checkNullForNotNecessaryString(content);
+        if (checkNullForNotNecessaryString(content)) {
+            return;
+        }
         checkCorrectLength(content, type, 0, 200);
     }
     
@@ -154,7 +158,9 @@ public class SootheeValidation {
      * @param type 검증할 type query parameter
      */
     public static void checkTypeQueryParameter(String type) throws IncorrectParameterException {
-        checkNullForNotNecessaryString(type);
+        if (checkNullForNotNecessaryString(type)) {
+            return;
+        }
         if (!StringUtils.equals(type, "name")) {
             throw new IncorrectParameterException(type);
         }
@@ -282,8 +288,8 @@ public class SootheeValidation {
      *
      * @param value Null 체크할 String
      */
-    private static void checkNullForNotNecessaryString(String value)   {
-        StringUtils.isBlank(value);
+    private static boolean checkNullForNotNecessaryString(String value)   {
+        return StringUtils.isBlank(value);
     }   
 
     /**

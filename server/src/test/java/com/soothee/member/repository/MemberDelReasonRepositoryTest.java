@@ -37,12 +37,12 @@ class MemberDelReasonRepositoryTest {
     private CommonTestCode commonTestCode;
 
     @Test
-    void findByMemberMemberIdAndMemberIsDelete() {
+    void findByMemberMemberId() {
         try {
             //given
             Member savedNewMember = commonTestCode.deleteMember();
             //when
-            List<MemberDelReason> result = memberDelReasonRepository.findByMemberMemberIdAndMemberIsDelete(savedNewMember.getMemberId(), BooleanYN.N.toString())
+            List<MemberDelReason> result = memberDelReasonRepository.findByMemberMemberId(savedNewMember.getMemberId())
                     .orElseThrow(NullPointerException::new);
             //then
             Assertions.assertThat(result.size()).isEqualTo(3);

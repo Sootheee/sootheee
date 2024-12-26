@@ -48,7 +48,7 @@ class DairyServiceTest {
             //then
             Assertions.assertThat(result.size()).isEqualTo(5);
             Assertions.assertThat(result.get(2).getScore()).isEqualTo(1.0);
-        } catch (NotExistDairyException e) {
+        } catch (IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }
     }
@@ -62,7 +62,8 @@ class DairyServiceTest {
             //then
             Assertions.assertThat(result.getScore()).isEqualTo(9.5);
             Assertions.assertThat(result.getCondIdList().get(2)).isEqualTo(CommonTestCode.COND_ID2);
-        } catch (DuplicatedResultException | NotExistDairyException | NoDairyConditionException e) {
+        } catch (DuplicatedResultException | NotExistDairyException | NotFoundDetailInfoException |
+                 IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }
     }
@@ -76,7 +77,8 @@ class DairyServiceTest {
             //then
             Assertions.assertThat(result.getScore()).isEqualTo(5.5);
             Assertions.assertThat(result.getCondIdList().get(2)).isEqualTo(CommonTestCode.COND_ID3);
-        } catch (DuplicatedResultException | NotExistDairyException | NoDairyConditionException e) {
+        } catch (DuplicatedResultException | NotExistDairyException | NotFoundDetailInfoException |
+                 IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }
     }
@@ -86,7 +88,16 @@ class DairyServiceTest {
         try {
             //given
             Dairy newDairy = commonTestCode.getNewDairy();
-            DairyRegisterDTO inputInfo = new DairyRegisterDTO(newDairy.getDate(), newDairy.getWeather().getWeatherId(), newDairy.getScore(), null, null, null, null, null);
+            DairyRegisterDTO inputInfo = DairyRegisterDTO.builder()
+                                                        .date(newDairy.getDate())
+                                                        .weatherId(newDairy.getWeather().getWeatherId())
+                                                        .score(newDairy.getScore())
+                                                        .condIdList(null)
+                                                        .content(null)
+                                                        .hope(null)
+                                                        .thank(null)
+                                                        .learn(null)
+                                                        .build();
             //when
             dairyService.registerDairy(CommonTestCode.MEMBER_ID, inputInfo);
             //then
@@ -118,7 +129,8 @@ class DairyServiceTest {
             //then
             Dairy savedDairy = commonTestCode.getSavedDairy(CommonTestCode.DAIRY_ID3);
             Assertions.assertThat(savedDairy.getContent()).isEqualTo("contents");
-        } catch (IncorrectValueException  | NotMatchedException | NullValueException | NotExistDairyException e) {
+        } catch (IncorrectValueException | NotMatchedException | NullValueException | NotExistDairyException |
+                 NotFoundDetailInfoException e) {
             log.error(e.getMessage());
         }
     }
@@ -139,7 +151,8 @@ class DairyServiceTest {
             //then
             Dairy savedDairy = commonTestCode.getSavedDairy(CommonTestCode.DAIRY_ID3);
             Assertions.assertThat(savedDairy.getContent()).isEqualTo("contents");
-        } catch (IncorrectValueException | NotMatchedException | NullValueException | NotExistDairyException e) {
+        } catch (IncorrectValueException | NotMatchedException | NullValueException | NotExistDairyException |
+                 NotFoundDetailInfoException e) {
             log.error(e.getMessage());
         }
     }
@@ -154,7 +167,7 @@ class DairyServiceTest {
             //then
             Assertions.assertThat(newDairy.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
         } catch (IncorrectValueException | NotMatchedException | NullValueException | NotExistDairyException |
-                 NoDairyConditionException e) {
+                 NotFoundDetailInfoException e) {
             log.error(e.getMessage());
         }
     }

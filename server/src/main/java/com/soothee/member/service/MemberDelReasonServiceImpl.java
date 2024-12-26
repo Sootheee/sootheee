@@ -43,7 +43,7 @@ public class MemberDelReasonServiceImpl implements MemberDelReasonService {
     @Override
     public List<MemberDelReason> getMemberDelReasonByMemberId(Long memberId) throws NullValueException, IncorrectValueException {
         /* 회원 일련번호로 회원 탈퇴 사유 조회 */
-        List<MemberDelReason> result = memberDelReasonRepository.findByMemberMemberIdAndMemberIsDelete(memberId, BooleanYN.N.toString())
+        List<MemberDelReason> result = memberDelReasonRepository.findByMemberMemberId(memberId)
                 /* 회원 일련번호로 조회된 회원 탈퇴 사유가 없는 경우 Exception 발생 */
                 .orElseThrow(() -> new NullValueException(memberId, DomainType.MEMBER_DEL_REASON));
         for (MemberDelReason memberDelReason : result) {

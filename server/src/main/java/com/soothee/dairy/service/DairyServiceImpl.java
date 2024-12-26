@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -201,6 +202,6 @@ public class DairyServiceImpl implements DairyService {
      * @return 있으면 true / 없으면 false
      */
     private static boolean isExistInputCondList(InputDairyDTO inputInfo) {
-        return !inputInfo.getCondIdList().isEmpty();
+        return Objects.nonNull(inputInfo.getCondIdList());
     }
 }

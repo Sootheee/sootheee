@@ -13,7 +13,6 @@ import com.soothee.member.domain.Member;
 import com.soothee.member.domain.MemberDelReason;
 import com.soothee.member.repository.MemberDelReasonRepository;
 import com.soothee.member.repository.MemberRepository;
-import com.soothee.member.service.MemberDelReasonService;
 import com.soothee.reference.domain.Condition;
 import com.soothee.reference.domain.DelReason;
 import com.soothee.reference.domain.Weather;
@@ -47,8 +46,6 @@ public class CommonTestCode {
     private final DairyConditionRepository dairyConditionRepository;
     @Autowired
     private final MemberDelReasonRepository memberDelReasonRepository;
-    @Autowired
-    private final MemberDelReasonService memberDelReasonService;
 
     public static final Long MEMBER_ID = 11L;
     public static final String EMAIL = "abc@def.com";
@@ -145,7 +142,7 @@ public class CommonTestCode {
     }
 
     public List<MemberDelReason> getSavedMemberDelReasons() {
-        return memberDelReasonRepository.findByMemberMemberIdAndMemberIsDelete(MEMBER_ID, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
+        return memberDelReasonRepository.findByMemberMemberId(MEMBER_ID).orElseThrow(NullPointerException::new);
     }
 
     public List<Condition> getNewConditions() {
@@ -185,8 +182,13 @@ public class CommonTestCode {
 
     public Member deleteMember() throws IncorrectValueException, NullValueException {
         Member newMember = saveNewMember();
+        for (DelReason reasonId : getDelReasons()) {
+            memberDelReasonRepository.save(MemberDelReason.builder()
+                                                            .member(newMember)
+                                                            .delReason(reasonId)
+                                                            .build());
+        }
         newMember.deleteMember();
-        memberDelReasonService.saveDeleteReasons(newMember, getDelReasonIds());
         return newMember;
     }
 

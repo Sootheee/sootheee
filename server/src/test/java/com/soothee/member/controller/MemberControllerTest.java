@@ -2,6 +2,7 @@ package com.soothee.member.controller;
 
 import com.soothee.config.TestConfig;
 import com.soothee.member.service.MemberService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@Slf4j
 @Import(TestConfig.class)
 class MemberControllerTest {
     @Autowired
@@ -31,7 +33,7 @@ class MemberControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders
-                .webAppContextSetup(this.context)
+                .webAppContextSetup(context)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
     }

@@ -44,7 +44,9 @@ class StatsServiceTest {
             //then
             Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
             Assertions.assertThat(result.getMostCondId()).isEqualTo(CommonTestCode.COND_ID1);
-        } catch (DuplicatedResultException | NotExistDairyException | NoStatsResultException e) {
+        } catch (DuplicatedResultException |
+                 IncorrectValueException | NullValueException | ErrorToSearchStatsException |
+                 NotFoundDetailInfoException e) {
             log.error(e.getMessage());
         }
     }
@@ -60,7 +62,9 @@ class StatsServiceTest {
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getHighest().getContent()).isEqualTo("땡큐");
             Assertions.assertThat(result.getLowest().getContent()).isEqualTo("감사");
-        } catch (DuplicatedResultException | NoContentsException | NotExistDairyException e) {
+        } catch (DuplicatedResultException | IncorrectValueException |
+                 NullValueException | NotFoundDetailInfoException |
+                 ErrorToSearchStatsException e) {
             log.error(e.getMessage());
         }
     }
@@ -76,7 +80,9 @@ class StatsServiceTest {
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getHighest().getContent()).isEqualTo("배운");
             Assertions.assertThat(result.getLowest().getContent()).isEqualTo("공부");
-        } catch (DuplicatedResultException | NoContentsException | NotExistDairyException e) {
+        } catch (DuplicatedResultException | IncorrectValueException |
+                 NullValueException | NotFoundDetailInfoException |
+                 ErrorToSearchStatsException e) {
             log.error(e.getMessage());
         }
     }
@@ -97,7 +103,7 @@ class StatsServiceTest {
                 }
             }
         } catch (DuplicatedResultException | ErrorToSearchStatsException |
-        } catch (DuplicatedResultException | NoStatsResultException e) {
+                 NotFoundDetailInfoException | IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
         }
     }
@@ -117,7 +123,8 @@ class StatsServiceTest {
             Assertions.assertThat(result.getCondiList().get(1).getCondRatio()).isEqualTo(25.0);
             Assertions.assertThat(result.getCondiList().get(2).getCondId()).isEqualTo(CommonTestCode.COND_ID2);
             Assertions.assertThat(result.getCondiList().get(2).getCondRatio()).isEqualTo(25.0);
-        } catch (IncorrectValueException | NoStatsResultException | NullValueException e) {
+        } catch (IncorrectValueException | NullValueException |
+                 NotFoundDetailInfoException | ErrorToSearchStatsException e) {
             log.error(e.getMessage());
         }
     }
@@ -132,7 +139,7 @@ class StatsServiceTest {
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("oh");
-        } catch (NoContentsException e) {
+        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
             log.error(e.getMessage());
         }
     }
@@ -147,7 +154,7 @@ class StatsServiceTest {
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("땡큐");
-        } catch (NoContentsException e) {
+        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
             log.error(e.getMessage());
         }
     }
@@ -162,7 +169,7 @@ class StatsServiceTest {
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("감사");
-        } catch (NoContentsException e) {
+        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
             log.error(e.getMessage());
         }
     }
@@ -177,7 +184,7 @@ class StatsServiceTest {
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("no");
-        } catch (NoContentsException e) {
+        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
             log.error(e.getMessage());
         }
     }
@@ -192,7 +199,7 @@ class StatsServiceTest {
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("배운");
-        } catch (NoContentsException e) {
+        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
             log.error(e.getMessage());
         }
     }
@@ -207,7 +214,7 @@ class StatsServiceTest {
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("공부");
-        } catch (NoContentsException e) {
+        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
             log.error(e.getMessage());
         }
     }
