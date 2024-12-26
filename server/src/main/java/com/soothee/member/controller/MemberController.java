@@ -50,9 +50,10 @@ public class MemberController {
             @Parameter(name = "type", description = "값은 name만 가능, 닉네임만 조회할 때 사용\ntype 파라미터가 없으면 회원의 모든 정보 조회함", example = "/member/info?type=name", in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(schema = @Schema(implementation = MemberInfoDTO.class))),
-            @ApiResponse(responseCode = "206", description = "요청 성공", content = @Content(schema = @Schema(implementation = MemberNameDTO.class))),
-            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
+            @ApiResponse(responseCode = "200", description = "회원 전체 정보 조회 성공", content = @Content(schema = @Schema(implementation = MemberInfoDTO.class))),
+            @ApiResponse(responseCode = "206", description = "회원 닉네임 정보 요청 성공", content = @Content(schema = @Schema(implementation = MemberNameDTO.class))),
+            @ApiResponse(responseCode = "400", description = "필수 요청 파라미터 값이나 필수 응답값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "401", description = "로그인한 인증된 계정의 정보 조회 실패", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> sendMemberInfo(@RequestParam(value = "type", required = false) String type,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
@@ -91,16 +92,16 @@ public class MemberController {
     @PutMapping("/update/dark")
     @Operation(summary = "화면 보기 모드 수정", description = "회원의 다크모드 업데이트", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "member_id", description = "수정할 회원의 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "is_dark", description = "회원의 수정할 보기모드 || Y : dark mode / N : normal mode", example = "isDark=Y", required = true, in = ParameterIn.QUERY)
+            @Parameter(name = "member_id", description = "수정할 회원의 일련번호", example = "member_id=1111", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "is_dark", description = "회원의 수정할 보기모드 || Y : dark mode / N : normal mode", example = "is_dark=Y", required = true, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "400", description = "로그인한 회원과 입력한 회원의 정보가 상이함", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
+            @ApiResponse(responseCode = "200", description = "회원 다크모드 변경 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "필수 요청 파라미터 값이나 필수 응답값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "401", description = "로그인한 인증된 계정의 정보 조회 실패", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> updateDarkMode(@RequestParam("memberId") Long memberId,
-                                            @RequestParam("isDark") String isDark,
+    public ResponseEntity<?> updateDarkMode(@RequestParam("member_id") Long memberId,
+                                            @RequestParam("is_dark") String isDark,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         try {
             /* query parameter validation */
@@ -132,15 +133,15 @@ public class MemberController {
     @PutMapping("/update/name")
     @Operation(summary = "회원 닉네임 수정", description = "회원이 입력한 닉네임으로 업데이트", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters({
-            @Parameter(name = "member_id", description = "회원 고유일련번호", example = "memberId=1112", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "member_id", description = "회원 고유일련번호", example = "member_id=1112", required = true, in = ParameterIn.QUERY),
             @Parameter(name = "name", description = "회원이 입력한 새로운 닉네임", example = "name=사용자", required = true, in = ParameterIn.QUERY),
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "400", description = "로그인한 회원과 입력한 회원의 정보가 상이함", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
+            @ApiResponse(responseCode = "200", description = "회원 닉네임 수정 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "필수 요청 파라미터 값이나 필수 응답값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "401", description = "로그인한 인증된 계정의 정보 조회 실패", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> updateName(@RequestParam("memberId") Long memberId,
+    public ResponseEntity<?> updateName(@RequestParam("member_id") Long memberId,
                                         @RequestParam("name") String name,
                                         @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         try {
@@ -172,13 +173,13 @@ public class MemberController {
     @DeleteMapping("/delete")
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 시, 소프트 삭제, 따로 파라미터를 넣지 않아도 현재 로그인한 계정 정보를 이용함", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
-            @Parameter(name = "member_id", description = "탈퇴할 회원 일련번호", example = "memberId=1111", required = true, in = ParameterIn.QUERY),
-            @Parameter(name = "del_reason_list", description = "회원의 탈퇴 사유 일련번호 리스트", example = "del_reason_list=[1,2,3,4]", required = true, in = ParameterIn.QUERY)
+            @Parameter(name = "member_id", description = "탈퇴할 회원 일련번호", example = "member_id=1111", required = true, in = ParameterIn.QUERY),
+            @Parameter(name = "del_reason_id_list", description = "회원의 탈퇴 사유 일련번호 리스트", example = "del_reason_id_list=[1,2,3,4]", required = true, in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청 성공", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "400", description = "로그인한 회원과 입력한 회원의 정보가 상이함", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "403", description = "접근 오류", content = @Content(mediaType = "text/plain"))
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "필수 요청 파라미터 값이나 필수 응답값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "401", description = "로그인한 인증된 계정의 정보 조회 실패", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> deleteMember(@ModelAttribute @Valid MemberDelDTO memberDelDTO, BindingResult bindingResult,
                                           @AuthenticationPrincipal AuthenticatedUser loginInfo) {
