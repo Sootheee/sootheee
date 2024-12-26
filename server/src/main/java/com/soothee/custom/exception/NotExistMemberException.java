@@ -5,8 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NotExistMemberException extends ClassNotFoundException {
-
+public class NotExistMemberException extends RuntimeException {
     public NotExistMemberException(AuthenticatedUser loginInfo) {
         super("로그인한 계정 {" + loginInfo.getEmail() + "}의 회원 정보가 없습니다.");
     }
