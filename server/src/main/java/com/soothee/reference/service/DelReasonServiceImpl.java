@@ -1,6 +1,6 @@
 package com.soothee.reference.service;
 
-import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.ReferenceType;
 import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.DelReason;
 import com.soothee.reference.repository.DelReasonRepository;
@@ -15,7 +15,7 @@ public class DelReasonServiceImpl implements DelReasonService {
     private final DelReasonRepository delReasonRepository;
 
     @Override
-    public DelReason getDelReasonById(Long reasonId) throws NullValueException {
+    public DelReason getDelReasonById(String reasonId) throws NullValueException, IncorrectValueException {
         return delReasonRepository.findByReasonId(reasonId)
                 .orElseThrow(() -> new NullValueException(reasonId, DomainType.DEL_REASON));
     }

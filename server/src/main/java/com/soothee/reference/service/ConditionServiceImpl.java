@@ -1,6 +1,6 @@
 package com.soothee.reference.service;
 
-import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.ReferenceType;
 import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.Condition;
 import com.soothee.reference.repository.ConditionRepository;
@@ -15,7 +15,7 @@ public class ConditionServiceImpl implements ConditionService{
     private final ConditionRepository conditionRepository;
 
     @Override
-    public Condition getConditionById(Long condId) throws NullValueException {
+    public Condition getConditionById(String condId) throws NullValueException, IncorrectValueException {
         return conditionRepository.findByCondId(condId)
                 .orElseThrow(() -> new NullValueException(condId, DomainType.CONDITION));
     }

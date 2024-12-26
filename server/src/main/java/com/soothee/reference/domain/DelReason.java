@@ -1,6 +1,7 @@
 package com.soothee.reference.domain;
 
-import com.soothee.common.domain.Domain;
+import com.soothee.common.constants.ReferenceType;
+import com.soothee.common.domain.Reference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,18 +15,17 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "del_reason")
-public class DelReason implements Domain {
+public class DelReason implements Reference {
     /** 탈퇴 사유 일련번호 */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long reasonId;
+    private String reasonId;
 
     /** 탈퇴 사유 */
     @Column(name = "content", nullable = false)
     private String content;
 
     @Override
-    public Long getId() {
+    public String getId() {
         return reasonId;
     }
 }

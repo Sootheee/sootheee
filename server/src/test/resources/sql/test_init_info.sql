@@ -1,39 +1,39 @@
 INSERT INTO condition_type
-VALUES (1, 'positive', 10),
-       (2, 'normal', 5),
-       (3, 'negative', 1);
+VALUES ('COTY001', 'positive', 10),
+       ('COTY002', 'normal', 5),
+       ('COTY003', 'negative', 1);
 
 INSERT INTO conditions
-VALUES (1, '최상의', 1, 15),
-       (2, '활기찬', 1, 14),
-       (3, '상쾌한', 1, 13),
-       (4, '가벼운', 1, 12),
-       (5, '생기 있는', 1, 11),
-       (6, '안정적인', 2, 10),
-       (7, '괜찮은', 2, 9),
-       (8, '무난한', 2, 8),
-       (9, '차분한', 2, 7),
-       (10, '나른한', 2, 6),
-       (11, '무기력한', 3, 5),
-       (12, '피곤한', 3, 4),
-       (13, '어지러운', 3, 3),
-       (14, '지친', 3, 2),
-       (15, '아픈', 3, 1);
+VALUES ('COND001', '최상의', 1, 15),
+       ('COND002', '활기찬', 1, 14),
+       ('COND003', '상쾌한', 1, 13),
+       ('COND004', '가벼운', 1, 12),
+       ('COND005', '생기 있는', 1, 11),
+       ('COND006', '안정적인', 2, 10),
+       ('COND007', '괜찮은', 2, 9),
+       ('COND008', '무난한', 2, 8),
+       ('COND009', '차분한', 2, 7),
+       ('COND010', '나른한', 2, 6),
+       ('COND011', '무기력한', 3, 5),
+       ('COND012', '피곤한', 3, 4),
+       ('COND013', '어지러운', 3, 3),
+       ('COND014', '지친', 3, 2),
+       ('COND015', '아픈', 3, 1);
 
 INSERT INTO weather
-VALUES (1, 'sunny'),
-       (2, 'cloudy'),
-       (3, 'overcast'),
-       (4, 'rainy'),
-       (5, 'thunder'),
-       (6, 'snow');
+VALUES ('WEAT001', 'sunny'),
+       ('WEAT002', 'cloudy'),
+       ('WEAT003', 'overcast'),
+       ('WEAT004', 'rainy'),
+       ('WEAT005', 'thunder'),
+       ('WEAT006', 'snow');
 
 INSERT INTO del_reason
-VALUES (1, 'A'),
-       (2, 'B'),
-       (3, 'C'),
-       (4, 'D'),
-       (5, '기타');
+VALUES ('DERE001', 'A'),
+       ('DERE002', 'B'),
+       ('DERE003', 'C'),
+       ('DERE004', 'D'),
+       ('DERE005', '기타');
 
 INSERT INTO member
 VALUES (11, 'abc@def.com', '사용자0', 'N', 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), 'KAKAOTALK', '111111', 'USER');

@@ -1,5 +1,6 @@
 package com.soothee.member.dto;
 
+import com.soothee.custom.valid.ExistReferenceId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -25,5 +26,5 @@ public class MemberDelDTO {
 
     @NotEmpty(message = "회원 탈퇴 사유가 없습니다.")
     @Schema(description = "선택한 회원 탈퇴 사유들")
-    private List<@Positive(message = "일련번호는 양수만 입력 가능합니다.")Long> delReasonList;
+    private List<@ExistReferenceId(min = 1, max = 5, message = "존재하는 탈퇴 사유 일련번호가 아닙니다.") String> delReasonIdList;
 }

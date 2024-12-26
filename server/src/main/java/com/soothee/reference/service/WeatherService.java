@@ -10,5 +10,5 @@ public interface WeatherService {
      * @param weatherId 조회할 날씨 일련번호
      * @return 조회된 날씨 정보
      */
-    Weather getWeatherById(Long weatherId) throws NullValueException;
+    Weather getWeatherById(String weatherId) throws NullValueException, IncorrectValueException;
 }

@@ -4,8 +4,10 @@ import com.querydsl.core.annotations.QueryProjection;
 import com.soothee.common.constants.ContentType;
 import com.soothee.common.constants.DomainType;
 import com.soothee.common.constants.DoubleType;
+import com.soothee.common.constants.ReferenceType;
 import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.ExistReferenceId;
 import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,10 +42,10 @@ public class DairyDTO {
     @Schema(description = "해당 날짜, format = yyyy-MM-dd")
     private LocalDate date;
 
-    @NotEmpty(message = "일기의 날씨가 없습니다.")
-    @Positive(message = "일련번호는 양수만 입력 가능합니다.")
+    @NotBlank(message = "일기의 날씨가 없습니다.")
+    @ExistReferenceId(min = 1, max = 6, message = "존재하는 날씨 일련번호가 아닙니다.")
     @Schema(description = "날씨")
-    private Long weatherId;
+    private String weatherId;
 
     @NotEmpty(message = "오늘의 점수가 없습니다.")
     @PositiveOrZero(message = "오늘의 점수는 0을 포함한 양수만 입력 가능합니다.")
@@ -51,7 +53,7 @@ public class DairyDTO {
     private Double score;
 
     @Schema(description = "선택한 컨디션들, 선택한 순서대로 전달됨")
-    private List<@Positive(message = "일련번호는 양수만 입력 가능합니다.")Long> condIds;
+    private List<@ExistReferenceId(min = 1, max = 15, message = "존재하는 컨디션 일련번호가 아닙니다.")String> condIdList;
 
     @Size(max = 600, message = "오늘의 요약은 최대 600자까지 입력 가능합니다.")
     @Schema(description = "오늘의 요약")
@@ -71,7 +73,7 @@ public class DairyDTO {
 
     @Builder
     @QueryProjection
-    public DairyDTO(Long dairyId, LocalDate date, Long weatherId, Double score, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
+    public DairyDTO(Long dairyId, LocalDate date, String weatherId, Double score, String content, String hope, String thank, String learn) {
         checkConstructorDairyDTO(dairyId, date, weatherId, score, content, hope, thank, learn);
         this.dairyId = dairyId;
         this.date = date;

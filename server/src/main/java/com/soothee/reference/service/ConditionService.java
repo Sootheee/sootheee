@@ -10,5 +10,5 @@ public interface ConditionService {
      * @param condId 해당 컨디션 일련번호
      * @return 해당 컨디션 정보
      */
-    Condition getConditionById(Long condId) throws NullValueException;
+    Condition getConditionById(String condId) throws NullValueException, IncorrectValueException;
 }

@@ -1,14 +1,15 @@
 package com.soothee.stats.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.soothee.common.constants.DomainType;
 import com.soothee.common.constants.DoubleType;
+import com.soothee.common.constants.ReferenceType;
 import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.ExistReferenceId;
 import com.soothee.custom.valid.SootheeValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
@@ -21,10 +22,10 @@ import lombok.*;
 @Getter
 @Schema(description = "한 달 동안 컨디션 통계 정보")
 public class ConditionRatio {
-    @NotEmpty(message = "컨디션의 일련번호가 없습니다.")
-    @Positive(message = "일련번호는 양수만 입력 가능합니다.")
+    @NotBlank(message = "컨디션의 일련번호가 없습니다.")
+    @ExistReferenceId(min = 1, max = 15, message = "존재하는 컨디션 일련번호가 아닙니다.")
     @Schema(description = "컨디션의 일련번호")
-    private Long condId;
+    private String condId;
 
     @NotEmpty(message = "컨디션의 비율 정보가 없습니다.")
     @PositiveOrZero(message = "비율은 0을 포함한 양수만 입력 가능합니다.")
@@ -32,7 +33,7 @@ public class ConditionRatio {
     private Double condRatio;
 
     @QueryProjection
-    public ConditionRatio(Long condId, Double condRatio) throws IncorrectValueException, NullValueException {
+    public ConditionRatio(String condId, Double condRatio) {
         checkConstructorConditionRatio(condId, condRatio);
         this.condId = condId;
         this.condRatio = condRatio;

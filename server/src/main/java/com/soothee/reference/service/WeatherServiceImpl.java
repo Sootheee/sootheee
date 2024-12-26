@@ -1,6 +1,6 @@
 package com.soothee.reference.service;
 
-import com.soothee.common.constants.DomainType;
+import com.soothee.common.constants.ReferenceType;
 import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.Weather;
 import com.soothee.reference.repository.WeatherRepository;
@@ -15,7 +15,7 @@ public class WeatherServiceImpl implements WeatherService {
     private final WeatherRepository weatherRepository;
 
     @Override
-    public Weather getWeatherById(Long weatherId) throws NullValueException {
+    public Weather getWeatherById(String weatherId) throws NullValueException, IncorrectValueException {
        return weatherRepository.findByWeatherId(weatherId)
                .orElseThrow(() -> new NullValueException(weatherId, DomainType.WEATHER));
     }

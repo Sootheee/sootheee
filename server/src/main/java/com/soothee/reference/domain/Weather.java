@@ -1,6 +1,7 @@
 package com.soothee.reference.domain;
 
-import com.soothee.common.domain.Domain;
+import com.soothee.common.constants.ReferenceType;
+import com.soothee.common.domain.Reference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,18 +15,17 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "weather")
-public class Weather implements Domain {
+public class Weather implements Reference {
     /** 날씨 일련번호 */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long weatherId;
+    private String weatherId;
 
     /** 날씨 이름 */
     @Column(name = "weather_name", nullable = false, length = 10)
     private String weatherName;
 
     @Override
-    public Long getId() {
+    public String getId() {
         return weatherId;
     }
 }

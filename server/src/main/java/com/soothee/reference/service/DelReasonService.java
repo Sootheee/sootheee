@@ -10,5 +10,5 @@ public interface DelReasonService {
      * @param reasonId 조회할 탈퇴 사유 일련번호
      * @return 조회된 탈퇴 사유
      */
-    DelReason getDelReasonById(Long reasonId) throws NullValueException;
+    DelReason getDelReasonById(String reasonId) throws NullValueException, IncorrectValueException;
 }

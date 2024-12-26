@@ -1,6 +1,7 @@
 package com.soothee.reference.domain;
 
-import com.soothee.common.domain.Domain;
+import com.soothee.common.constants.ReferenceType;
+import com.soothee.common.domain.Reference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,11 +15,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "condition_type")
-public class ConditionType implements Domain {
+public class ConditionType implements Reference {
     /** 컨디션 타입 일련번호 */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long condTypeId;
+    private String condTypeId;
 
     /** 컨디션 타입 */
     @Column(name = "cond_type_name", nullable = false, length = 10)
@@ -29,7 +29,7 @@ public class ConditionType implements Domain {
     private Integer condTypeValue;
 
     @Override
-    public Long getId() {
+    public String getId() {
         return condTypeId;
     }
 }

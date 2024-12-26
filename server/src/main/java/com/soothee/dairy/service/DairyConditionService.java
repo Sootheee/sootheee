@@ -16,7 +16,7 @@ public interface DairyConditionService {
      * @param condIdList 선택한 컨디션들의 일련번호 리스트
      * @param newDairy 해당 일기
      */
-    void saveConditions(List<Long> condIdList, Dairy newDairy) throws IncorrectValueException, NullValueException;
+    void saveConditions(List<String> condIdList, Dairy newDairy) throws NullValueException, IncorrectValueException;
 
     /**
      * 해당 일기에 선택된 컨디션이 있는지 확인
@@ -45,7 +45,7 @@ public interface DairyConditionService {
      * @param curDairy 조회할 일기 일련번호
      * @param inputCondIds 업데이트될 컨디션 리스트
      */
-    void updateConditions(Dairy curDairy, List<Long> inputCondIds) throws NotMatchedException, IncorrectValueException, NullValueException;
+    void updateConditions(Dairy curDairy, List<String> inputCondIds) throws NotMatchedException, IncorrectValueException, NullValueException, NotFoundDetailInfoException;
 
     /**
      * 해당 일기의 일기-컨디션 리스트 모두 소프트삭제

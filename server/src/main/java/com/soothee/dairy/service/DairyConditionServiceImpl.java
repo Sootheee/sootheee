@@ -27,7 +27,7 @@ public class DairyConditionServiceImpl implements DairyConditionService {
     private final ConditionService conditionService;
 
     @Override
-    public void saveConditions(List<Long> condIdList, Dairy newDairy) throws IncorrectValueException, NullValueException {
+    public void saveConditions(List<String> condIdList, Dairy newDairy) throws NullValueException, IncorrectValueException {
         int idx = 0;
         for (Long condId : condIdList) {
             Condition condition = conditionService.getConditionById(condId);
@@ -46,26 +46,29 @@ public class DairyConditionServiceImpl implements DairyConditionService {
     }
 
     @Override
-    public List<Long> getConditionsIdListByDairy(Long dairyId) throws NoDairyConditionException {
-        Optional<List<DairyCondition>> optional = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(dairyId, "N");
-        if (optional.isPresent()) {
-            List<DairyCondition> conditions = optional.get();
-            List<Long> conditionIdList = new ArrayList<>();
-            for (DairyCondition dairyCondition : conditions) {
-                conditionIdList.add(dairyCondition.getCondition().getCondId());
-            }
-            return conditionIdList;
+    public List<String> getConditionsIdListByDairy(Long dairyId) throws NotFoundDetailInfoException, IncorrectValueException, NullValueException {
+        /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 Exception 발생 */
+        List<DairyCondition> conditions = getDairyConditionListByDairyId(dairyId);
+
+        List<String> conditionIdList = new ArrayList<>();
+        for (DairyCondition dairyCondition : conditions) {
+            conditionIdList.add(dairyCondition.getCondition().getCondId());
         }
-        throw new NoDairyConditionException(dairyId);
+        return conditionIdList;
     }
 
     @Override
-    public void updateConditions(Dairy curDairy, List<Long> inputCondIds) throws NotMatchedException, IncorrectValueException, NullValueException {
-        /* 업데이트할 일기의 현재 컨디션 리스트 */
-        List<DairyCondition> curList = dairyConditionRepository.findByDairyDairyIdAndIsDeleteOrderByOrderNoAsc(curDairy.getDairyId(), "N")
-                .orElse(new ArrayList<>());
+    public void updateConditions(Dairy curDairy, List<String> inputCondIds) throws NotMatchedException, IncorrectValueException, NullValueException, NotFoundDetailInfoException {
+        for (String condId : inputCondIds) {
+            /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
+            SootheeValidation.checkReferenceId(condId, ReferenceType.CONDITION);
+        }
+        /* 업데이트할 일기의 현재 컨디션 리스트 - 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 Exception 발생 */
+        List<DairyCondition> curList = getDairyConditionListByDairyId(curDairy.getDairyId());
+
         int curSize = curList.size();
         int inputSize = inputCondIds.size();
+
         /* 현재 컨디션과 입력한 컨디션 비교 */
         for (int i = 0; i < Math.min(curSize, inputSize); i++){
             DairyCondition curCondition = curList.get(i);
@@ -75,8 +78,8 @@ public class DairyConditionServiceImpl implements DairyConditionService {
             }
             /* 1. 현재 컨디션과 입력한 컨디션이 일치하지 않거나
              * 2. 현재 컨디션의 순서와 입력한 컨디션의 순서가 일치하지 않으면
-             * -> 현재 컨디션을 소프트 삭제하고 새 컨디션을 저장 */
-            if (!Objects.equals(curCondition.getCondition().getCondId(), inputCondIds.get(i))
+             * -> 현재 등록된 미일치 일기-컨디션을 소프트 삭제하고 새 일기-컨디션을 등록 */
+            if (checkNotMatchedCondId(curCondition.getCondition().getCondId(), inputCondIds.get(i))
                     || !Objects.equals(curCondition.getOrderNo(), i)) {
                 /* 일기의 컨디션을 업데이트 하기 위해 기존의 컨디션은 소프트 삭제 처리 */
                 curCondition.deleteDairyCondition();
@@ -118,7 +121,7 @@ public class DairyConditionServiceImpl implements DairyConditionService {
      * @param condId 해당 컨디션 일련번호
      * @param idx 일기-컨디션 순서번호
      */
-    private void saveNewDairyCondition(Dairy dairy, Long condId, int idx) throws NullValueException, IncorrectValueException {
+    private void saveNewDairyCondition(Dairy dairy, String condId, int idx) throws NullValueException, IncorrectValueException {
         Condition inputCond = conditionService.getConditionById(condId);
         /* 일기의 새 일기-컨디션 생성 */
         DairyCondition newDairyCondition = DairyCondition.builder()
@@ -127,6 +130,12 @@ public class DairyConditionServiceImpl implements DairyConditionService {
                                                         .orderNo(idx)
                                                         .build();
         /* 새 일기-컨디션 저장 */
+        /* 새 일기-컨디션 등록 */
         dairyConditionRepository.save(newDairyCondition);
     }
+
+    /**
+     * 기존 컨디션 일련번호와 입력된 컨디션 일련번호가 일치하지 않는지 검증
+     *
+     * @param curId 기존 일련번호
 }

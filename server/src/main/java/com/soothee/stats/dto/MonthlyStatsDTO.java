@@ -5,10 +5,11 @@ import com.soothee.common.constants.DomainType;
 import com.soothee.common.constants.DoubleType;
 import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.valid.ExistReferenceId;
 import com.soothee.custom.valid.SootheeValidation;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
@@ -27,11 +28,11 @@ public class MonthlyStatsDTO {
     @Schema(description = "한 달 동안 오늘의 점수 평균값")
     private Double scoreAvg;
 
-    @NotEmpty(message = "한 달 동안 가장 많이 선택한 컨디션 정보가 없습니다.")
-    @Positive(message = "일련번호는 양수만 입력 가능합니다.")
+    @NotBlank(message = "한 달 동안 가장 많이 선택한 컨디션 정보가 없습니다.")
+    @ExistReferenceId(min = 1,max = 15,message = "존재하는 컨디션 일련번호가 아닙니다.")
     @Schema(description = "한 달 동안 가장 많이 선택한 1개의 컨디션의 일련번호, 선택된 컨디션이 1개도 없는 경우 0 || \n" +
             " [컨디션 선택 횟수가 같은 경우] (1) 먼저 선택한 순 (2) 긍정 > 보통 > 부정 카테고리 순 (3) 카테고리별 먼저 등록된 순")
-    private Long mostCondId;
+    private String mostCondId;
 
     @NotEmpty(message = "한 달 동안 가장 많이 선택한 컨디션 비율 정보가 없습니다.")
     @PositiveOrZero(message = "비율은 0을 포함한 양수만 입력 가능합니다.")
