@@ -13,6 +13,7 @@ public interface DairyConditionRepositoryQdsl {
      * (1) 먼저 선택한 순
      * (2) 긍정 > 보통 > 부정 카테고리 순
      * (3) 카테고리별 먼저 등록된 순
+     * - 삭제한 일기 제외
      *
      * @param memberId 로그인한 계정 일련번호
      * @param monthParam 지정한 년도/달
@@ -24,6 +25,7 @@ public interface DairyConditionRepositoryQdsl {
 
     /**
      * 현재 로그인한 계정이 지정한 년도/달에 선택한 컨디션의 총 갯수
+     * - 삭제한 일기 제외
      *
      * @param memberId   로그인한 계정 일련번호
      * @param monthParam 지정한 년도/달

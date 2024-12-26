@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface DairyRepositoryQdsl {
     /**
      * 로그인한 계정이 지정한 년도-월에 작성한 일기 정보 조회
-     * 삭제한 일기 제외
+     * - 삭제한 일기 제외
      *
      * @param memberId 로그인한 계정 일련번호
      * @param monthParam 지정한 년도/달
@@ -25,7 +25,7 @@ public interface DairyRepositoryQdsl {
 
     /**
      * 로그인한 계정이 지정한 날에 작성한 일기 정보 조회
-     * 삭제한 일기 제외
+     * - 삭제한 일기 제외
      *
      * @param memberId 로그인한 계정 일련번호
      * @param date     지정한 날짜
@@ -35,7 +35,7 @@ public interface DairyRepositoryQdsl {
 
     /**
      * 로그인한 계정이 작성한 해당 일련번호의 일기 정보 조회
-     * 삭제한 일기 제외
+     * - 삭제한 일기 제외
      *
      * @param memberId 로그인한 계정 일련번호
      * @param dairyId  조회할 일기 일련번호
@@ -45,7 +45,7 @@ public interface DairyRepositoryQdsl {
 
     /**
      * 로그인한 계정이 지정한 년도/달에 작성한 일기 갯수 & 오늘의 점수 평균 조회
-     * 삭제한 일기 제외
+     * - 삭제한 일기 제외
      *
      * @param memberId   로그인한 계정 일련번호
      * @param monthParam 지정한 년도/달
@@ -55,7 +55,7 @@ public interface DairyRepositoryQdsl {
 
     /**
      * 해당 달에 작성한 감사한/배운 일 횟수
-     * 삭제한 일기 제외
+     * - 삭제한 일기 제외
      *
      * @param memberId   로그인한 계정 일련번호
      * @param type       감사한/배운 일 중 타입
@@ -66,7 +66,7 @@ public interface DairyRepositoryQdsl {
 
     /**
      * 해당 달에 작성한 감사한/배운 일 중 가장 높은/낮은 점수를 기록한 날의 감사한/배운 일
-     * 삭제한 일기 제외
+     * - 삭제한 일기 제외
      *
      * @param memberId   로그인한 계정 일련번호
      * @param type       감사한/배운 일 중 타입
@@ -78,7 +78,7 @@ public interface DairyRepositoryQdsl {
 
     /**
      * 로그인한 계정이 지정한 년도/주차에 작성한 일기 갯수 & 오늘의 점수 평균 조회
-     * 삭제한 일기 제외
+     * - 삭제한 일기 제외
      *
      * @param memberId  로그인한 계정 일련번호
      * @param weekParam 지정한 년도/주차
@@ -88,7 +88,7 @@ public interface DairyRepositoryQdsl {
 
     /**
      * 로그인한 계정이 지정한 년도/주차에 작성한 일기 날짜와 점수 리스트
-     * 삭제한 일기 제외
+     * - 삭제한 일기 제외
      *
      * @param memberId 로그인한 계정 일련번호
      * @param weekParam 지정한 년도/주차
@@ -98,7 +98,7 @@ public interface DairyRepositoryQdsl {
 
     /**
      * 해당 달에 작성한 모든 감사한/배운 일 정보 리스트 조회
-     * 삭제한 일기 제외
+     * - 삭제한 일기 제외
      *
      * @param memberId 로그인한 계정 일련번호
      * @param type 감사한/배운 일 중 타입
