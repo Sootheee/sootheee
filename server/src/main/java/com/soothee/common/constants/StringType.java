@@ -10,6 +10,7 @@ public enum StringType implements CustomType {
     CONTENT("content", "오늘의 요약"),
     SNS_TYPE("SnsType", "SNS 종류"),
     OAUTH2("oauth2ClientId", "인증 일련번호"),
+    ROLE("role", "회원 인가 등급"),
     ORDER_NO("orderNO", "선택 순서");
 
     private final String type;
