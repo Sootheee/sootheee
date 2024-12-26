@@ -80,10 +80,10 @@ public class MemberController {
             /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-            MemberNameDTO result = memberService.getNicknameInfo(memberId);
-            return new ResponseEntity<MemberNameDTO>(result, HttpStatus.PARTIAL_CONTENT);
-        }
-        MemberInfoDTO info = memberService.getAllMemberInfo(memberId);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -116,6 +116,16 @@ public class MemberController {
 
             /* 성공 - 200 */
             return new ResponseEntity<>("성공", HttpStatus.OK);
+
+        } catch (IncorrectValueException | NotMatchedException | NullValueException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     /** 회원 정보(닉네임) 수정 */
@@ -151,6 +161,10 @@ public class MemberController {
             /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -174,7 +188,25 @@ public class MemberController {
             /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-        memberService.deleteMember(loginMemberId, memberDelDTO);
-        return new ResponseEntity<String>(HttpStatus.OK);
+
+        try {
+            /* 로그인한 계정 일련번호 조회 */
+            Long loginMemberId = memberService.getLoginMemberId(loginInfo);
+
+            /* 회원 소프트 삭제 */
+            memberService.deleteMember(loginMemberId, memberDelDTO);
+
+            /* 성공 - 200 */
+            return new ResponseEntity<>("성공", HttpStatus.OK);
+
+        } catch (NotMatchedException | NullValueException | IncorrectValueException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
 }

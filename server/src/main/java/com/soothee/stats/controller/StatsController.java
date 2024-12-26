@@ -62,11 +62,43 @@ public class StatsController {
             /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-        MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(memberId, monthParam);
-        if (result.getCount() < 3) {
-            return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
+
+        try {
+            /* 로그인한 계정 일련번호 조회 */
+            Long memberId = memberService.getLoginMemberId(loginInfo);
+
+            /* 월간 일기 요약 통계 조회 */
+            MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(memberId, monthParam);
+
+            if (result.getCount() < 3) {
+                /* 작성한 일기가 통계 가능 최소 일기 작성 개수 보다 적은 경우 통계 불가 - 204 : 오류는 아님 */
+                return new ResponseEntity<>("해당 년도/월에 작성 일기 개수가 통계 가능 최소 일기 작성 개수를 만족하지 않음", HttpStatus.NO_CONTENT);
+            }
+
+            /* 성공 - 200 */
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (NullValueException | IncorrectValueException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (ErrorToSearchStatsException e) {
+            /* 통계 결과 조회 실패 - 404 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (DuplicatedResultException e) {
+            /* 해당 조건으로 통계 결과가 1개 초과로 중복된 경우 - 409 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotFoundDetailInfoException e) {
+            /* 해당 정보가 존재하지만 세부 정보를 불러오지 못한 경우 - 500 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<MonthlyStatsDTO>(result, HttpStatus.OK);
     }
 
     /** 월간 감사한/배운 일 통계 요약 조회 */
@@ -99,7 +131,10 @@ public class StatsController {
             /* 월간 감사한/배운 일 요약 통계 조회 */
             MonthlyContentsDTO result = statsService.getMonthlyContents(memberId, conType, monthParam);
 
-    }
+            if (result.getCount() < 1) {
+                /* 작성한 감사한/배운 일이 없는 경우 - 204 : 오류는 아님 */
+                return new ResponseEntity<>("해당 년도/월에 작성한 감사한/배운 일 없음", HttpStatus.NO_CONTENT);
+            }
 
             /* 성공 - 200 */
             return new ResponseEntity<>(result, HttpStatus.OK);
@@ -108,6 +143,22 @@ public class StatsController {
             /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (ErrorToSearchStatsException e) {
+            /* 통계 결과 조회 실패 - 404 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (DuplicatedResultException e) {
+            /* 해당 조건으로 통계 결과가 1개 초과로 중복된 경우 - 409 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotFoundDetailInfoException e) {
+            /* 해당 정보가 존재하지만 세부 정보를 불러오지 못한 경우 - 500 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/weekly")
@@ -129,11 +180,43 @@ public class StatsController {
             /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-        WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(memberId, weekParam);
-        if (result.getCount() < 3) {
-            return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
+
+        try {
+            /* 로그인한 계정 일련번호 조회 */
+            Long memberId = memberService.getLoginMemberId(loginInfo);
+
+            /* 주간 일기 요약 통계 조회 */
+            WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(memberId, weekParam);
+
+            if (result.getCount() < 1) {
+                /* 작성한 일기가 일기가 없는 경우 - 204 : 오류는 아님 */
+                return new ResponseEntity<>("해당 년도/주차에 작성한 일기 없음", HttpStatus.NO_CONTENT);
+            }
+
+            /* 성공 - 200 */
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (IncorrectValueException | NullValueException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (ErrorToSearchStatsException e) {
+            /* 통계 결과 조회 실패 - 404 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (DuplicatedResultException e) {
+            /* 해당 조건으로 통계 결과가 1개 초과로 중복된 경우 - 409 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotFoundDetailInfoException e) {
+            /* 해당 정보가 존재하지만 세부 정보를 불러오지 못한 경우 - 500 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<WeeklyStatsDTO>(HttpStatus.OK);
     }
 
     /** 월간 컨디션 통계 세부 조회 */
@@ -156,11 +239,38 @@ public class StatsController {
             /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-        MonthlyConditionsDTO result = statsService.getMonthlyConditionList(memberId, monthParam);
-        if (result.getCount() < 1) {
-            return new ResponseEntity<String>(MyErrorMsg.NO_CONTENTS.toString(), HttpStatus.NO_CONTENT);
+
+        try {
+            /* 로그인한 계정 일련번호 조회 */
+            Long memberId = memberService.getLoginMemberId(loginInfo);
+
+            /* 한 달 동안 선택 횟수 상위 최대 3개 컨디션 리스트 조회 */
+            MonthlyConditionsDTO result = statsService.getMonthlyConditionList(memberId, monthParam);
+            if (result.getCount() < 1) {
+                /* 선택한 컨디션이 없는 경우 - 204 : 오류는 아님 */
+                return new ResponseEntity<>("해당 년도/월에 선택한 컨디션 없음", HttpStatus.NO_CONTENT);
+            }
+
+            /* 성공 - 200 */
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (IncorrectValueException | NullValueException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (ErrorToSearchStatsException e) {
+            /* 통계 결과 조회 실패 - 404 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (NotFoundDetailInfoException e) {
+            /* 해당 정보가 존재하지만 세부 정보를 불러오지 못한 경우 - 500 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<MonthlyConditionsDTO>(result, HttpStatus.OK);
     }
 
     /** 월간 감사한/배운 일 통계 세부 조회 */
@@ -200,6 +310,10 @@ public class StatsController {
             /* 한 달 동안 작성한 모든 감사한/배운 일 리스트 Sorting 조회 */
             MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(memberId, conType, monthParam, sortType);
 
+            if (result.getCount() < 1) {
+                /* 작성한 감사한/배운 일이 없는 경우 - 204 : 오류는 아님 */
+                return new ResponseEntity<>("해당 년도/월에 작성한 감사한/배운 일 없음", HttpStatus.NO_CONTENT);
+            }
 
             /* 성공 - 200 */
             return new ResponseEntity<>(result, HttpStatus.OK);
@@ -208,6 +322,18 @@ public class StatsController {
             /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (ErrorToSearchStatsException e) {
+            /* 통계 결과 조회 실패 - 404 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (NotFoundDetailInfoException e) {
+            /* 해당 정보가 존재하지만 세부 정보를 불러오지 못한 경우 - 500 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

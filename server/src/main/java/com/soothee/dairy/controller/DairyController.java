@@ -66,11 +66,31 @@ public class DairyController {
             /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-        List<DairyScoresDTO> infos = dairyService.getAllDairyMonthly(memberId, monthParam);
-        if (infos.isEmpty()) {
-            return new ResponseEntity<String>(MyErrorMsg.NOT_ENOUGH_DAIRY_COUNT.toString(), HttpStatus.NO_CONTENT);
+
+        try {
+            /* 로그인한 계정 일련번호 조회 */
+            Long memberId = memberService.getLoginMemberId(loginInfo);
+
+            /* 현재 로그인한 계정이 지정된 년도/월에 작성한 모든 일기의 작성 날짜와 오늘의 점수 리스트 조회 */
+            List<DairyScoresDTO> result = dairyService.getAllDairyMonthly(memberId, monthParam);
+
+            if (result.isEmpty()) {
+                /* 로그인한 계정이 조회한 월에 작성한 일기가 없는 경우 - 204  */
+                return new ResponseEntity<>("해당 년도/월에 작성한 일기 없음", HttpStatus.NO_CONTENT);
+            }
+
+            /* 성공 - 200 */
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (IncorrectValueException | NullValueException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<List<DairyScoresDTO>>(infos, HttpStatus.OK);
     }
 
     /** 일기 조회 - 날짜로 */
@@ -104,6 +124,22 @@ public class DairyController {
             /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (NotExistDairyException e) {
+            /* 해당 작성 날짜로 조회한 로그인한 계정의 작성 일기가 없는 경우 - 404 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (DuplicatedResultException e) {
+            /* 로그인한 계정이 해당 작성 날짜에 등록된 일기가 1개 초과인 경우 - 409 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotFoundDetailInfoException e) {
+            /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 - 500 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -138,6 +174,22 @@ public class DairyController {
             /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (NotExistDairyException e) {
+            /* 해당 일기 일련번호로 조회한 로그인한 계정의 작성 일기가 없는 경우 - 404 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (DuplicatedResultException e) {
+            /* 로그인한 계정의 해당 일기 일련번호로 등록한 일기가 1개 초과인 경우 - 409 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (NotFoundDetailInfoException e) {
+            /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 - 500 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -168,8 +220,30 @@ public class DairyController {
             /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-        dairyService.registerDairy(memberId, inputInfo);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        try {
+            /* 로그인한 계정 일련번호 조회 */
+            Long memberId = memberService.getLoginMemberId(loginInfo);
+
+            /* 새로운 일기 등록 */
+            dairyService.registerDairy(memberId, inputInfo);
+
+            /* 성공 - 200 */
+            return new ResponseEntity<>("성공", HttpStatus.OK);
+
+        } catch (IncorrectValueException | NullValueException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (DuplicatedResultException e) {
+            /* 입력한 새 일기의 작성 날짜에 이미 등록된 일기가 있는 경우 - 409 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
     /** 일기 수정 */
@@ -221,6 +295,18 @@ public class DairyController {
             /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (NotExistDairyException e) {
+            /* 해당 일기 일련번호로 조회한 로그인한 계정의 작성 일기가 없는 경우 - 404 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (NotFoundDetailInfoException e) {
+            /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 - 500 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -251,6 +337,22 @@ public class DairyController {
 
             /* 성공 - 200 */
             return new ResponseEntity<>("성공", HttpStatus.OK);
+        } catch (NotMatchedException | NullValueException | IncorrectValueException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotExistMemberException e) {
+            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (NotExistDairyException e) {
+            /* 해당 일기 일련번호의 일기가 없는 경우 - 404 : 오류 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (NotFoundDetailInfoException e) {
+            /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 - 500 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
