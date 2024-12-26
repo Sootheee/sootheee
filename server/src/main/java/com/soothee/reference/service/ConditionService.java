@@ -1,5 +1,6 @@
 package com.soothee.reference.service;
 
+import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.Condition;
 

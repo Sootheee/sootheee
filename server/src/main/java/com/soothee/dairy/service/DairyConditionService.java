@@ -1,9 +1,6 @@
 package com.soothee.dairy.service;
 
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NoDairyConditionException;
-import com.soothee.custom.exception.NotMatchedException;
-import com.soothee.custom.exception.NullValueException;
+import com.soothee.custom.exception.*;
 import com.soothee.dairy.domain.Dairy;
 
 import java.util.List;
@@ -32,11 +29,12 @@ public interface DairyConditionService {
      * 해당 일기의 일기-컨디션 리스트 조회
      * - 삭제한 일기 제외
      * - 삭제한 일기-컨디션 제외
+     * 1. 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 Exception 발생
      *
      * @param dairyId 조회할 일기 일련번호
      * @return 해당 일기의 다수의 컨디션 일련번호 리스트
      */
-    List<Long> getConditionsIdListByDairy(Long dairyId) throws NoDairyConditionException;
+    List<String> getConditionsIdListByDairy(Long dairyId) throws NotFoundDetailInfoException, IncorrectValueException, NullValueException;
 
     /**
      * 해당 일기의 일기-컨디션 리스트 업데이트
@@ -50,8 +48,9 @@ public interface DairyConditionService {
     /**
      * 해당 일기의 일기-컨디션 리스트 모두 소프트삭제
      * - 삭제한 일기 제외
+     * 1. 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 Exception 발생
      *
      * @param dairy 삭제할 일기 일련번호
      */
-    void deleteDairyConditionsOfDairy(Dairy dairy) throws NoDairyConditionException;
+    void deleteDairyConditionsOfDairy(Dairy dairy) throws NotFoundDetailInfoException, IncorrectValueException, NullValueException;
 }

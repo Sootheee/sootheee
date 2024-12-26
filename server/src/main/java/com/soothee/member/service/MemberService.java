@@ -30,39 +30,51 @@ public interface MemberService {
      *
      * @param member 가입할 회원의 정보
      */
-    void saveMember(Member member);
+    void saveMember(Member member) throws IncorrectValueException, NullValueException;
 
     /**
      * 회원 닉네임 수정
      * - 삭제한 회원 제외
+     * 1. 회원 일련번호로 조회된 회원이 없는 경우 Exception 발생
+     * 2. 두 회원 일련번호가 일치하지 않는 경우 Exception 발생
+     * 3. 입력된 수정할 닉네임이 없거나 올바르지 않는 경우 Exception 발생
      *
      * @param loginMemberId 현재 로그인한 계정의 일련번호
      * @param memberId 입력한 회원 일련번호
      * @param updateMode 변경할 모드
      */
-    void updateName(Long loginMemberId, Long memberId, String updateMode) throws NotExistMemberException, IncorrectValueException, NullValueException, NotMatchedException;
+    void updateName(Long loginMemberId, Long memberId, String updateMode) throws NotExistMemberException, NotMatchedException, IncorrectValueException, NullValueException;
 
     /**
      * 회원 다크모드 수정
      * - 삭제한 회원 제외
+     * 1. 회원 일련번호로 조회된 회원이 없는 경우 Exception 발생
+     * 2. 두 회원 일련번호가 일치하지 않는 경우 Exception 발생
+     * 3. 입력된 다크 모드가 없거나 올바르지 않는 경우 Exception 발생
      *
      * @param loginMemberId 현재 로그인한 계정의 일련번호
      * @param memberId 입력한 회원 일련번호
      * @param isDark 다크모드 yes/no
      */
-    void updateDarkMode(Long loginMemberId, Long memberId, String updateMode) throws NotExistMemberException, IncorrectValueException, NullValueException, NotMatchedException;
+    void updateDarkMode(Long loginMemberId, Long memberId, BooleanYN isDark) throws NotExistMemberException, NotMatchedException, IncorrectValueException, NullValueException;
 
     /**
      * 회원 탈퇴
+     * 1. 회원 일련번호로 조회된 회원이 없는 경우 Exception 발생
+     * 2. 두 회원 일련번호가 일치하지 않는 경우 Exception 발생
+     * 3. 탈퇴 사유 일련번호로 조회된 탈퇴 사유가 없는 경우 Exception 발생
+     * 4. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
      *
      * @param memberId 현재 로그인한 계정의 일련번호
      * @param memberDelDTO 입력된 탈퇴 정보
      */
-    void deleteMember(Long memberId, MemberDelDTO memberDelDTO) throws NotExistMemberException, NullValueException, NotMatchedException, IncorrectValueException;
+    void deleteMember(Long memberId, MemberDelDTO memberDelDTO) throws NotExistMemberException, NotMatchedException, IncorrectValueException, NullValueException;
 
     /**
      * 로그인한 회원의 모든 정보 조회
      * - 삭제한 회원 제외
+     * 1. 회원 일련번호로 조회된 회원이 없는 경우 Exception 발생
+     * 2. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
      *
      * @param memberId 현재 로그인한 계정의 일련번호
      * @return 회원의 모든 정보
@@ -72,27 +84,31 @@ public interface MemberService {
     /**
      * 로그인한 회원의 닉네임만 조회
      * - 삭제한 회원 제외
+     * 1. 회원 일련번호로 조회된 회원이 없는 경우 Exception 발생
+     * 2. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
      *
      * @param memberId 현재 로그인한 계정의 일련번호
      * @return 회원 일련번호와 닉네임 정보
      */
-    MemberNameDTO getNicknameInfo(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException;
+    MemberNameDTO getNicknameInfo(Long memberId) throws IncorrectValueException, NullValueException, NotExistMemberException;
 
     /**
      * 현재 로그인한 회원의 인증 일련번호로 회원 일련번호 조회
      * - 삭제한 회원 제외
+     * 1. 로그인한 인증 일련번호로 조회된 회원 일련번호가 없는 경우 Exception 발생
      *
      * @param loginInfo 현재 로그인 계정 정보
      * @return 로그인한 회원의 일련번호
      */
-    Long getLoginMemberId(AuthenticatedUser loginInfo) throws NotExistMemberException;
+    Long getLoginMemberId(AuthenticatedUser loginInfo) throws NotExistMemberException, IncorrectValueException, NullValueException;
 
     /**
      * 회원 일련번호로 회원 정보 조회
      * - 삭제한 회원 제외
+     * 1. 회원 일련번호로 조회된 회원이 없는 경우 Exception 발생
      *
      * @param memberId 조회할 회원 일련번호
      * @return 조회한 회원 정보
      */
-    Member getMemberById(Long memberId) throws NotExistMemberException;
+    Member getMemberById(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException;
 }
