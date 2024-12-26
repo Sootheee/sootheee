@@ -47,13 +47,16 @@ public class MemberInfoDTO implements MemberDTO {
         return MemberInfoDTO.builder()
                 .memberId(info.getMemberId())
                 .email(info.getEmail())
+                .name(info.getName())
                 .isDark(info.getIsDark())
                 .build();
     }
 
+    /** validation */
     private static void checkFromMember(Member info) throws IncorrectValueException, NullValueException {
         SootheeValidation.checkDomainId(info.getMemberId(), DomainType.MEMBER);
         SootheeValidation.checkEmail(info.getEmail());
+        SootheeValidation.checkName(info.getName());
         SootheeValidation.checkBoolean(info.getIsDark(), BooleanType.DARK_MODE);
     }
 }
