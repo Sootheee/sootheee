@@ -74,9 +74,20 @@ public class MemberController {
     public ResponseEntity<?> updateDarkMode(@RequestParam("memberId") Long memberId,
                                             @RequestParam("isDark") String isDark,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long loginMemberId = memberService.getLoginMemberId(loginInfo);
-        memberService.updateDarkMode(loginMemberId, memberId, isDark);
-        return new ResponseEntity<String>(HttpStatus.OK);
+        try {
+            /* query parameter validation */
+            SootheeValidation.checkDomainId(memberId, DomainType.MEMBER);
+            /* query parameter validation || String to Enum */
+            BooleanYN isDarkYN = BooleanYN.fromString(isDark);
+
+            /* 로그인한 계정 일련번호 조회 */
+            Long loginMemberId = memberService.getLoginMemberId(loginInfo);
+
+            /* 다크모드 변경 */
+            memberService.updateDarkMode(loginMemberId, memberId, isDarkYN);
+
+            /* 성공 - 200 */
+            return new ResponseEntity<>("성공", HttpStatus.OK);
     }
 
     /** 회원 정보(닉네임) 수정 */

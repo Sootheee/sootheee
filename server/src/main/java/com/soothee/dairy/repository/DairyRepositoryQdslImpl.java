@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.common.constants.ContentType;
 import com.soothee.common.constants.SortType;
 import com.soothee.common.requestParam.MonthParam;
@@ -40,7 +41,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(monthParam.getYear()),
                                     dairy.date.month().eq(monthParam.getMonth()),
-                                    dairy.isDelete.eq("N"))
+                                    dairy.isDelete.eq(BooleanYN.N.toString()))
                             .fetch()
         );
     }
@@ -60,7 +61,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .groupBy(dairy.dairyId)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.eq(date),
-                                    dairy.isDelete.eq("N"))
+                                    dairy.isDelete.eq(BooleanYN.N.toString()))
                             .fetch()
         );
     }
@@ -80,7 +81,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .groupBy(dairy.dairyId)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.dairyId.eq(dairyId),
-                                    dairy.isDelete.eq("N"))
+                                    dairy.isDelete.eq(BooleanYN.N.toString()))
                             .fetch()
         );
     }
@@ -94,7 +95,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(monthParam.getYear()),
                                     dairy.date.month().eq(monthParam.getMonth()),
-                                    dairy.isDelete.eq("N"))
+                                    dairy.isDelete.eq(BooleanYN.N.toString()))
                             .fetch()
         );
     }
@@ -110,13 +111,14 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
     @Override
     public Optional<Integer> findDiaryContentCntInMonth(Long memberId, ContentType type, MonthParam monthParam) {
         return Optional.ofNullable(
+                queryFactory.select(dairy.dairyId.count().intValue())
                             .from(dairy)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(monthParam.getYear()),
                                     dairy.date.month().eq(monthParam.getMonth()),
                                     getContentTypeNull(type),
                                     getContentTypeEmpty(type),
-                                    dairy.isDelete.eq("N"))
+                                    dairy.isDelete.eq(BooleanYN.N.toString()))
                             .fetchOne()
         );
     }
@@ -135,15 +137,14 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                 queryFactory.select(new QDateContents(dairy.dairyId,
                                                         dairy.date,
                                                         dairy.score,
-                                                        getContentType(type),
-                                                        Expressions.constant(type)))
+                                                        getContentType(type)))
                             .from(dairy)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(monthParam.getYear()),
                                     dairy.date.month().eq(monthParam.getMonth()),
                                     getContentTypeNull(type),
                                     getContentTypeEmpty(type),
-                                    dairy.isDelete.eq("N"))
+                                    dairy.isDelete.eq(BooleanYN.N.toString()))
                             .orderBy(getContentHighLow(orderBy))
                             .limit(1)
                             .fetch()
@@ -159,7 +160,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(weekParam.getYear()),
                                     dairy.date.week().eq(weekParam.getWeek()),
-                                    dairy.isDelete.eq("N"))
+                                    dairy.isDelete.eq(BooleanYN.N.toString()))
                             .fetch()
         );
     }
@@ -174,7 +175,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(weekParam.getYear()),
                                     dairy.date.week().eq(weekParam.getWeek()),
-                                    dairy.isDelete.eq("N"))
+                                    dairy.isDelete.eq(BooleanYN.N.toString()))
                             .orderBy(dairy.date.dayOfYear().asc())
                             .fetch()
         );
@@ -191,15 +192,14 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                 queryFactory.select(new QDateContents(dairy.dairyId,
                                                         dairy.date,
                                                         dairy.score,
-                                                        getContentType(type),
-                                                        Expressions.constant(type)))
+                                                        getContentType(type)))
                             .from(dairy)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(monthParam.getYear()),
                                     dairy.date.month().eq(monthParam.getMonth()),
                                     getContentTypeNull(type),
                                     getContentTypeEmpty(type),
-                                    dairy.isDelete.eq("N"))
+                                    dairy.isDelete.eq(BooleanYN.N.toString()))
                             .orderBy(getOrderBy(orderBy))
                             .fetch()
         );

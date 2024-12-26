@@ -48,12 +48,12 @@ public class DairyCondition extends TimeEntity implements Domain {
         this.dairy = dairy;
         this.condition = condition;
         this.orderNo = orderNo;
-        this.isDelete = "N";
+        this.isDelete = BooleanYN.N.toString();
     }
 
     /** 일기 컨디션 변경 시, 소프트 삭제 된 후, 새로 생성 */
     public void deleteDairyCondition () {
-        this.isDelete = "Y";
+        this.isDelete = BooleanYN.Y.toString();
     }
 
     @Override

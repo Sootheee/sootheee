@@ -81,7 +81,7 @@ public class Dairy extends TimeEntity implements Domain {
         this.hope = hope;
         this.thank = thank;
         this.learn = learn;
-        this.isDelete = "N";
+        this.isDelete = BooleanYN.N.toString();
     }
 
     /**
@@ -114,7 +114,7 @@ public class Dairy extends TimeEntity implements Domain {
 
     /** 일기 삭제 */
     public void deleteDairy() {
-        this.isDelete = "Y";
+        this.isDelete = BooleanYN.Y.toString();
     }
 
     /**

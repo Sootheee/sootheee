@@ -2,6 +2,7 @@ package com.soothee.dairy.repository;
 
 import com.querydsl.core.types.dsl.MathExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.soothee.common.constants.BooleanYN;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.dairy.domain.QDairyCondition;
 import com.soothee.stats.dto.ConditionRatio;
@@ -29,8 +30,8 @@ public class DairyConditionRepositoryQdslImpl implements DairyConditionRepositor
                             .where(dairyCondition.dairy.member.memberId.eq(memberId),
                                     dairyCondition.dairy.date.year().eq(monthParam.getYear()),
                                     dairyCondition.dairy.date.month().eq(monthParam.getMonth()),
-                                    dairyCondition.dairy.isDelete.eq("N"),
-                                    dairyCondition.isDelete.eq("N"))
+                                    dairyCondition.dairy.isDelete.eq(BooleanYN.N.toString()),
+                                    dairyCondition.isDelete.eq(BooleanYN.N.toString()))
                             .groupBy(dairyCondition.condition.condId,
                                         dairyCondition.condition.condType.condTypeValue,
                                         dairyCondition.condition.condValue)
@@ -46,12 +47,13 @@ public class DairyConditionRepositoryQdslImpl implements DairyConditionRepositor
     @Override
     public Optional<Integer> getAllDairyConditionCntInMonth(Long memberId, MonthParam monthParam)   {
         return Optional.ofNullable(
+                queryFactory.select(dairyCondition.count().intValue())
                         .from(dairyCondition)
                         .where(dairyCondition.dairy.member.memberId.eq(memberId),
                                 dairyCondition.dairy.date.year().eq(monthParam.getYear()),
                                 dairyCondition.dairy.date.month().eq(monthParam.getMonth()),
-                                dairyCondition.dairy.isDelete.eq("N"),
-                                dairyCondition.isDelete.eq("N"))
+                                dairyCondition.dairy.isDelete.eq(BooleanYN.N.toString()),
+                                dairyCondition.isDelete.eq(BooleanYN.N.toString()))
                         .fetchOne()
         );
     }

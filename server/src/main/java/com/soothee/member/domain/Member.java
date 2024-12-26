@@ -56,12 +56,12 @@ public class Member extends TimeEntity implements Domain {
     private Role role;
 
     @Builder
-    public Member(String email, String name, SnsType snsType, String oauth2ClientId) throws IncorrectValueException, NullValueException {
+    public Member(String email, String name, SnsType snsType, String oauth2ClientId) {
         checkConstructorMember(email, name, snsType, oauth2ClientId);
         this.email = email;
         this.name = name;
-        this.isDark = "N";
-        this.isDelete = "N";
+        this.isDark = BooleanYN.N.toString();
+        this.isDelete = BooleanYN.N.toString();
         this.snsType = snsType;
         this.oauth2ClientId = oauth2ClientId;
         this.role = Role.USER;
@@ -82,14 +82,13 @@ public class Member extends TimeEntity implements Domain {
      *
      * @param isDark 바꿀 화면 모드가 다크모드면 Y 아니면 N
      */
-    public void updateDarkModeYN(String isDark) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkBoolean(isDark, BooleanType.DARK_MODE);
-        this.isDark = isDark;
+    public void updateDarkModeYN(BooleanYN isDark) {
+        this.isDark = isDark.toString();
     }
 
     /** 회원 삭제 */
     public void deleteMember() {
-        this.isDelete = "Y";
+        this.isDelete = BooleanYN.Y.toString();
     }
 
     @Override
