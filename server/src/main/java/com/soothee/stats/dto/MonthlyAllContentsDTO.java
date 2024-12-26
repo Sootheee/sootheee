@@ -1,8 +1,6 @@
 package com.soothee.stats.dto;
 
 import com.soothee.common.constants.ContentType;
-import com.soothee.common.constants.DomainType;
-import com.soothee.common.constants.DoubleType;
 import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
 import com.soothee.custom.valid.SootheeValidation;
@@ -32,21 +30,8 @@ public class MonthlyAllContentsDTO {
     @Schema(description = "한 달 동안 작성한 모든 감사한/배운 일 정보")
     private List<DateContents> contentList;
 
-    @Builder
-    public MonthlyAllContentsDTO(List<DateContents> contentList, Integer count, ContentType type) throws IncorrectValueException, NullValueException {
-        checkConstructorMonthlyAllContentDTO(contentList, count, type);
-        this.count = count;
-        this.contentList = contentList;
-    }
-
-    /** validation */
-    private static void checkConstructorMonthlyAllContentDTO(List<DateContents> contentList, Integer count, ContentType type) throws IncorrectValueException, NullValueException {
+    public MonthlyAllContentsDTO(Integer count, ContentType type) throws IncorrectValueException, NullValueException {
         SootheeValidation.checkInteger(count, type);
-        for (DateContents dateContents : contentList) {
-            SootheeValidation.checkDomainId(dateContents.getDairyId(), DomainType.DAIRY);
-            SootheeValidation.checkDate(dateContents.getDate());
-            SootheeValidation.checkDouble(dateContents.getScore(), DoubleType.SCORE);
-            SootheeValidation.checkOptionalContent(dateContents.getContent(), type);
-        }
+        this.count = count;
     }
 }

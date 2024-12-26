@@ -44,19 +44,23 @@ public class DateContents {
     private String content;
 
     @QueryProjection
-    public DateContents(Long dairyId, LocalDate date, Double score, String content, ContentType type) throws IncorrectValueException, NullValueException {
-        checkConstructorDateContents(dairyId, date, score, content, type);
+    public DateContents(Long dairyId, LocalDate date, Double score, String content) {
         this.dairyId = dairyId;
         this.date = date;
         this.score = score;
         this.content = content;
     }
 
-    /** validation */
-    private static void checkConstructorDateContents(Long dairyId, LocalDate date, Double score, String content, ContentType type) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomainId(dairyId, DomainType.DAIRY);
-        SootheeValidation.checkDate(date);
-        SootheeValidation.checkDouble(score, DoubleType.SCORE);
-        SootheeValidation.checkOptionalContent(content, type);
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     *
+     * @param type 감사한/배운 일 종류
+     */
+    public void valid(ContentType type) throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(getDairyId(), DomainType.DAIRY);
+        SootheeValidation.checkDate(getDate());
+        SootheeValidation.checkDouble(getScore(), DoubleType.SCORE);
+        SootheeValidation.checkOptionalContent(getContent(), type);
     }
 }

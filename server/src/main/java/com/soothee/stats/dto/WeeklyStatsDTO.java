@@ -36,10 +36,17 @@ public class WeeklyStatsDTO {
     private List<DateScore> scoreList;
 
     @QueryProjection
-    public WeeklyStatsDTO(Integer count, Double scoreAvg) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkInteger(count, DomainType.DAIRY);
-        SootheeValidation.checkDouble(scoreAvg, DoubleType.AVG);
+    public WeeklyStatsDTO(Integer count, Double scoreAvg) {
         this.count = count;
         this.scoreAvg = scoreAvg;
+    }
+
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     */
+    public void valid() throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkInteger(count, DomainType.DAIRY);
+        SootheeValidation.checkDouble(scoreAvg, DoubleType.AVG);
     }
 }

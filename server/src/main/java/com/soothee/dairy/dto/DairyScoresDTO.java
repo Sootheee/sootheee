@@ -42,17 +42,19 @@ public class DairyScoresDTO {
     private Double score;
 
     @QueryProjection
-    public DairyScoresDTO(Long dairyId, LocalDate date, Double score) throws IncorrectValueException, NullValueException {
-        checkConstructorDairyScoresDTO(dairyId, date, score);
+    public DairyScoresDTO(Long dairyId, LocalDate date, Double score) {
         this.dairyId = dairyId;
         this.date = date;
         this.score = score;
     }
 
-    /** validation */
-    private static void checkConstructorDairyScoresDTO(Long dairyId, LocalDate date, Double score) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomainId(dairyId, DomainType.DAIRY);
-        SootheeValidation.checkDate(date);
-        SootheeValidation.checkDouble(score, DoubleType.SCORE);
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     */
+    public void valid () throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(getDairyId(), DomainType.DAIRY);
+        SootheeValidation.checkDate(getDate());
+        SootheeValidation.checkDouble(getScore(), DoubleType.SCORE);
     }
 }

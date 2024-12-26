@@ -69,8 +69,7 @@ public class Dairy extends TimeEntity implements Domain {
     private String isDelete;
 
     @Builder
-    public Dairy(Member member, LocalDate date, Weather weather, Double score, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
-        checkConstructDairy(member, date, weather, score, content, hope, thank, learn);
+    public Dairy(Member member, LocalDate date, Weather weather, Double score, String content, String hope, String thank, String learn) {
         this.member = member;
         this.date = date;
         this.weather = weather;
@@ -117,6 +116,7 @@ public class Dairy extends TimeEntity implements Domain {
 
     /**
      * 일기 생성
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
      *
      * @param inputInfo 입력된 등록할 일기 정보
      * @param member 로그인한 계정 정보
@@ -143,22 +143,10 @@ public class Dairy extends TimeEntity implements Domain {
     }
 
     /** validation */
-    private void checkConstructDairy(Member member, LocalDate date, Weather weather, Double score, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomain(member, DomainType.MEMBER);
-        SootheeValidation.checkDate(date);
-        SootheeValidation.checkDomain(weather, DomainType.WEATHER);
-        SootheeValidation.checkDouble(score, DoubleType.SCORE);
-        SootheeValidation.checkContent(content);
-        SootheeValidation.checkOptionalContent(hope, ContentType.HOPE);
-        SootheeValidation.checkOptionalContent(thank, ContentType.THANKS);
-        SootheeValidation.checkOptionalContent(learn, ContentType.LEARN);
-    }
-
-    /** validation */
     private static void checkDiaryOfDiaryRegisterDTO(DairyRegisterDTO inputInfo, Member member, Weather weather) throws IncorrectValueException, NullValueException {
         SootheeValidation.checkDate(inputInfo.getDate());
         SootheeValidation.checkDomain(member, DomainType.MEMBER);
-        SootheeValidation.checkDomain(weather, DomainType.WEATHER);
+        SootheeValidation.checkReference(weather, ReferenceType.WEATHER);
         SootheeValidation.checkDouble(inputInfo.getScore(), DoubleType.SCORE);
         SootheeValidation.checkContent(inputInfo.getContent());
         SootheeValidation.checkOptionalContent(inputInfo.getHope(), ContentType.HOPE);
@@ -168,11 +156,28 @@ public class Dairy extends TimeEntity implements Domain {
 
     /** validation */
     private void checkUpdateDairy(DairyDTO dairy, Weather weather) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomain(weather, DomainType.WEATHER);
+        SootheeValidation.checkReference(weather, ReferenceType.WEATHER);
         SootheeValidation.checkDouble(score, DoubleType.SCORE);
         SootheeValidation.checkContent(dairy.getContent());
         SootheeValidation.checkOptionalContent(dairy.getHope(), ContentType.HOPE);
         SootheeValidation.checkOptionalContent(dairy.getThank(), ContentType.THANKS);
         SootheeValidation.checkOptionalContent(dairy.getLearn(), ContentType.LEARN);
+    }
+
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     */
+    public void valid() throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(getDairyId(), DomainType.DAIRY);
+        SootheeValidation.checkDate(getDate());
+        SootheeValidation.checkDomain(getMember(), DomainType.MEMBER);
+        SootheeValidation.checkReference(getWeather(), ReferenceType.WEATHER);
+        SootheeValidation.checkDouble(getScore(), DoubleType.SCORE);
+        SootheeValidation.checkContent(getContent());
+        SootheeValidation.checkOptionalContent(getHope(), ContentType.HOPE);
+        SootheeValidation.checkOptionalContent(getThank(), ContentType.THANKS);
+        SootheeValidation.checkOptionalContent(getLearn(), ContentType.LEARN);
+        SootheeValidation.checkBoolean(getIsDelete(), BooleanType.DELETE);
     }
 }

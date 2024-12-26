@@ -1,7 +1,6 @@
 package com.soothee.dairy.domain;
 
-import com.soothee.common.constants.DomainType;
-import com.soothee.common.constants.StringType;
+import com.soothee.common.constants.*;
 import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
 import com.soothee.custom.exception.IncorrectValueException;
@@ -43,8 +42,7 @@ public class DairyCondition extends TimeEntity implements Domain {
     private String isDelete;
 
     @Builder
-    public DairyCondition(Dairy dairy, Condition condition, Integer orderNo) throws IncorrectValueException, NullValueException {
-        checkConstructorDairyCondition(dairy, condition, orderNo);
+    public DairyCondition(Dairy dairy, Condition condition, Integer orderNo) {
         this.dairy = dairy;
         this.condition = condition;
         this.orderNo = orderNo;
@@ -61,10 +59,23 @@ public class DairyCondition extends TimeEntity implements Domain {
         return dairyCondId;
     }
 
-    /** validation */
-    private static void checkConstructorDairyCondition(Dairy dairy, Condition condition, Integer orderNo) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomain(dairy, DomainType.DAIRY);
-        SootheeValidation.checkDomain(condition, DomainType.CONDITION);
-        SootheeValidation.checkInteger(orderNo, StringType.ORDER_NO);
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     */
+    public void validNew() throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomain(getDairy(), DomainType.DAIRY);
+        SootheeValidation.checkReference(getCondition(), ReferenceType.CONDITION);
+        SootheeValidation.checkInteger(getOrderNo(), StringType.ORDER_NO);
+    }
+
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     */
+    public void valid() throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(getDairyCondId(), DomainType.DAIRY_CONDITION);
+        validNew();
+        SootheeValidation.checkBoolean(getIsDelete(), BooleanType.DELETE);
     }
 }

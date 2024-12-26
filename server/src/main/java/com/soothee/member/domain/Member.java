@@ -1,9 +1,6 @@
 package com.soothee.member.domain;
 
-import com.soothee.common.constants.BooleanType;
-import com.soothee.common.constants.Role;
-import com.soothee.common.constants.SnsType;
-import com.soothee.common.constants.StringType;
+import com.soothee.common.constants.*;
 import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
 import com.soothee.custom.exception.IncorrectValueException;
@@ -57,7 +54,6 @@ public class Member extends TimeEntity implements Domain {
 
     @Builder
     public Member(String email, String name, SnsType snsType, String oauth2ClientId) {
-        checkConstructorMember(email, name, snsType, oauth2ClientId);
         this.email = email;
         this.name = name;
         this.isDark = BooleanYN.N.toString();
@@ -69,6 +65,7 @@ public class Member extends TimeEntity implements Domain {
 
     /**
      * 회원 정보 수정
+     * 1. 입력된 수정할 닉네임이 없거나 올바르지 않는 경우 Exception 발생
      *
      * @param updateName 바꿀 회원 닉네임
      */
@@ -96,11 +93,26 @@ public class Member extends TimeEntity implements Domain {
         return memberId;
     }
 
-    /** validation */
-    private static void checkConstructorMember(String email, String name, SnsType snsType, String oauth2ClientId) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkEmail(email);
-        SootheeValidation.checkName(name);
-        SootheeValidation.checkSnsType(snsType);
-        SootheeValidation.checkNullForNecessaryString(oauth2ClientId, StringType.OAUTH2);
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     */
+    public void valid() throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(getMemberId(), DomainType.MEMBER);
+        validNew();
+    }
+
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     */
+    public void validNew() throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkEmail(getEmail());
+        SootheeValidation.checkName(getName());
+        SootheeValidation.checkBoolean(getIsDark(), BooleanType.DARK_MODE);
+        SootheeValidation.checkBoolean(getIsDelete(), BooleanType.DELETE);
+        SootheeValidation.checkSnsType(getSnsType());
+        SootheeValidation.checkNullForNecessaryString(getOauth2ClientId(), StringType.OAUTH2);
+        SootheeValidation.checkRole(getRole());
     }
 }

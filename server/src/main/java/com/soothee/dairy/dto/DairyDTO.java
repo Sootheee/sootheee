@@ -11,15 +11,13 @@ import com.soothee.custom.valid.ExistReferenceId;
 import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 일기 조회/수정
@@ -74,7 +72,6 @@ public class DairyDTO implements InputDairyDTO{
     @Builder
     @QueryProjection
     public DairyDTO(Long dairyId, LocalDate date, String weatherId, Double score, String content, String hope, String thank, String learn) {
-        checkConstructorDairyDTO(dairyId, date, weatherId, score, content, hope, thank, learn);
         this.dairyId = dairyId;
         this.date = date;
         this.weatherId = weatherId;
@@ -85,15 +82,23 @@ public class DairyDTO implements InputDairyDTO{
         this.learn = learn;
     }
 
-    /** validation */
-    private static void checkConstructorDairyDTO(Long dairyId, LocalDate date, Long weatherId, Double score, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomainId(dairyId, DomainType.DAIRY);
-        SootheeValidation.checkDate(date);
-        SootheeValidation.checkDomainId(weatherId, DomainType.WEATHER);
-        SootheeValidation.checkDouble(score, DoubleType.SCORE);
-        SootheeValidation.checkContent(content);
-        SootheeValidation.checkOptionalContent(hope, ContentType.HOPE);
-        SootheeValidation.checkOptionalContent(thank, ContentType.THANKS);
-        SootheeValidation.checkOptionalContent(learn, ContentType.LEARN);
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     */
+    public void valid() throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDomainId(getDairyId(), DomainType.DAIRY);
+        SootheeValidation.checkDate(getDate());
+        SootheeValidation.checkReferenceId(getWeatherId(), ReferenceType.WEATHER);
+        if (Objects.nonNull(getCondIdList())) {
+            for (String condId : getCondIdList()) {
+                SootheeValidation.checkReferenceId(condId, ReferenceType.CONDITION);
+            }
+        }
+        SootheeValidation.checkDouble(getScore(), DoubleType.SCORE);
+        SootheeValidation.checkContent(getContent());
+        SootheeValidation.checkOptionalContent(getHope(), ContentType.HOPE);
+        SootheeValidation.checkOptionalContent(getThank(), ContentType.THANKS);
+        SootheeValidation.checkOptionalContent(getLearn(), ContentType.LEARN);
     }
 }

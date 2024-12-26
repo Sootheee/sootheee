@@ -1,7 +1,6 @@
 package com.soothee.dairy.dto;
 
 import com.soothee.common.constants.ContentType;
-import com.soothee.common.constants.DomainType;
 import com.soothee.common.constants.DoubleType;
 import com.soothee.common.constants.ReferenceType;
 import com.soothee.custom.exception.IncorrectValueException;
@@ -10,14 +9,8 @@ import com.soothee.custom.valid.ExistReferenceId;
 import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.*;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -69,7 +62,7 @@ public class DairyRegisterDTO implements InputDairyDTO{
     @Schema(description = "배운 일")
     private String learn;
 
-    public DairyRegisterDTO(LocalDate date, Long weatherId, Double score, List<Long> condIdList, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
+    @Builder
     public DairyRegisterDTO(LocalDate date, String weatherId, Double score, List<String> condIdList, String content, String hope, String thank, String learn) {
         this.date = date;
         this.weatherId = weatherId;
@@ -82,18 +75,18 @@ public class DairyRegisterDTO implements InputDairyDTO{
     }
 
     /** validation */
-    private static void checkConstructorDairyRegisterDTO(LocalDate date, Long weatherId, Double score, List<Long> condIdList, String content, String hope, String thank, String learn) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDate(date);
-        SootheeValidation.checkDomainId(weatherId, DomainType.WEATHER);
-        SootheeValidation.checkDouble(score, DoubleType.SCORE);
-        if (Objects.nonNull(condIdList)) {
-            for (Long condId : condIdList) {
-                SootheeValidation.checkDomainId(condId, DomainType.CONDITION);
+    public void valid () throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkDate(getDate());
+        SootheeValidation.checkReferenceId(getWeatherId(), ReferenceType.WEATHER);
+        SootheeValidation.checkDouble(getScore(), DoubleType.SCORE);
+        if (Objects.nonNull(getCondIdList())) {
+            for (String condId : getCondIdList()) {
+                SootheeValidation.checkReferenceId(condId, ReferenceType.CONDITION);
             }
         }
-        SootheeValidation.checkContent(content);
-        SootheeValidation.checkOptionalContent(hope, ContentType.HOPE);
-        SootheeValidation.checkOptionalContent(thank, ContentType.THANKS);
-        SootheeValidation.checkOptionalContent(learn, ContentType.LEARN);
+        SootheeValidation.checkContent(getContent());
+        SootheeValidation.checkOptionalContent(getHope(), ContentType.HOPE);
+        SootheeValidation.checkOptionalContent(getThank(), ContentType.THANKS);
+        SootheeValidation.checkOptionalContent(getLearn(), ContentType.LEARN);
     }
 }

@@ -1,6 +1,5 @@
 package com.soothee.stats.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
 import com.soothee.common.constants.DomainType;
 import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
@@ -26,7 +25,6 @@ public class MonthlyConditionsDTO {
     @Schema(description = "한 달 동안 기록한 컨디션 중 선택된 비율이 높은 최대 3개의 컨디션 정보 리스트")
     private List<ConditionRatio> condiList;
 
-    @QueryProjection
     public MonthlyConditionsDTO(Integer count) throws IncorrectValueException, NullValueException {
         SootheeValidation.checkInteger(count, DomainType.DAIRY_CONDITION);
         this.count = count;

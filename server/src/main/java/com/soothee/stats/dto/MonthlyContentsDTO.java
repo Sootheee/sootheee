@@ -1,8 +1,6 @@
 package com.soothee.stats.dto;
 
 import com.soothee.common.constants.ContentType;
-import com.soothee.common.constants.DomainType;
-import com.soothee.common.constants.DoubleType;
 import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
 import com.soothee.custom.valid.SootheeValidation;
@@ -29,24 +27,8 @@ public class MonthlyContentsDTO {
     @Schema(description = "한 달 중 가장 낮은 점수를 준 날의 감사한/배운 일")
     private DateContents lowest;
 
-    @Builder
-    public MonthlyContentsDTO(Integer count, DateContents highest, DateContents lowest, ContentType type) throws IncorrectValueException, NullValueException {
-        checkConstructorMonthlyContentsDTO(count, highest, lowest, type);
-        this.count = count;
-        this.highest = highest;
-        this.lowest = lowest;
-    }
-
-    /** validation */
-    private static void checkConstructorMonthlyContentsDTO(Integer count, DateContents highest, DateContents lowest, ContentType type) throws IncorrectValueException, NullValueException {
+    public MonthlyContentsDTO(int count, ContentType type) throws IncorrectValueException, NullValueException {
         SootheeValidation.checkInteger(count, type);
-        SootheeValidation.checkDomainId(highest.getDairyId(), DomainType.DAIRY);
-        SootheeValidation.checkDate(highest.getDate());
-        SootheeValidation.checkDouble(highest.getScore(), DoubleType.SCORE);
-        SootheeValidation.checkOptionalContent(highest.getContent(), type);
-        SootheeValidation.checkDomainId(lowest.getDairyId(), DomainType.DAIRY);
-        SootheeValidation.checkDate(lowest.getDate());
-        SootheeValidation.checkDouble(lowest.getScore(), DoubleType.SCORE);
-        SootheeValidation.checkOptionalContent(lowest.getContent(), type);
+        this.count = count;
     }
 }

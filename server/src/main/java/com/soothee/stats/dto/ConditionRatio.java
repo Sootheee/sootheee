@@ -34,14 +34,16 @@ public class ConditionRatio {
 
     @QueryProjection
     public ConditionRatio(String condId, Double condRatio) {
-        checkConstructorConditionRatio(condId, condRatio);
         this.condId = condId;
         this.condRatio = condRatio;
     }
 
-    /** validation */
-    private static void checkConstructorConditionRatio(Long condId, Double condRatio) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomainId(condId, DomainType.CONDITION);
-        SootheeValidation.checkDouble(condRatio, DoubleType.RATIO);
+    /**
+     * valid
+     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
+     */
+    public void valid() throws IncorrectValueException, NullValueException {
+        SootheeValidation.checkReferenceId(getCondId(), ReferenceType.CONDITION);
+        SootheeValidation.checkDouble(getCondRatio(), DoubleType.RATIO);
     }
 }
