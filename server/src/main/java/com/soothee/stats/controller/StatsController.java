@@ -1,8 +1,10 @@
 package com.soothee.stats.controller;
 
-import com.soothee.common.exception.MyErrorMsg;
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.SortType;
 import com.soothee.custom.error.BindingErrorResult;
 import com.soothee.custom.error.BindingErrorUtil;
+import com.soothee.custom.exception.*;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.common.requestParam.WeekParam;
 import com.soothee.member.service.MemberService;
@@ -29,6 +31,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @Tag(name = "Stats API", description = "월간/주간 통계 조회")
@@ -52,9 +56,10 @@ public class StatsController {
     })
     public ResponseEntity<?> sendMonthlyStats(@ModelAttribute @Valid MonthParam monthParam, BindingResult bindingResult,
                                                 @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        /* year || month query paramter에 오류가 있는 경우 */
+        /* year || month query parameter validation */
         if (bindingResult.hasErrors()) {
             List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(memberId, monthParam);
@@ -80,18 +85,31 @@ public class StatsController {
     public ResponseEntity<?> sendMonthlyContents(@PathVariable("type") String type,
                                                  @ModelAttribute @Valid MonthParam monthParam, BindingResult bindingResult,
                                                  @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        /* year || month query paramter에 오류가 있는 경우 */
+        /* year || month query parameter validation */
         if (bindingResult.hasErrors()) {
             List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-        if (result.getCount() < 1) {
-            return new ResponseEntity<String>(MyErrorMsg.NO_CONTENTS.toString(), HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<MonthlyContentsDTO>(result, HttpStatus.OK);
+        try {
+            /* type Path Parameter String to Enum and validation */
+            ContentType conType = ContentType.fromType(type);
+            /* 로그인한 계정 일련번호 조회 */
+            Long memberId = memberService.getLoginMemberId(loginInfo);
+            /* 월간 감사한/배운 일 요약 통계 조회 */
+            MonthlyContentsDTO result = statsService.getMonthlyContents(memberId, conType, monthParam);
+
     }
 
-    /**  한 주 동안 일기 통계 요약 조회 */
+            /* 성공 - 200 */
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (IncorrectValueException | NullValueException | IncorrectParameterException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
     @GetMapping("/weekly")
     @Operation(summary = "주간 일기 통계 요약 조회", description = "로그인한 계정의 해당 주차 일기 작성 횟수, 평균 점수, 일간 점수", security = @SecurityRequirement(name = "oauth2_auth"))
     @Parameters(value = {
@@ -105,9 +123,10 @@ public class StatsController {
     })
     public ResponseEntity<?> sendWeeklyStats(@ModelAttribute @Valid WeekParam weekParam, BindingResult bindingResult,
                                              @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        /* year || week query paramter에 오류가 있는 경우 */
+        /* year || week query parameter validation */
         if (bindingResult.hasErrors()) {
             List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(memberId, weekParam);
@@ -131,9 +150,10 @@ public class StatsController {
     })
     public ResponseEntity<?> sendMonthlyConditionRatioList(@ModelAttribute @Valid MonthParam monthParam, BindingResult bindingResult,
                                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        /* year || month query paramter에 오류가 있는 경우 */
+        /* year || month query parameter validation */
         if (bindingResult.hasErrors()) {
             List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         MonthlyConditionsDTO result = statsService.getMonthlyConditionList(memberId, monthParam);
@@ -161,14 +181,33 @@ public class StatsController {
                                                      @ModelAttribute @Valid MonthParam monthParam, BindingResult bindingResult,
                                                      @RequestParam("order_by") String orderBy,
                                                      @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        /* year || month query paramter에 오류가 있는 경우 */
+        /* year || month query parameter validation */
         if (bindingResult.hasErrors()) {
             List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-        if (result.getCount() < 1) {
-            return new ResponseEntity<String>(MyErrorMsg.NO_CONTENTS.toString(), HttpStatus.NO_CONTENT);
+
+        try {
+            /* type Path Parameter String to ContentType and validation */
+            ContentType conType = ContentType.fromType(type);
+            /* orderBy Query Parameter String to SortType and validation */
+            SortType sortType = SortType.fromType(orderBy);
+
+            /* 로그인한 계정 일련번호 조회 */
+            Long memberId = memberService.getLoginMemberId(loginInfo);
+
+            /* 한 달 동안 작성한 모든 감사한/배운 일 리스트 Sorting 조회 */
+            MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(memberId, conType, monthParam, sortType);
+
+
+            /* 성공 - 200 */
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (IncorrectParameterException | NullValueException | IncorrectValueException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<MonthlyAllContentsDTO>(result, HttpStatus.OK);
     }
 }

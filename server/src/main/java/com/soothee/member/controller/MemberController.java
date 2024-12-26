@@ -1,7 +1,11 @@
 package com.soothee.member.controller;
 
+import com.soothee.common.constants.BooleanYN;
+import com.soothee.common.constants.DomainType;
 import com.soothee.custom.error.BindingErrorResult;
+import com.soothee.custom.exception.*;
 import com.soothee.custom.error.BindingErrorUtil;
+import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.member.dto.MemberDelDTO;
 import com.soothee.member.dto.MemberInfoDTO;
 import com.soothee.member.dto.MemberNameDTO;
@@ -28,6 +32,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @Tag(name = "Member API", description = "회원 관련 처리")
@@ -50,13 +56,35 @@ public class MemberController {
     })
     public ResponseEntity<?> sendMemberInfo(@RequestParam(value = "type", required = false) String type,
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long memberId = memberService.getLoginMemberId(loginInfo);
-        if (StringUtils.isNotBlank(type)) {
+        try {
+            /* query parameter validation - null->true */
+            SootheeValidation.checkTypeQueryParameter(type);
+
+            /* 로그인한 계정 일련번호 조회 */
+            Long memberId = memberService.getLoginMemberId(loginInfo);
+
+            /* type Query Parameter 없으면 로그인한 계정의 모든 정보를 조회 */
+            if (StringUtils.isBlank(type)) {
+                /* 로그인한 계정의 모든 정보 조회 */
+                MemberInfoDTO result = memberService.getAllMemberInfo(memberId);
+                /* 성공 - 200 */
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+
+            /* type Query Parameter 있으면 로그인한 계정의 회원 닉네임만 조회 */
+            MemberNameDTO result = memberService.getNicknameInfo(memberId);
+            /* 일부 값만 전송 성공 - 206 */
+            return new ResponseEntity<>(result, HttpStatus.PARTIAL_CONTENT);
+
+        } catch (IncorrectValueException | NullValueException | IncorrectParameterException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
             MemberNameDTO result = memberService.getNicknameInfo(memberId);
             return new ResponseEntity<MemberNameDTO>(result, HttpStatus.PARTIAL_CONTENT);
         }
         MemberInfoDTO info = memberService.getAllMemberInfo(memberId);
-        return new ResponseEntity<MemberInfoDTO>(info, HttpStatus.OK);
+        }
     }
 
     /** 다크모드 수정 */
@@ -105,9 +133,25 @@ public class MemberController {
     public ResponseEntity<?> updateName(@RequestParam("memberId") Long memberId,
                                         @RequestParam("name") String name,
                                         @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        Long loginMemberId = memberService.getLoginMemberId(loginInfo);
-        memberService.updateName(loginMemberId, memberId, name);
-        return new ResponseEntity<String>(HttpStatus.OK);
+        try {
+            /* query parameter validation */
+            SootheeValidation.checkDomainId(memberId, DomainType.MEMBER);
+            SootheeValidation.checkQueryParameter(name);
+
+            /* 로그인한 계정 일련번호 조회 */
+            Long loginMemberId = memberService.getLoginMemberId(loginInfo);
+
+            /* 회원 닉네임 수정 */
+            memberService.updateName(loginMemberId, memberId, name);
+
+            /* 성공 - 200 */
+            return new ResponseEntity<>("성공", HttpStatus.OK);
+
+        } catch (IncorrectValueException | NullValueException | NotMatchedException e) {
+            /* 필수 요청 파라미터의 값이나 필수 응답값이 없거나 올바르지 않은 경우 - 400 */
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /** 회원 탈퇴 */
@@ -124,9 +168,10 @@ public class MemberController {
     })
     public ResponseEntity<?> deleteMember(@ModelAttribute @Valid MemberDelDTO memberDelDTO, BindingResult bindingResult,
                                           @AuthenticationPrincipal AuthenticatedUser loginInfo) {
-        /* member_id || del_reason_list query paramter에 오류가 있는 경우 */
+        /* member_id || del_reason_list query parameter validation */
         if (bindingResult.hasErrors()) {
             List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
         memberService.deleteMember(loginMemberId, memberDelDTO);
