@@ -4,7 +4,6 @@ import com.soothee.dairy.repository.DairyConditionRepository;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.repository.MemberDelReasonRepository;
 import com.soothee.member.repository.MemberRepository;
-import com.soothee.member.service.MemberDelReasonService;
 import com.soothee.reference.repository.ConditionRepository;
 import com.soothee.reference.repository.DelReasonRepository;
 import com.soothee.reference.repository.WeatherRepository;

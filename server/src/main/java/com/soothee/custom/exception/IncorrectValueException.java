@@ -33,7 +33,7 @@ public class IncorrectValueException extends RuntimeException {
     }
 
     public IncorrectValueException(String value) {
-        super(StringType.EMAIL.toKorean() + "인 {" + value + "}의 이메일 형식이 잘못되었습니다.");
+        super(StringType.EMAIL.toKorean() + "인 {" + value + "}의 " + StringType.EMAIL + " 형식이 잘못되었습니다.");
     }
 
     public IncorrectValueException(CustomType type, String value, int min, int max) {

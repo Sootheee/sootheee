@@ -1,13 +1,13 @@
 package com.soothee.dairy.service;
 
 import com.soothee.common.constants.BooleanYN;
-import com.soothee.common.requestParam.MonthParam;
 import com.soothee.config.TestConfig;
 import com.soothee.custom.exception.*;
+import com.soothee.dairy.controller.response.DairyAllResponse;
 import com.soothee.dairy.domain.Dairy;
-import com.soothee.dairy.dto.DairyDTO;
-import com.soothee.dairy.dto.DairyRegisterDTO;
-import com.soothee.dairy.dto.DairyScoresDTO;
+import com.soothee.dairy.controller.response.DairyScoresResponse;
+import com.soothee.dairy.service.command.DairyModify;
+import com.soothee.dairy.service.command.DairyRegister;
 import com.soothee.util.CommonTestCode;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -41,16 +41,11 @@ class DairyServiceTest {
     @Test
     void getAllDairyMonthly() {
         //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
-        try {
-            //when
-            List<DairyScoresDTO> result = dairyService.getAllDairyMonthly(CommonTestCode.MEMBER_ID, monthParam);
-            //then
-            Assertions.assertThat(result.size()).isEqualTo(5);
-            Assertions.assertThat(result.get(2).getScore()).isEqualTo(1.0);
-        } catch (IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
-        }
+        //when
+        List<DairyScoresResponse> result = dairyService.getAllDairyMonthly(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH);
+        //then
+        Assertions.assertThat(result.size()).isEqualTo(5);
+        Assertions.assertThat(result.get(2).getScore()).isEqualTo(1.0);
     }
 
     @Test
@@ -58,13 +53,12 @@ class DairyServiceTest {
         try {
             //given
             //when
-            DairyDTO result = dairyService.getDairyByDate(CommonTestCode.MEMBER_ID, CommonTestCode.DATE4);
+            DairyAllResponse result = dairyService.getDairyByDate(CommonTestCode.MEMBER_ID, CommonTestCode.DATE4);
             //then
             Assertions.assertThat(result.getScore()).isEqualTo(9.5);
             Assertions.assertThat(result.getCondIdList().get(2)).isEqualTo(CommonTestCode.COND_ID2);
-        } catch (DuplicatedResultException | NotExistDairyException | NotFoundDetailInfoException |
-                 IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
+        } catch (DuplicatedResultException | NoDairyResultException | NotFoundDairyConditionsException e) {
+            log.error("\n", e);
         }
     }
 
@@ -73,13 +67,12 @@ class DairyServiceTest {
         try {
             //given
             //when
-            DairyDTO result = dairyService.getDairyByDairyId(CommonTestCode.MEMBER_ID, CommonTestCode.DAIRY_ID2);
+            DairyAllResponse result = dairyService.getDairyByDairyId(CommonTestCode.MEMBER_ID, CommonTestCode.DAIRY_ID2);
             //then
             Assertions.assertThat(result.getScore()).isEqualTo(5.5);
             Assertions.assertThat(result.getCondIdList().get(2)).isEqualTo(CommonTestCode.COND_ID3);
-        } catch (DuplicatedResultException | NotExistDairyException | NotFoundDetailInfoException |
-                 IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
+        } catch (DuplicatedResultException | NoDairyResultException | NotFoundDairyConditionsException e) {
+            log.error("\n", e);
         }
     }
 
@@ -88,23 +81,23 @@ class DairyServiceTest {
         try {
             //given
             Dairy newDairy = commonTestCode.getNewDairy();
-            DairyRegisterDTO inputInfo = DairyRegisterDTO.builder()
-                                                        .date(newDairy.getDate())
-                                                        .weatherId(newDairy.getWeather().getWeatherId())
-                                                        .score(newDairy.getScore())
-                                                        .condIdList(null)
-                                                        .content(null)
-                                                        .hope(null)
-                                                        .thank(null)
-                                                        .learn(null)
-                                                        .build();
+            DairyRegister inputInfo = DairyRegister.builder()
+                                                    .memberId(newDairy.getMember().getMemberId())
+                                                    .date(newDairy.getDate())
+                                                    .weatherId(newDairy.getWeather().getWeatherId())
+                                                    .score(newDairy.getScore())
+                                                    .content(newDairy.getContent())
+                                                    .hope(newDairy.getHope())
+                                                    .thank(newDairy.getThank())
+                                                    .learn(newDairy.getLearn())
+                                                    .build();
             //when
-            dairyService.registerDairy(CommonTestCode.MEMBER_ID, inputInfo);
+            dairyService.registerDairy(inputInfo);
             //then
             Dairy result = commonTestCode.getSavedNewDairy(newDairy.getDate());
             Assertions.assertThat(result.getScore()).isEqualTo(3.0);
-        } catch (IncorrectValueException | DuplicatedResultException | NotExistMemberException | NullValueException e) {
-            log.error(e.getMessage());
+        } catch (DuplicatedResultException | NotExistMemberException | NullValueException e) {
+            log.error("\n", e);
         }
     }
 
@@ -112,8 +105,9 @@ class DairyServiceTest {
     void modifyDairyWCondIds() {
         try {
             //given
-            DairyDTO modifyInfo = DairyDTO.builder()
+            DairyModify modifyInfo = DairyModify.builder()
                     .dairyId(CommonTestCode.DAIRY_ID3)
+                    .memberId(CommonTestCode.MEMBER_ID)
                     .score(1.0)
                     .date(CommonTestCode.DATE3)
                     .weatherId(CommonTestCode.WEATHER_ID)
@@ -125,13 +119,13 @@ class DairyServiceTest {
             modifyCondIds.add(CommonTestCode.NEW_COND_ID3);
             modifyInfo.setCondIdList(modifyCondIds);
             //when
-            dairyService.modifyDairy(CommonTestCode.MEMBER_ID, CommonTestCode.DAIRY_ID3, modifyInfo);
+            dairyService.modifyDairy(CommonTestCode.DAIRY_ID3, modifyInfo);
             //then
             Dairy savedDairy = commonTestCode.getSavedDairy(CommonTestCode.DAIRY_ID3);
             Assertions.assertThat(savedDairy.getContent()).isEqualTo("contents");
-        } catch (IncorrectValueException | NotMatchedException | NullValueException | NotExistDairyException |
-                 NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (NotMatchedException | NullValueException | NoDairyResultException | NoAuthorizeException |
+                 NotFoundDairyConditionsException e) {
+            log.error("\n", e);
         }
     }
 
@@ -139,21 +133,22 @@ class DairyServiceTest {
     void modifyDairyWoCondIds() {
         try {
             //given
-            DairyDTO modifyInfo = DairyDTO.builder()
+            DairyModify modifyInfo = DairyModify.builder()
                     .dairyId(CommonTestCode.DAIRY_ID3)
+                    .memberId(CommonTestCode.MEMBER_ID)
                     .score(1.0)
                     .date(CommonTestCode.DATE3)
                     .weatherId(CommonTestCode.WEATHER_ID)
                     .content("contents")
                     .build();
             //when
-            dairyService.modifyDairy(CommonTestCode.MEMBER_ID, CommonTestCode.DAIRY_ID3, modifyInfo);
+            dairyService.modifyDairy(CommonTestCode.DAIRY_ID3, modifyInfo);
             //then
             Dairy savedDairy = commonTestCode.getSavedDairy(CommonTestCode.DAIRY_ID3);
             Assertions.assertThat(savedDairy.getContent()).isEqualTo("contents");
-        } catch (IncorrectValueException | NotMatchedException | NullValueException | NotExistDairyException |
-                 NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (NotMatchedException | NullValueException | NoDairyResultException | NoAuthorizeException |
+                 NotFoundDairyConditionsException e) {
+            log.error("\n", e);
         }
     }
 
@@ -165,10 +160,9 @@ class DairyServiceTest {
             //when
             dairyService.deleteDairy(CommonTestCode.MEMBER_ID, newDairy.getDairyId());
             //then
-            Assertions.assertThat(newDairy.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
-        } catch (IncorrectValueException | NotMatchedException | NullValueException | NotExistDairyException |
-                 NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+            Assertions.assertThat(newDairy.getIsDelete()).isEqualTo(BooleanYN.Y);
+        } catch (NoDairyResultException | NoAuthorizeException | NotFoundDairyConditionsException e) {
+            log.error("\n", e);
         }
     }
 }

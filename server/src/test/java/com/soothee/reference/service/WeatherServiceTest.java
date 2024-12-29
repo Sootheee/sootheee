@@ -1,7 +1,6 @@
 package com.soothee.reference.service;
 
 import com.soothee.config.TestConfig;
-import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.Weather;
 import com.soothee.util.CommonTestCode;
@@ -37,8 +36,8 @@ class WeatherServiceTest {
             Weather weather = weatherService.getWeatherById(CommonTestCode.WEATHER_ID);
             //then
             Assertions.assertThat(weather.getWeatherName()).isEqualTo("sunny");
-        } catch (NullValueException | IncorrectValueException e) {
-            log.error(e.getMessage());
+        } catch (NullValueException e) {
+            log.error("\n", e);
         }
     }
 }

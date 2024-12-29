@@ -1,18 +1,14 @@
 package com.soothee.common.constants;
 
 import com.soothee.custom.exception.IncorrectParameterException;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
-import com.soothee.custom.valid.SootheeValidation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 @RequiredArgsConstructor
 public enum BooleanYN implements CustomType {
-    Y("Y", "예"), N("N", "아니오");
+    Y("Y"), N("N");
 
     private final String type;
-    private final String korean;
 
     @Override
     public String toString() {
@@ -21,11 +17,10 @@ public enum BooleanYN implements CustomType {
 
     @Override
     public String toKorean() {
-        return korean;
+        return type;
     }
 
-    public static BooleanYN fromString(String yn) throws IncorrectParameterException, NullValueException, IncorrectValueException {
-        SootheeValidation.checkBoolean(yn, BooleanType.DARK_MODE);
+    public static BooleanYN fromString(String yn) throws IncorrectParameterException {
         if (StringUtils.equals(BooleanYN.Y.toString(), yn)) {
             return BooleanYN.Y;
         }

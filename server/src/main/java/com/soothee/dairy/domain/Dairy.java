@@ -1,30 +1,22 @@
 package com.soothee.dairy.domain;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.soothee.common.constants.*;
-import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
-import com.soothee.custom.valid.SootheeValidation;
-import com.soothee.dairy.dto.DairyDTO;
-import com.soothee.dairy.dto.DairyRegisterDTO;
+import com.soothee.dairy.service.command.DairyModify;
 import com.soothee.member.domain.Member;
 import com.soothee.reference.domain.Weather;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(onConstructor = @__(@QueryProjection))
 @Table(name = "dairy")
-public class Dairy extends TimeEntity implements Domain {
+public class Dairy extends TimeEntity {
     /** 일기 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -65,8 +57,9 @@ public class Dairy extends TimeEntity implements Domain {
     private String learn;
 
     /** 소프트 삭제 */
+    @Enumerated(EnumType.STRING)
     @Column(name = "is_delete", nullable = false, length = 1)
-    private String isDelete;
+    private BooleanYN isDelete;
 
     @Builder
     public Dairy(Member member, LocalDate date, Weather weather, Double score, String content, String hope, String thank, String learn) {
@@ -78,7 +71,7 @@ public class Dairy extends TimeEntity implements Domain {
         this.hope = hope;
         this.thank = thank;
         this.learn = learn;
-        this.isDelete = BooleanYN.N.toString();
+        this.isDelete = BooleanYN.N;
     }
 
     /**
@@ -87,97 +80,17 @@ public class Dairy extends TimeEntity implements Domain {
      * @param dairy 입력된 수정할 일기 정보
      * @param weather 해당 일기 날씨 정보
      */
-    public void updateDairy(DairyDTO dairy, Weather weather) throws IncorrectValueException, NullValueException {
-        checkUpdateDairy(dairy, weather);
-        if (!Objects.equals(dairy.getWeatherId(), weather.getWeatherId())) {
-            this.weather = weather;
-        }
-        if (!Objects.equals(score, dairy.getScore())) {
-            this.score = dairy.getScore();
-        }
-        if (!StringUtils.equals(content, dairy.getContent())) {
-            this.content = dairy.getContent();
-        }
-        if (!StringUtils.equals(hope, dairy.getHope())) {
-            this.hope = dairy.getHope();
-        }
-        if (!StringUtils.equals(thank, dairy.getThank())) {
-            this.thank = dairy.getThank();
-        }
-        if (!StringUtils.equals(learn, dairy.getLearn())) {
-            this.learn = dairy.getLearn();
-        }
+    public void updateDairy(DairyModify dairy, Weather weather) {
+        this.weather = weather;
+        this.score = dairy.getScore();
+        this.content = dairy.getContent();
+        this.hope = dairy.getHope();
+        this.thank = dairy.getThank();
+        this.learn = dairy.getLearn();
     }
 
     /** 일기 삭제 */
     public void deleteDairy() {
-        this.isDelete = BooleanYN.Y.toString();
-    }
-
-    /**
-     * 일기 생성
-     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
-     *
-     * @param inputInfo 입력된 등록할 일기 정보
-     * @param member 로그인한 계정 정보
-     * @param weather 해당 일기 날씨 정보
-     * @return Dairy entity
-     */
-    public static Dairy of(DairyRegisterDTO inputInfo, Member member, Weather weather) throws IncorrectValueException, NullValueException {
-        checkDiaryOfDiaryRegisterDTO(inputInfo, member, weather);
-        return Dairy.builder()
-                    .date(inputInfo.getDate())
-                    .member(member)
-                    .weather(weather)
-                    .score(inputInfo.getScore())
-                    .content(inputInfo.getContent())
-                    .hope(inputInfo.getHope())
-                    .thank(inputInfo.getThank())
-                    .learn(inputInfo.getLearn())
-                    .build();
-    }
-
-    @Override
-    public Long getId() {
-        return dairyId;
-    }
-
-    /** validation */
-    private static void checkDiaryOfDiaryRegisterDTO(DairyRegisterDTO inputInfo, Member member, Weather weather) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDate(inputInfo.getDate());
-        SootheeValidation.checkDomain(member, DomainType.MEMBER);
-        SootheeValidation.checkReference(weather, ReferenceType.WEATHER);
-        SootheeValidation.checkDouble(inputInfo.getScore(), DoubleType.SCORE);
-        SootheeValidation.checkContent(inputInfo.getContent());
-        SootheeValidation.checkOptionalContent(inputInfo.getHope(), ContentType.HOPE);
-        SootheeValidation.checkOptionalContent(inputInfo.getThank(), ContentType.THANKS);
-        SootheeValidation.checkOptionalContent(inputInfo.getLearn(), ContentType.LEARN);
-    }
-
-    /** validation */
-    private void checkUpdateDairy(DairyDTO dairy, Weather weather) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkReference(weather, ReferenceType.WEATHER);
-        SootheeValidation.checkDouble(score, DoubleType.SCORE);
-        SootheeValidation.checkContent(dairy.getContent());
-        SootheeValidation.checkOptionalContent(dairy.getHope(), ContentType.HOPE);
-        SootheeValidation.checkOptionalContent(dairy.getThank(), ContentType.THANKS);
-        SootheeValidation.checkOptionalContent(dairy.getLearn(), ContentType.LEARN);
-    }
-
-    /**
-     * valid
-     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
-     */
-    public void valid() throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomainId(getDairyId(), DomainType.DAIRY);
-        SootheeValidation.checkDate(getDate());
-        SootheeValidation.checkDomain(getMember(), DomainType.MEMBER);
-        SootheeValidation.checkReference(getWeather(), ReferenceType.WEATHER);
-        SootheeValidation.checkDouble(getScore(), DoubleType.SCORE);
-        SootheeValidation.checkContent(getContent());
-        SootheeValidation.checkOptionalContent(getHope(), ContentType.HOPE);
-        SootheeValidation.checkOptionalContent(getThank(), ContentType.THANKS);
-        SootheeValidation.checkOptionalContent(getLearn(), ContentType.LEARN);
-        SootheeValidation.checkBoolean(getIsDelete(), BooleanType.DELETE);
+        this.isDelete = BooleanYN.Y;
     }
 }

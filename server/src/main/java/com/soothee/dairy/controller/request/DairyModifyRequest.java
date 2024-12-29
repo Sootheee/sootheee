@@ -1,14 +1,6 @@
-package com.soothee.dairy.dto;
+package com.soothee.dairy.controller.request;
 
-import com.querydsl.core.annotations.QueryProjection;
-import com.soothee.common.constants.ContentType;
-import com.soothee.common.constants.DomainType;
-import com.soothee.common.constants.DoubleType;
-import com.soothee.common.constants.ReferenceType;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
 import com.soothee.custom.valid.ExistReferenceId;
-import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
@@ -17,18 +9,17 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 /**
- * 일기 조회/수정
+ * 일기 수정
  * 1. 일기 일련번호 2. 작성날짜 3. 날씨 일련번호 3. 오늘의 점수 4. 선택한 컨디션 일련번호 리스트
  * 5. 오늘의 요약 6. 바랐던 방향성 7. 감사한 일 8. 배운 일
  */
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
-@Schema(description = "일기 수정/조회에 사용되는 DTO")
-public class DairyDTO implements InputDairyDTO{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "일기 수정 요청 파라미터")
+public class DairyModifyRequest {
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
     @Positive(message = "일련번호는 양수만 입력 가능합니다.")
     @Schema(description = "일기 일련번호")
@@ -51,7 +42,7 @@ public class DairyDTO implements InputDairyDTO{
     private Double score;
 
     @Schema(description = "선택한 컨디션들, 선택한 순서대로 전달됨")
-    private List<@ExistReferenceId(min = 1, max = 15, message = "존재하는 컨디션 일련번호가 아닙니다.")String> condIdList;
+    private List<@ExistReferenceId(min = 1, max = 15, message = "존재하는 컨디션 일련번호가 아닙니다.") String> condIdList;
 
     @Size(max = 600, message = "오늘의 요약은 최대 600자까지 입력 가능합니다.")
     @Schema(description = "오늘의 요약")
@@ -70,8 +61,7 @@ public class DairyDTO implements InputDairyDTO{
     private String learn;
 
     @Builder
-    @QueryProjection
-    public DairyDTO(Long dairyId, LocalDate date, String weatherId, Double score, String content, String hope, String thank, String learn) {
+    public DairyModifyRequest(Long dairyId, LocalDate date, String weatherId, Double score, String content, String hope, String thank, String learn) {
         this.dairyId = dairyId;
         this.date = date;
         this.weatherId = weatherId;
@@ -80,25 +70,5 @@ public class DairyDTO implements InputDairyDTO{
         this.hope = hope;
         this.thank = thank;
         this.learn = learn;
-    }
-
-    /**
-     * valid
-     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
-     */
-    public void valid() throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomainId(getDairyId(), DomainType.DAIRY);
-        SootheeValidation.checkDate(getDate());
-        SootheeValidation.checkReferenceId(getWeatherId(), ReferenceType.WEATHER);
-        if (Objects.nonNull(getCondIdList())) {
-            for (String condId : getCondIdList()) {
-                SootheeValidation.checkReferenceId(condId, ReferenceType.CONDITION);
-            }
-        }
-        SootheeValidation.checkDouble(getScore(), DoubleType.SCORE);
-        SootheeValidation.checkContent(getContent());
-        SootheeValidation.checkOptionalContent(getHope(), ContentType.HOPE);
-        SootheeValidation.checkOptionalContent(getThank(), ContentType.THANKS);
-        SootheeValidation.checkOptionalContent(getLearn(), ContentType.LEARN);
     }
 }

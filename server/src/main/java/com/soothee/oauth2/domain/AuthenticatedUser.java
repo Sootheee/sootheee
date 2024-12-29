@@ -30,6 +30,7 @@ public class AuthenticatedUser implements Principal, OAuth2User {
     private String memberName;
     /** 회원 정보 */
     private Map<String, Object> attributes;
+    private Long memberId;
 
     /** 인증된 회원 식별자 가져오기 */
     @Override
@@ -64,6 +65,7 @@ public class AuthenticatedUser implements Principal, OAuth2User {
                                 .oauth2Id(member.getOauth2ClientId())
                                 .role(member.getRole().getAuth())
                                 .email(member.getEmail())
+                                .memberId(member.getMemberId())
                                 .memberName(member.getName())
                                 .attributes(oauth2User.getAttributes())
                                 .build();

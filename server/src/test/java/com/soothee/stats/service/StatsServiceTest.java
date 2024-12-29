@@ -2,11 +2,9 @@ package com.soothee.stats.service;
 
 import com.soothee.common.constants.ContentType;
 import com.soothee.common.constants.SortType;
-import com.soothee.common.requestParam.MonthParam;
-import com.soothee.common.requestParam.WeekParam;
 import com.soothee.config.TestConfig;
 import com.soothee.custom.exception.*;
-import com.soothee.stats.dto.*;
+import com.soothee.stats.controller.response.*;
 import com.soothee.util.CommonTestCode;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -35,65 +33,58 @@ class StatsServiceTest {
     private StatsService statsService;
 
     @Test
-    void getMonthlyStatsInfo() {
-        //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+    void getMonthlyDairyStats() {
         try {
+            //given
             //when
-            MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(CommonTestCode.MEMBER_ID, monthParam);
+            MonthlyDairyStats result = statsService.getMonthlyDairyStats(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH);
             //then
             Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
             Assertions.assertThat(result.getMostCondId()).isEqualTo(CommonTestCode.COND_ID1);
-        } catch (DuplicatedResultException |
-                 IncorrectValueException | NullValueException | ErrorToSearchStatsException |
+        } catch (DuplicatedResultException | ErrorToSearchStatsException |
                  NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+            log.error("\n", e);
         }
     }
 
     @Test
-    void getMonthlyContentsT() {
-        //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+    void getMonthlyContentStatsT() {
         try {
+            //given
             //when
-            MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, ContentType.THANKS, monthParam);
+            MonthlyContentStats result = statsService.getMonthlyContentStats(CommonTestCode.MEMBER_ID, ContentType.THANKS, CommonTestCode.YEAR, CommonTestCode.MONTH);
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getHighest().getContent()).isEqualTo("땡큐");
             Assertions.assertThat(result.getLowest().getContent()).isEqualTo("감사");
-        } catch (DuplicatedResultException | IncorrectValueException |
-                 NullValueException | NotFoundDetailInfoException |
+        } catch (DuplicatedResultException | NotFoundDetailInfoException |
                  ErrorToSearchStatsException e) {
-            log.error(e.getMessage());
+            log.error("\n", e);
         }
     }
 
     @Test
-    void getMonthlyContentsL() {
-        //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+    void getMonthlyContentStatsL() {
         try {
+            //given
             //when
-            MonthlyContentsDTO result = statsService.getMonthlyContents(CommonTestCode.MEMBER_ID, ContentType.LEARN, monthParam);
+            MonthlyContentStats result = statsService.getMonthlyContentStats(CommonTestCode.MEMBER_ID, ContentType.LEARN, CommonTestCode.YEAR, CommonTestCode.MONTH);
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getHighest().getContent()).isEqualTo("배운");
             Assertions.assertThat(result.getLowest().getContent()).isEqualTo("공부");
-        } catch (DuplicatedResultException | IncorrectValueException |
-                 NullValueException | NotFoundDetailInfoException |
+        } catch (DuplicatedResultException | NotFoundDetailInfoException |
                  ErrorToSearchStatsException e) {
-            log.error(e.getMessage());
+            log.error("\n", e);
         }
     }
 
     @Test
-    void getWeeklyStatsInfo() {
-        //given
-        WeekParam weekParam = new WeekParam(CommonTestCode.YEAR, CommonTestCode.WEEK);
+    void getWeeklyDairyStats() {
         try {
+            //given
             //when
-            WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(CommonTestCode.MEMBER_ID, weekParam);
+            WeeklyDairyStats result = statsService.getWeeklyDairyStats(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.WEEK);
             //then
             Assertions.assertThat(result.getScoreAvg()).isEqualTo(4.5);
             Assertions.assertThat(result.getCount()).isEqualTo(5);
@@ -103,18 +94,17 @@ class StatsServiceTest {
                 }
             }
         } catch (DuplicatedResultException | ErrorToSearchStatsException |
-                 NotFoundDetailInfoException | IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
+                 NotFoundDetailInfoException e) {
+            log.error("\n", e);
         }
     }
 
     @Test
-    void getMonthlyConditionList() {
-        //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+    void getMonthlyConditionStats() {
         try {
+            //given
             //when
-            MonthlyConditionsDTO result = statsService.getMonthlyConditionList(CommonTestCode.MEMBER_ID, monthParam);
+            MonthlyConditionsStats result = statsService.getMonthlyConditionStats(CommonTestCode.MEMBER_ID, CommonTestCode.YEAR, CommonTestCode.MONTH);
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(20);
             Assertions.assertThat(result.getCondiList().get(0).getCondId()).isEqualTo(CommonTestCode.COND_ID1);
@@ -123,99 +113,92 @@ class StatsServiceTest {
             Assertions.assertThat(result.getCondiList().get(1).getCondRatio()).isEqualTo(25.0);
             Assertions.assertThat(result.getCondiList().get(2).getCondId()).isEqualTo(CommonTestCode.COND_ID2);
             Assertions.assertThat(result.getCondiList().get(2).getCondRatio()).isEqualTo(25.0);
-        } catch (IncorrectValueException | NullValueException |
-                 NotFoundDetailInfoException | ErrorToSearchStatsException e) {
-            log.error(e.getMessage());
+        } catch (NotFoundDetailInfoException | ErrorToSearchStatsException e) {
+            log.error("\n", e);
         }
     }
 
     @Test
-    void getAllContentsInMonthThanksDate() {
-        //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+    void getMonthlyContentDetailThanksDate() {
         try {
+            //given
             //when
-            MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.THANKS, monthParam, SortType.DATE);
+            MonthlyContentDetail result = statsService.getMonthlyContentDetail(CommonTestCode.MEMBER_ID, ContentType.THANKS, CommonTestCode.YEAR, CommonTestCode.MONTH, SortType.DATE);
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("oh");
-        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (ErrorToSearchStatsException | NotFoundDetailInfoException e) {
+            log.error("\n", e);
         }
     }
 
     @Test
-    void getAllContentsInMonthThanksHigh() {
-        //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+    void getMonthlyContentDetailThanksHigh() {
         try {
+            //given
             //when
-            MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.THANKS, monthParam, SortType.HIGH);
+            MonthlyContentDetail result = statsService.getMonthlyContentDetail(CommonTestCode.MEMBER_ID, ContentType.THANKS, CommonTestCode.YEAR, CommonTestCode.MONTH, SortType.HIGH);
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("땡큐");
-        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (ErrorToSearchStatsException | NotFoundDetailInfoException e) {
+            log.error("\n", e);
         }
     }
 
     @Test
-    void getAllContentsInMonthThanksLow() {
-        //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+    void getMonthlyContentDetailThanksLow() {
         try {
+            //given
             //when
-            MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.THANKS, monthParam, SortType.LOW);
+            MonthlyContentDetail result = statsService.getMonthlyContentDetail(CommonTestCode.MEMBER_ID, ContentType.THANKS, CommonTestCode.YEAR, CommonTestCode.MONTH, SortType.LOW);
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("감사");
-        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (ErrorToSearchStatsException | NotFoundDetailInfoException e) {
+            log.error("\n", e);
         }
     }
 
     @Test
-    void getAllContentsInMonthLearnDate() {
-        //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+    void getMonthlyContentDetailLearnDate() {
         try {
+            //given
             //when
-            MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.LEARN, monthParam, SortType.DATE);
+            MonthlyContentDetail result = statsService.getMonthlyContentDetail(CommonTestCode.MEMBER_ID, ContentType.LEARN, CommonTestCode.YEAR, CommonTestCode.MONTH, SortType.DATE);
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("no");
-        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (ErrorToSearchStatsException | NotFoundDetailInfoException e) {
+            log.error("\n", e);
         }
     }
 
     @Test
-    void getAllContentsInMonthLearnHigh() {
-        //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+    void getMonthlyContentDetailLearnHigh() {
         try {
+            //given
             //when
-            MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.LEARN, monthParam, SortType.HIGH);
+            MonthlyContentDetail result = statsService.getMonthlyContentDetail(CommonTestCode.MEMBER_ID, ContentType.LEARN, CommonTestCode.YEAR, CommonTestCode.MONTH, SortType.HIGH);
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("배운");
-        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (ErrorToSearchStatsException | NotFoundDetailInfoException e) {
+            log.error("\n", e);
         }
     }
 
     @Test
-    void getAllContentsInMonthLearnLow() {
-        //given
-        MonthParam monthParam = new MonthParam(CommonTestCode.YEAR, CommonTestCode.MONTH);
+    void getMonthlyContentDetailLearnLow() {
         try {
+            //given
             //when
-            MonthlyAllContentsDTO result = statsService.getAllContentsInMonth(CommonTestCode.MEMBER_ID, ContentType.LEARN, monthParam, SortType.LOW);
+            MonthlyContentDetail result = statsService.getMonthlyContentDetail(CommonTestCode.MEMBER_ID, ContentType.LEARN, CommonTestCode.YEAR, CommonTestCode.MONTH, SortType.LOW);
             //then
             Assertions.assertThat(result.getCount()).isEqualTo(3);
             Assertions.assertThat(result.getContentList().get(0).getContent()).isEqualTo("공부");
-        } catch (IncorrectValueException | NullValueException | ErrorToSearchStatsException | NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (ErrorToSearchStatsException | NotFoundDetailInfoException e) {
+            log.error("\n", e);
         }
     }
 }

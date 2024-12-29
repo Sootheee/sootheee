@@ -1,8 +1,6 @@
 package com.soothee.oauth2.service;
 
 import com.soothee.common.constants.SnsType;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import com.soothee.oauth2.domain.GoogleUser;
 import com.soothee.member.domain.Member;
@@ -45,7 +43,7 @@ public class GoogleOAuth2UserService implements CustomOAuth2UserService {
      * @return 인증된 회원 정보를 담은 토큰 반환
      */
     @Override
-    public AuthenticatedUser createOrLoadUser(OAuth2User authenticatedUser) throws IncorrectValueException, NullValueException {
+    public AuthenticatedUser createOrLoadUser(OAuth2User authenticatedUser) {
         String oauth2ClientId = authenticatedUser.getName();
         Optional<Member> optional = memberService.getMemberForOAuth2(oauth2ClientId, SnsType.GOOGLE);
         Member member;
@@ -53,7 +51,6 @@ public class GoogleOAuth2UserService implements CustomOAuth2UserService {
             member = optional.get();
         } else {
             member = new GoogleUser(authenticatedUser).toMember();
-            member.validNew();
             memberService.saveMember(member);
         }
         return AuthenticatedUser.of(member, authenticatedUser);

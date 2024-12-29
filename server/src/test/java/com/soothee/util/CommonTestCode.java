@@ -2,11 +2,9 @@ package com.soothee.util;
 
 import com.soothee.common.constants.BooleanYN;
 import com.soothee.common.constants.SnsType;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
+import com.soothee.dairy.controller.response.DairyAllResponse;
 import com.soothee.dairy.domain.Dairy;
 import com.soothee.dairy.domain.DairyCondition;
-import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.repository.DairyConditionRepository;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.member.domain.Member;
@@ -120,25 +118,25 @@ public class CommonTestCode {
     }
 
     public Member getSavedMember() {
-        return memberRepository.findByMemberIdAndIsDelete(MEMBER_ID, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
+        return memberRepository.findByMemberIdAndIsDelete(MEMBER_ID, BooleanYN.N).orElseThrow(NullPointerException::new);
     }
 
     public Dairy getSavedDairy(Long dairyId) {
-        return dairyRepository.findByDairyIdAndIsDelete(dairyId, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
+        return dairyRepository.findDairyByDairyId(dairyId).orElseThrow(NullPointerException::new).get(0);
     }
 
     public Dairy getSavedNewDairy(Long newDairyId) {
-        return dairyRepository.findByDairyIdAndIsDelete(newDairyId, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
+        return dairyRepository.findDairyByDairyId(newDairyId).orElseThrow(NullPointerException::new).get(0);
     }
 
     public Dairy getSavedNewDairy(LocalDate newDairyDate) {
-        List<DairyDTO> list = dairyRepository.findByDate(CommonTestCode.MEMBER_ID, newDairyDate).orElseThrow(NullPointerException::new);
-        DairyDTO dairyDTO = list.get(0);
-        return getSavedNewDairy(dairyDTO.getDairyId());
+        List<DairyAllResponse> list = dairyRepository.findAllDairyInfoByDate(CommonTestCode.MEMBER_ID, newDairyDate).orElseThrow(NullPointerException::new);
+        DairyAllResponse result = list.get(0);
+        return getSavedNewDairy(result.getDairyId());
     }
 
     public List<DairyCondition> getSavedDairyConditions() {
-        return dairyConditionRepository.findByDairyDairyIdAndDairyIsDeleteAndIsDeleteOrderByOrderNoAsc(DAIRY_ID1, BooleanYN.N.toString(), BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
+        return dairyConditionRepository.findDairyConditionListByDairyId(DAIRY_ID1).orElseThrow(NullPointerException::new);
     }
 
     public List<MemberDelReason> getSavedMemberDelReasons() {
@@ -154,7 +152,7 @@ public class CommonTestCode {
     }
 
     public List<DairyCondition> getNewDairyConditions(Long newDairyId, String type) {
-        List<DairyCondition> newDairyConditions = dairyConditionRepository.findByDairyDairyIdAndDairyIsDeleteAndIsDeleteOrderByOrderNoAsc(newDairyId, BooleanYN.N.toString(), BooleanYN.N.toString())
+        List<DairyCondition> newDairyConditions = dairyConditionRepository.findDairyConditionListByDairyId(newDairyId)
                                                         .orElseThrow(NullPointerException::new);
         for (int i = 0; i < newDairyConditions.size(); i++) {
             log.info("{} {} : {}, {}", type, i + 1, newDairyConditions.get(i).getDairyCondId(), newDairyConditions.get(i).getOrderNo());
@@ -162,25 +160,25 @@ public class CommonTestCode {
         return newDairyConditions;
     }
 
-    public Dairy getNewDairy() throws IncorrectValueException, NullValueException {
+    public Dairy getNewDairy() {
         return Dairy.builder()
-                .date(NEW_DATE)
-                .member(getSavedMember())
-                .weather(getWeather())
-                .score(NEW_SCORE)
-                .build();
+                    .date(NEW_DATE)
+                    .member(getSavedMember())
+                    .weather(getWeather())
+                    .score(NEW_SCORE)
+                    .build();
     }
 
-    public Member getNewMember() throws IncorrectValueException, NullValueException {
+    public Member getNewMember() {
         return Member.builder()
-                .email(NEW_EMAIL)
-                .name(NEW_NAME)
-                .snsType(NEW_SNS_TYPE)
-                .oauth2ClientId(NEW_AUTH2)
-                .build();
+                        .email(NEW_EMAIL)
+                        .name(NEW_NAME)
+                        .snsType(NEW_SNS_TYPE)
+                        .oauth2ClientId(NEW_AUTH2)
+                        .build();
     }
 
-    public Member deleteMember() throws IncorrectValueException, NullValueException {
+    public Member deleteMember() {
         Member newMember = saveNewMember();
         for (DelReason reasonId : getDelReasons()) {
             memberDelReasonRepository.save(MemberDelReason.builder()
@@ -192,19 +190,19 @@ public class CommonTestCode {
         return newMember;
     }
 
-    public Member saveNewMember() throws IncorrectValueException, NullValueException {
+    public Member saveNewMember() {
         Member newMember = getNewMember();
         memberRepository.save(newMember);
         return newMember;
     }
 
-    public Dairy saveNewDairy() throws IncorrectValueException, NullValueException {
+    public Dairy saveNewDairy() {
         Dairy newDairy = getNewDairy();
         dairyRepository.save(newDairy);
         return newDairy;
     }
 
-    public Dairy saveNewDairyCondition() throws IncorrectValueException, NullValueException {
+    public Dairy saveNewDairyCondition() {
         int index = 0;
         Dairy newDairy = saveNewDairy();
         for (Condition condition : getNewConditions()) {
