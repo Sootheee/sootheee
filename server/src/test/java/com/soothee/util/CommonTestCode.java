@@ -132,13 +132,13 @@ public class CommonTestCode {
     }
 
     public Dairy getSavedNewDairy(LocalDate newDairyDate) {
-        List<DairyDTO> list = dairyRepository.findByDate(CommonTestCode.MEMBER_ID, newDairyDate).orElseThrow(NullPointerException::new);
+        List<DairyAllResponse> list = dairyRepository.findAllDairyInfoByDate(CommonTestCode.MEMBER_ID, newDairyDate).orElseThrow(NullPointerException::new);
         DairyDTO dairyDTO = list.get(0);
         return getSavedNewDairy(dairyDTO.getDairyId());
     }
 
     public List<DairyCondition> getSavedDairyConditions() {
-        return dairyConditionRepository.findByDairyDairyIdAndDairyIsDeleteAndIsDeleteOrderByOrderNoAsc(DAIRY_ID1, BooleanYN.N.toString(), BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
+        return dairyConditionRepository.findDairyConditionListByDairyId(DAIRY_ID1).orElseThrow(NullPointerException::new);
     }
 
     public List<MemberDelReason> getSavedMemberDelReasons() {

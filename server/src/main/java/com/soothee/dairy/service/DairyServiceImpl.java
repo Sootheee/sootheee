@@ -34,22 +34,9 @@ public class DairyServiceImpl implements DairyService {
     private final DairyConditionService dairyConditionService;
 
     @Override
-    public List<DairyScoresDTO> getAllDairyMonthly(Long memberId, MonthParam monthParam) throws IncorrectValueException, NullValueException {
-        /* 현재 로그인한 계정이 지정된 년도/월에 작성한 모든 일기 조회 */
-        List<DairyScoresDTO> result =  dairyRepository.findByMemberIdYearMonth(memberId, monthParam)
-                /* 지정된 년도/월에 작성한 일기가 없는 경우 빈 리스트 리턴 */
+    public List<DairyScoresResponse> getAllDairyMonthly(Long memberId, int year, int month) {
+        return dairyRepository.findScoreListInMonth(memberId, year, month)
                 .orElse(new ArrayList<>());
-
-        if (result.isEmpty()) {
-            /* 지정된 년도/월에 작성한 일기가 없는 경우 더 이상 진행하지 않고 리턴 */
-            return result;
-        }
-
-        for (DairyScoresDTO dairyScore : result) {
-            /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-            dairyScore.valid();
-        }
-        return result;
     }
 
     @Override
@@ -61,10 +48,6 @@ public class DairyServiceImpl implements DairyService {
 
         /* 같은 작성 일자의 일기가 1개 초과 중복 등록된 경우 Exception 발생 */
         SootheeValidation.checkDairyDuplicate(dairyDTO.size());
-
-        /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 Exception 발생
-         * 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        return getDairyDTO(dairyDTO);
     }
 
     @Override
@@ -76,10 +59,6 @@ public class DairyServiceImpl implements DairyService {
 
         /* 같은 일기 일련번호의 일기가 1개 초과 중복 등록된 경우 Exception 발생 */
         SootheeValidation.checkDairyDuplicate(dairyDTO.size());
-
-        /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 Exception 발생
-         * 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        return getDairyDTO(dairyDTO);
     }
 
     private DairyDTO getDairyDTO(List<DairyDTO> dairyDTO) throws NotFoundDetailInfoException, IncorrectValueException, NullValueException {
@@ -107,7 +86,6 @@ public class DairyServiceImpl implements DairyService {
         /* 해당 날씨 일련번호로 조회된 날씨가 없는 경우 Exception 발생 */
         Weather weather = weatherService.getWeatherById(inputInfo.getWeatherId());
 
-        /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
         Dairy newDairy = Dairy.of(inputInfo, member, weather);
 
         /* 일기 등록 */
@@ -140,9 +118,6 @@ public class DairyServiceImpl implements DairyService {
         dairy.updateDairy(inputInfo, weather);
         /* 수정된 일기 정보에 선택한 컨디션이 있는 경우 */
         if (isExistInputCondList(inputInfo)) {
-            /* 해당 일기의 기존 선택한 컨디션과 비교하여
-             * 기존에 있던 것 중 상이한 것들은 소프트 삭제하고 새로 추가된 선택한 컨디션은 등록
-             * - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
             dairyConditionService.updateConditions(dairy, inputInfo.getCondIdList());
         }
     }
@@ -190,9 +165,7 @@ public class DairyServiceImpl implements DairyService {
         Dairy result = dairyRepository.findByDairyIdAndIsDelete(dairyId, BooleanYN.N.toString())
                 /* 지정한 일기 일련번호를 가진 일기가 없는 경우 Exception 발생 */
                 .orElseThrow(() -> new NotExistDairyException(dairyId));
-        /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        result.valid();
-        return result;
+        return result.get(0);
     }
 
     /**

@@ -52,9 +52,6 @@ public class StatsServiceImpl implements StatsService{
          * - 통계 결과가 1개 초과로 중복된 경우 Exception 발생 */
         SootheeValidation.checkStatsDuplicate(mostCondList.size(), DomainType.DAIRY_CONDITION);
         ConditionRatio mostCond = mostCondList.get(0);
-        /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        mostCond.valid();
-
         result.setMostCondId(mostCond.getCondId());
         result.setMostCondRatio(mostCond.getCondRatio());
         return result;
@@ -83,8 +80,6 @@ public class StatsServiceImpl implements StatsService{
          * - 통계 결과가 1개 초과로 중복된 경우 Exception 발생 */
         SootheeValidation.checkStatsDuplicate(highList.size(), type, SortType.HIGH);
         DateContents high = highList.get(0);
-        /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        high.valid(type);
 
         /* 감사한/배운 일을 기록한 날 중 가장 낮은 점수를 기록한 날의 감사한/배운 일 정보 조회 */
         List<DateContents> lowList = dairyRepository.findDiaryContentInMonthHL(memberId, type, monthParam, SortType.LOW)
@@ -94,8 +89,6 @@ public class StatsServiceImpl implements StatsService{
          * - 통계 결과가 1개 초과로 중복된 경우 Exception 발생 */
         SootheeValidation.checkStatsDuplicate(lowList.size(), type, SortType.LOW);
         DateContents low = lowList.get(0);
-        /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        low.valid(type);
 
         result.setHighest(high);
         result.setLowest(low);
@@ -113,8 +106,7 @@ public class StatsServiceImpl implements StatsService{
         SootheeValidation.checkStatsDuplicate(resultList.size(), DomainType.DAIRY);
 
         WeeklyStatsDTO result = resultList.get(0);
-        /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        result.valid();
+        if (isNoResult(result.getCount())) {
         if (result.getCount() < 1) {
             /* 한 달간 작성한 일기가 없는 경우 더 이상 조회하지 않고 리턴 */
             return result;
@@ -126,10 +118,6 @@ public class StatsServiceImpl implements StatsService{
                 .orElseThrow(() -> new NotFoundDetailInfoException(DomainType.DAIRY));
         /* 조회한 모든 컨디션의 갯수와 세부 정보 리스트의 길이가 일치하지 않는 경우 Exception 발생 */
         SootheeValidation.checkListSize(result.getCount(), scoreList.size(), DomainType.DAIRY);
-        for (DateScore dateScore : scoreList) {
-            /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-            dateScore.valid();
-        }
         result.setScoreList(scoreList);
         return result;
     }
@@ -154,10 +142,6 @@ public class StatsServiceImpl implements StatsService{
                 .orElseThrow(() -> new NotFoundDetailInfoException(DomainType.DAIRY_CONDITION));
         /* 조회한 모든 컨디션의 갯수와 세부 정보 리스트의 길이가 일치하지 않는 경우 Exception 발생 */
         SootheeValidation.checkListSize(count, condRatioList.size(), DomainType.DAIRY_CONDITION);
-        for (ConditionRatio conditionRatio : condRatioList) {
-            /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-            conditionRatio.valid();
-        }
         result.setCondiList(condRatioList);
         return result;
     }
@@ -182,11 +166,6 @@ public class StatsServiceImpl implements StatsService{
                 .orElseThrow(() -> new NotFoundDetailInfoException(type));
         /* 조회한 감사한/배운 일의 갯수와 세부 정보 리스트의 길이가 일치하지 않는 경우 Exception 발생 */
         SootheeValidation.checkListSize(count, contList.size(), type);
-        for (DateContents dateContents : contList) {
-            /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-            dateContents.valid(type);
-        }
-
         result.setContentList(contList);
         return result;
     }
@@ -213,8 +192,6 @@ public class StatsServiceImpl implements StatsService{
          * - 통계 결과가 1개 초과로 중복된 경우 Exception 발생 */
         SootheeValidation.checkStatsDuplicate(resultList.size(), DomainType.DAIRY);
         MonthlyStatsDTO result = resultList.get(0);
-        /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        result.valid();
         return result;
     }
 }

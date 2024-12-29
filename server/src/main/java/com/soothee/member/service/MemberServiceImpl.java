@@ -34,10 +34,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void saveMember(Member member) throws IncorrectValueException, NullValueException {
-        member.validNew();
-        /* 회원 등록 */
-        memberRepository.save(member);
+    public MemberNameResponse getNicknameInfo(Long memberId) throws NotExistMemberException {
+        Member member = getMemberById(memberId);
+        return MemberNameResponse.fromMember(member);
     }
 
     @Override
@@ -89,38 +88,18 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberInfoDTO getAllMemberInfo(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException {
-        /* 회원 일련번호로 회원 정보 조회
-         * - 회원 일련번호로 조회된 회원이 없는 경우 Exception 발생
-         * - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        Member member = getMemberById(memberId);
-        /* 조회된 회원 정보를 response DTO 변형
-         * - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        return MemberInfoDTO.fromMember(member);
+    public void saveMember(Member member) {
+        memberRepository.save(member);
     }
 
     @Override
-    public MemberNameDTO getNicknameInfo(Long memberId) throws IncorrectValueException, NullValueException, NotExistMemberException {
-        /* 회원 일련번호로 회원 정보 조회
-         * - 회원 일련번호로 조회된 회원이 없는 경우 Exception 발생
-         * - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        Member member = getMemberById(memberId);
-        /* 조회된 회원 정보를 response DTO 변형
-         * - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        return MemberNameDTO.fromMember(member);
+    public Optional<Member> getMemberForOAuth2(String oauth2ClientId, SnsType snsType) {
+        return memberRepository.findByOauth2ClientIdAndSnsTypeAndIsDelete(oauth2ClientId, snsType, BooleanYN.N);
     }
 
     @Override
     public Member getMemberById(Long memberId) throws NotExistMemberException {
         return memberRepository.findByMemberIdAndIsDelete(memberId, BooleanYN.N)
-    @Override
-    public Member getMemberById(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException {
-        /* 회원 일련번호로 회원 정보 조회 */
-        Member result = memberRepository.findByMemberIdAndIsDelete(memberId, BooleanYN.N.toString())
-                /* 회원 일련번호로 조회된 회원이 없는 경우 Exception 발생 */
                 .orElseThrow(() -> new NotExistMemberException(memberId));
-        /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        result.valid();
-        return result;
     }
 }
