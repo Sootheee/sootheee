@@ -12,157 +12,71 @@ import java.util.regex.Pattern;
 
 public class SootheeValidation {
     /**
-     * Double 이 Null 아니고, 양수인지 검증
-     *
-     * @param value Double 검증할 Double
-     * @return 맞으면 true / 아니면 Exception
-     */
-    public static boolean checkDouble(Double value, DoubleType type) throws NullValueException, IncorrectValueException {
-        return checkIsNull(value, type) && checkCorrectDouble(value, type);
-    }
-
-    /**
-     * date 가 Null 아니고, 2024년 이후 인지 검증
-     *
-     * @param date LocalDate 검증할 date
-     */
-    public static void checkDate(LocalDate date) throws NullValueException, IncorrectValueException {
-        checkIsNull(date, StringType.DATE);
-        checkCorrectDate(date);
-    }
-    
-    /**
-     * Integer 가 Null 아니고, 양수인지 검증
-     *
-     * @param value Integer 검증할 Integer
-     * @param type String Exception error message 적용할 설명
-     */
-    public static void checkInteger(Integer value, CustomType type) throws NullValueException, IncorrectValueException {
-        checkIsNull(value, type);
-        checkCorrectInteger(value, type);
-    }
-
-    /**
-     * 해당 도메인이 Null 아니고, 도메인의 id가 양수 인지 검증
-     *
-     * @param domain 검증할 Domain
-     * @param type Exception error message 적용할 설명
-     */
-    public static void checkDomain(Domain domain, DomainType type) throws NullValueException, IncorrectValueException {
-        checkIsNull(domain, type);
-        checkCorrectDomainId(domain, type);
-    }
-
-    /**
-     * 해당 레퍼런스 도메인이 Null 아니고, 레퍼런스 도메인이 존재하는지 검증
-     *
-     * @param reference 검증할 Reference
-     * @param type Exception error message 적용할 설명
-     */
-    public static void checkReference(Reference reference, ReferenceType type) throws NullValueException, IncorrectValueException {
-        checkIsNull(reference, type);
-        checkCorrectReference(reference, type);
-    }
-
-    /**
-     * 해당 레퍼런스 도메인 id 가 Null 아니고, 존재하는 일련번호인지 검증
-     *
-     * @param id 검증할 Reference id
-     * @param type Exception error message 적용할 설명
-     */
-    public static void checkReferenceId(String id, ReferenceType type) throws NullValueException, IncorrectValueException {
-        checkNullForNecessaryString(id, type);
-        checkCorrectReferenceId(id, type);
-    }
-
-    /**
-     * 해당 도메인 id 가 Null 아니고, 양수 인지 검증
-     *
-     * @param id 형식 검증할 Domain id
-     * @param type Exception error message 적용할 설명
-     * @return 맞으면 true / 아니면 Exception
-     */
-    public static boolean checkDomainId(Long id, DomainType type) throws NullValueException, IncorrectValueException {
-        return checkIsNull(id, type) && checkCorrectDomainId(id, type);
-    }
-
-    /**
-     * 해당 boolean 이 Null 아니고, "Y"나 "N" 인지 검증
-     *
-     * @param bool 검증할 boolean
-     * @param type boolean msg
-     */
-    public static void checkBoolean(String bool, BooleanType type) throws NullValueException, IncorrectValueException {
-        checkNullForNecessaryString(bool, type);
-        checkCorrectBoolean(bool, type);
-    }
-
-    /**
-     * 해당 email 이 Null 아니고, 이메일 형식이 맞는지 검증
-     *
-     * @param email 검증할 email
-     */
-    public static void checkEmail(String email) throws NullValueException, IncorrectValueException {
-        checkNullForNecessaryString(email, StringType.EMAIL);
-        checkCorrectEmail(email);
-    }
-
-    /**
-     * 오늘의 요약의 길이가 600자 이하인지 검증
-     * 필수 입력값이 아니기 때문에 Null 인 경우 Exception 발생하지 않고, false 만 리턴
-     *
-     * @param content 길이를 검증할 오늘의 요약
-     */
-    public static void checkContent(String content) throws IncorrectValueException {
-        if (checkNullForNotNecessaryString(content)) {
-            return;
-        }
-        checkCorrectLength(content, StringType.CONTENT, 0, 600);
-    }
-
-    /**
-     * 바랐던 방향성/감사한 일/배운 일의 길이가 200자 이하인지 검증
-     * 필수 입력값이 아니기 때문에 Null 인 경우 Exception 발생하지 않고, false 만 리턴
-     *
-     * @param content 길이를 검증할 바랐던 방향성/감사한 일/배운 일
-     */
-    public static void checkOptionalContent(String content, ContentType type) throws IncorrectValueException {
-        if (checkNullForNotNecessaryString(content)) {
-            return;
-        }
-        checkCorrectLength(content, type, 0, 200);
-    }
-    
-    /**
-     * 회원 닉네임이 Null 아니고, 길이가 6자 이하인지 검증
-     *
-     * @param name 길이를 검증할 회원 닉네임
-     */
-    public static void checkName(String name) throws NullValueException, IncorrectValueException {
-        checkNullForNecessaryString(name, StringType.NAME);
-        checkCorrectLength(name, StringType.NAME, 2, 6);
-    }
-
-    /**
-     * SNS 종류가 Null 아닌지 검증
-     *
-     * @param snsType Null 검증할 SnsType
-     */
-    public static void checkSnsType(SnsType snsType) throws NullValueException {
-        checkIsNull(snsType, StringType.SNS_TYPE);
-    }
-
-    /**
      * type query parameter 값이 name 인지 확인 검증
      *
      * @param type 검증할 type query parameter
      */
-    public static void checkTypeQueryParameter(String type) throws IncorrectParameterException {
-        if (checkNullForNotNecessaryString(type)) {
-            return;
+    public static void validTypeQueryParameter(String type) throws IncorrectParameterException {
+        if (isNotNullNotNecessaryString(type) && !StringUtils.equals(type, "name")) {
+            throw new IncorrectParameterException(type, true);
         }
-        if (!StringUtils.equals(type, "name")) {
-            throw new IncorrectParameterException(type);
+    }
+
+    /**
+     * Path Parameter 가 올바른지 검증
+     *
+     * @param year 조회할 년도
+     * @param month 조회할 월
+     */
+    public static void validYearMonthPathParam(int year, int month) throws IncorrectParameterException {
+        if (year < 2024 || year > 2100 || month < 1 || month > 12) {
+            throw new IncorrectParameterException(year, month, true);
+        }
+    }
+
+    /**
+     * Path Parameter 가 올바른지 검증
+     *
+     * @param year 조회할 년도
+     * @param week 조회할 주차
+     */
+    public static void validYearWeekPathParam(int year, int week) throws IncorrectParameterException {
+        if (year < 2020 || year > 2100 || week < 1 || week > 53) {
+            throw new IncorrectParameterException(year, week, false);
+        }
+    }
+
+    /**
+     * Path Parameter 가 올바른지 검증
+     *
+     * @param date 조회할 날짜
+     */
+    public static void validDatePathParam(LocalDate date) throws IncorrectParameterException {
+        if (date.isBefore(LocalDate.of(2024,1,1))
+                || date.isAfter(LocalDate.of(2100,12,31))) {
+            throw new IncorrectParameterException(date);
+        }
+    }
+
+    /**
+     * Path Parameter 가 올바른지 검증
+     *
+     * @param dairyId 조회할 일기 일련번호
+     */
+    public static void validDairyIdPathParam(Long dairyId) throws IncorrectParameterException {
+        if (dairyId < 1) {
+            throw new IncorrectParameterException(dairyId, true);
+        }
+    }
+
+    /**
+     * Path Parameter 가 올바른지 검증
+     *
+     * @param memberId 조회할 일기 일련번호
+     */
+    public static void validMemberIdPathParam(Long memberId) throws IncorrectParameterException {
+        if (memberId < 1) {
+            throw new IncorrectParameterException(memberId, false);
         }
     }
 
@@ -171,9 +85,13 @@ public class SootheeValidation {
      *
      * @param name Null 체크할 name 값
      */
-    public static void checkQueryParameter(String name) throws NullValueException {
+    public static void validNameQueryParameter(String name) throws IncorrectParameterException {
         if (StringUtils.isBlank(name)) {
-            throw new NullValueException("query parameter name");
+            throw new IncorrectParameterException(name, false);
+        }
+        name = StringUtils.trim(name);
+        if (name.length() < 2 || name.length() > 6) {
+            throw new IncorrectParameterException(name, false);
         }
     }
     /**
