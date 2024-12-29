@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ReferenceType implements CustomType{
     CONDITION("condition", "컨디션", "COND"),
-    CONDITION_TYPE("conditionType", "컨디션 대분류", "COTY"),
+    CONDITION_TYPE("conditionType", "컨디션 타입", "COTY"),
     DEL_REASON("delReason", "탈퇴 사유", "DERE"),
     WEATHER("weather", "날씨", "WEAT");
 
