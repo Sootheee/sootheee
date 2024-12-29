@@ -165,7 +165,7 @@ class DairyServiceTest {
             //when
             dairyService.deleteDairy(CommonTestCode.MEMBER_ID, newDairy.getDairyId());
             //then
-            Assertions.assertThat(newDairy.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
+            Assertions.assertThat(newDairy.getIsDelete()).isEqualTo(BooleanYN.Y);
         } catch (IncorrectValueException | NotMatchedException | NullValueException | NotExistDairyException |
                  NotFoundDetailInfoException e) {
             log.error(e.getMessage());

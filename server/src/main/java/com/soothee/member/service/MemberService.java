@@ -56,7 +56,7 @@ public interface MemberService {
      * @param memberId 입력한 회원 일련번호
      * @param isDark 다크모드 yes/no
      */
-    void updateDarkMode(Long loginMemberId, Long memberId, BooleanYN isDark) throws NotExistMemberException, NotMatchedException, IncorrectValueException, NullValueException;
+    void updateDarkMode(Long loginMemberId, Long memberId, BooleanYN isDark) throws NoAuthorizeException, NotExistMemberException;
 
     /**
      * 회원 탈퇴

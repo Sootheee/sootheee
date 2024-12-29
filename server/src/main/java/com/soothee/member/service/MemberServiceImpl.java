@@ -41,13 +41,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateName(Long loginMemberId, Long memberId, String updateName) throws NotExistMemberException, NotMatchedException, IncorrectValueException, NullValueException {
+    public void updateDarkMode(Long loginMemberId, Long memberId, BooleanYN isDark) throws NotExistMemberException, NoAuthorizeException {
         /* 회원 일련번호로 회원 정보 조회
          * - 회원 일련번호로 조회된 회원이 없는 경우 Exception 발생
          * - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
         Member loginMember = getMemberById(loginMemberId);
         /* 로그인한 계정의 회원 일련번호와 입력한 회원 일련번호가 일치하는지 확인
-         * - 로그인한 계정의 회원 일련번호와 입력한 회원 일련번호가 일치하지 않는 경우 Exception 발생 */
+        loginMember.updateDarkModeYN(isDark);
         SootheeValidation.checkMatchedId(loginMemberId, memberId, DomainType.MEMBER);
         /* 닉네임 수정
          * - 입력된 수정할 닉네임이 없거나 올바르지 않는 경우 Exception 발생*/

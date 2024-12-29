@@ -120,7 +120,7 @@ public class CommonTestCode {
     }
 
     public Member getSavedMember() {
-        return memberRepository.findByMemberIdAndIsDelete(MEMBER_ID, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
+        return memberRepository.findByMemberIdAndIsDelete(MEMBER_ID, BooleanYN.N).orElseThrow(NullPointerException::new);
     }
 
     public Dairy getSavedDairy(Long dairyId) {

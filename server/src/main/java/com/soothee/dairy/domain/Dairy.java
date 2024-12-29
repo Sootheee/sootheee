@@ -65,8 +65,9 @@ public class Dairy extends TimeEntity implements Domain {
     private String learn;
 
     /** 소프트 삭제 */
+    @Enumerated(EnumType.STRING)
     @Column(name = "is_delete", nullable = false, length = 1)
-    private String isDelete;
+    private BooleanYN isDelete;
 
     @Builder
     public Dairy(Member member, LocalDate date, Weather weather, Double score, String content, String hope, String thank, String learn) {
@@ -78,7 +79,7 @@ public class Dairy extends TimeEntity implements Domain {
         this.hope = hope;
         this.thank = thank;
         this.learn = learn;
-        this.isDelete = BooleanYN.N.toString();
+        this.isDelete = BooleanYN.N;
     }
 
     /**
@@ -111,7 +112,7 @@ public class Dairy extends TimeEntity implements Domain {
 
     /** 일기 삭제 */
     public void deleteDairy() {
-        this.isDelete = BooleanYN.Y.toString();
+        this.isDelete = BooleanYN.Y;
     }
 
     /**

@@ -87,10 +87,10 @@ class MemberServiceTest {
         //given
         BooleanYN isDark = BooleanYN.Y;
         Member savedMember = commonTestCode.getSavedMember();
-        try {
-            //when
-            savedMember.updateDarkModeYN(isDark);
-            //then
+        //when
+        savedMember.updateDarkModeYN(isDark);
+        //then
+        Assertions.assertThat(savedMember.getIsDark()).isEqualTo(BooleanYN.Y);
             Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDark.toString());
         } catch (IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
@@ -100,12 +100,12 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원 탈퇴")
     void deleteMember() {
-        try {
-            //given
-            Member newMember = commonTestCode.saveNewMember();
-            //when
-            newMember.deleteMember();
-            //then
+        //given
+        Member newMember = commonTestCode.saveNewMember();
+        //when
+        newMember.deleteMember();
+        //then
+        Assertions.assertThat(newMember.getIsDelete()).isEqualTo(BooleanYN.Y);
             Assertions.assertThat(newMember.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
         } catch (IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());

@@ -41,7 +41,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(monthParam.getYear()),
                                     dairy.date.month().eq(monthParam.getMonth()),
-                                    dairy.isDelete.eq(BooleanYN.N.toString()))
+                                    dairy.isDelete.eq(BooleanYN.N))
                             .fetch()
         );
     }
@@ -61,7 +61,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .groupBy(dairy.dairyId)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.eq(date),
-                                    dairy.isDelete.eq(BooleanYN.N.toString()))
+                                    dairy.isDelete.eq(BooleanYN.N))
                             .fetch()
         );
     }
@@ -81,7 +81,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .groupBy(dairy.dairyId)
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.dairyId.eq(dairyId),
-                                    dairy.isDelete.eq(BooleanYN.N.toString()))
+                                    dairy.isDelete.eq(BooleanYN.N))
                             .fetch()
         );
     }
@@ -95,7 +95,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(monthParam.getYear()),
                                     dairy.date.month().eq(monthParam.getMonth()),
-                                    dairy.isDelete.eq(BooleanYN.N.toString()))
+                                    dairy.isDelete.eq(BooleanYN.N))
                             .fetch()
         );
     }
@@ -118,7 +118,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                     dairy.date.month().eq(monthParam.getMonth()),
                                     getContentTypeNull(type),
                                     getContentTypeEmpty(type),
-                                    dairy.isDelete.eq(BooleanYN.N.toString()))
+                                    dairy.isDelete.eq(BooleanYN.N))
                             .fetchOne()
         );
     }
@@ -144,7 +144,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                     dairy.date.month().eq(monthParam.getMonth()),
                                     getContentTypeNull(type),
                                     getContentTypeEmpty(type),
-                                    dairy.isDelete.eq(BooleanYN.N.toString()))
+                                    dairy.isDelete.eq(BooleanYN.N))
                             .orderBy(getContentHighLow(orderBy))
                             .limit(1)
                             .fetch()
@@ -160,7 +160,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(weekParam.getYear()),
                                     dairy.date.week().eq(weekParam.getWeek()),
-                                    dairy.isDelete.eq(BooleanYN.N.toString()))
+                                    dairy.isDelete.eq(BooleanYN.N))
                             .fetch()
         );
     }
@@ -175,7 +175,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                             .where(dairy.member.memberId.eq(memberId),
                                     dairy.date.year().eq(weekParam.getYear()),
                                     dairy.date.week().eq(weekParam.getWeek()),
-                                    dairy.isDelete.eq(BooleanYN.N.toString()))
+                                    dairy.isDelete.eq(BooleanYN.N))
                             .orderBy(dairy.date.dayOfYear().asc())
                             .fetch()
         );
@@ -199,7 +199,7 @@ public class DairyRepositoryQdslImpl implements DairyRepositoryQdsl {
                                     dairy.date.month().eq(monthParam.getMonth()),
                                     getContentTypeNull(type),
                                     getContentTypeEmpty(type),
-                                    dairy.isDelete.eq(BooleanYN.N.toString()))
+                                    dairy.isDelete.eq(BooleanYN.N))
                             .orderBy(getOrderBy(orderBy))
                             .fetch()
         );

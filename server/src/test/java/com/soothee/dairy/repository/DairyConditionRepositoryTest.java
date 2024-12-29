@@ -51,7 +51,7 @@ class DairyConditionRepositoryTest {
         try {
             //given
             Dairy newDairy = commonTestCode.saveNewDairy();
-            //when
+        boolean result = dairyConditionRepository.existsByDairyDairyIdAndDairyIsDeleteAndIsDelete(newDairy.getDairyId(), BooleanYN.N, BooleanYN.N);
             boolean result = dairyConditionRepository.existsByDairyDairyIdAndDairyIsDeleteAndIsDelete(newDairy.getDairyId(), BooleanYN.N.toString(), BooleanYN.N.toString());
             //then
             Assertions.assertThat(result).isFalse();
@@ -65,7 +65,7 @@ class DairyConditionRepositoryTest {
         try {
             //given
             Dairy newDairy = commonTestCode.saveNewDairyCondition();
-            //when
+        boolean result = dairyConditionRepository.existsByDairyDairyIdAndDairyIsDeleteAndIsDelete(newDairy.getDairyId(), BooleanYN.N, BooleanYN.N);
             boolean result = dairyConditionRepository.existsByDairyDairyIdAndDairyIsDeleteAndIsDelete(newDairy.getDairyId(), BooleanYN.N.toString(), BooleanYN.N.toString());
             //then
             Assertions.assertThat(result).isTrue();

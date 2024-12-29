@@ -38,20 +38,21 @@ public class DairyCondition extends TimeEntity implements Domain {
     private Integer orderNo;
 
     /** 소프트 삭제 */
+    @Enumerated(EnumType.STRING)
     @Column(name = "is_delete", nullable = false, length = 1)
-    private String isDelete;
+    private BooleanYN isDelete;
 
     @Builder
     public DairyCondition(Dairy dairy, Condition condition, Integer orderNo) {
         this.dairy = dairy;
         this.condition = condition;
         this.orderNo = orderNo;
-        this.isDelete = BooleanYN.N.toString();
+        this.isDelete = BooleanYN.N;
     }
 
     /** 일기 컨디션 변경 시, 소프트 삭제 된 후, 새로 생성 */
     public void deleteDairyCondition () {
-        this.isDelete = BooleanYN.Y.toString();
+        this.isDelete = BooleanYN.Y;
     }
 
     @Override

@@ -31,12 +31,14 @@ public class Member extends TimeEntity implements Domain {
     private String name;
 
     /** 다크 모드 */
+    @Enumerated(EnumType.STRING)
     @Column(name = "is_dark", nullable = false, length = 1)
-    private String isDark;
+    private BooleanYN isDark;
 
     /** 소프트 삭제 */
+    @Enumerated(EnumType.STRING)
     @Column(name = "is_delete", nullable = false, length = 1)
-    private String isDelete;
+    private BooleanYN isDelete;
 
     /** 가입한 SNS */
     @Enumerated(EnumType.STRING)
@@ -56,8 +58,8 @@ public class Member extends TimeEntity implements Domain {
     public Member(String email, String name, SnsType snsType, String oauth2ClientId) {
         this.email = email;
         this.name = name;
-        this.isDark = BooleanYN.N.toString();
-        this.isDelete = BooleanYN.N.toString();
+        this.isDark = BooleanYN.N;
+        this.isDelete = BooleanYN.N;
         this.snsType = snsType;
         this.oauth2ClientId = oauth2ClientId;
         this.role = Role.USER;
@@ -80,12 +82,12 @@ public class Member extends TimeEntity implements Domain {
      * @param isDark 바꿀 화면 모드가 다크모드면 Y 아니면 N
      */
     public void updateDarkModeYN(BooleanYN isDark) {
-        this.isDark = isDark.toString();
+        this.isDark = isDark;
     }
 
     /** 회원 삭제 */
     public void deleteMember() {
-        this.isDelete = BooleanYN.Y.toString();
+        this.isDelete = BooleanYN.Y;
     }
 
     @Override

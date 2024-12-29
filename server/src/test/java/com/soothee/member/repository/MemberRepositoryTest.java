@@ -35,8 +35,7 @@ class MemberRepositoryTest {
     void findByOauth2ClientIdAndIsDeleteAndIsDeleteAndSnsType() {
         //given
         //when
-        Member savedMember = memberRepository.findByOauth2ClientIdAndSnsTypeAndIsDelete(CommonTestCode.OAUTH2, CommonTestCode.SNS_TYPE, BooleanYN.N.toString())
-                .orElseThrow(NullPointerException::new);
+        Member savedMember = memberRepository.findByOauth2ClientIdAndSnsTypeAndIsDelete(CommonTestCode.OAUTH2, CommonTestCode.SNS_TYPE, BooleanYN.N).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
     }
@@ -46,8 +45,7 @@ class MemberRepositoryTest {
     void findByOauth2ClientIdAndIsDelete() {
         //given
         //when
-        Member savedMember = memberRepository.findByOauth2ClientIdAndIsDelete(CommonTestCode.OAUTH2, BooleanYN.N.toString())
-                .orElseThrow(NullPointerException::new);
+        Member savedMember = memberRepository.findByOauth2ClientIdAndIsDelete(CommonTestCode.OAUTH2, BooleanYN.N).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
     }
@@ -57,7 +55,7 @@ class MemberRepositoryTest {
     void findByEmailAndIsDelete() {
         //given
         //when
-        Member savedMember = memberRepository.findByEmailAndIsDelete(CommonTestCode.EMAIL, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
+        Member savedMember = memberRepository.findByEmailAndIsDelete(CommonTestCode.EMAIL, BooleanYN.N).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
     }
@@ -66,7 +64,7 @@ class MemberRepositoryTest {
     void findByMemberIdAndIsDelete() {
         //given
         //when
-        Member result = memberRepository.findByMemberIdAndIsDelete(CommonTestCode.MEMBER_ID, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
+        Member result = memberRepository.findByMemberIdAndIsDelete(CommonTestCode.MEMBER_ID, BooleanYN.N).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result.getName()).isEqualTo("사용자0");
     }

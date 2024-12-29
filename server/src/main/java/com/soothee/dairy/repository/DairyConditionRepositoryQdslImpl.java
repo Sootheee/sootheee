@@ -30,8 +30,8 @@ public class DairyConditionRepositoryQdslImpl implements DairyConditionRepositor
                             .where(dairyCondition.dairy.member.memberId.eq(memberId),
                                     dairyCondition.dairy.date.year().eq(monthParam.getYear()),
                                     dairyCondition.dairy.date.month().eq(monthParam.getMonth()),
-                                    dairyCondition.dairy.isDelete.eq(BooleanYN.N.toString()),
-                                    dairyCondition.isDelete.eq(BooleanYN.N.toString()))
+                                    dairyCondition.dairy.isDelete.eq(BooleanYN.N),
+                                    dairyCondition.isDelete.eq(BooleanYN.N))
                             .groupBy(dairyCondition.condition.condId,
                                         dairyCondition.condition.condType.condTypeValue,
                                         dairyCondition.condition.condValue)
@@ -52,8 +52,8 @@ public class DairyConditionRepositoryQdslImpl implements DairyConditionRepositor
                         .where(dairyCondition.dairy.member.memberId.eq(memberId),
                                 dairyCondition.dairy.date.year().eq(monthParam.getYear()),
                                 dairyCondition.dairy.date.month().eq(monthParam.getMonth()),
-                                dairyCondition.dairy.isDelete.eq(BooleanYN.N.toString()),
-                                dairyCondition.isDelete.eq(BooleanYN.N.toString()))
+                                dairyCondition.dairy.isDelete.eq(BooleanYN.N),
+                                dairyCondition.isDelete.eq(BooleanYN.N))
                         .fetchOne()
         );
     }

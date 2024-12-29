@@ -15,10 +15,10 @@ public interface DairyRepository extends JpaRepository<Dairy, Long>, QuerydslPre
      * - 삭제한 일기 제외
      *
      * @param memberId 회원 일련번호
-     * @param isDelete "N" 삭제된 일기 제외
+     * @param isDelete BooleanYN.N 삭제된 일기 제외
      * @return 회원이 작성한 모든 일기 리스트 (null 가능)
      */
-    Optional<List<Dairy>> findByMemberMemberIdAndIsDeleteOrderByDairyId(Long memberId, String isDelete);
+    Optional<List<Dairy>> findByMemberMemberIdAndIsDeleteOrderByDairyId(Long memberId, BooleanYN isDelete);
 
     /**
      * 일기 일련번호로 해당 일기 정보 조회

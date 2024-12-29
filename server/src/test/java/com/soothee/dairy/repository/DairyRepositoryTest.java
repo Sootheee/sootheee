@@ -46,7 +46,7 @@ class DairyRepositoryTest {
     void findByMemberMemberIdAndIsDeleteOrderByDairyId() {
         //given
         //when
-        List<Dairy> list = dairyRepository.findByMemberMemberIdAndIsDeleteOrderByDairyId(CommonTestCode.MEMBER_ID, BooleanYN.N.toString()).orElseThrow(NullPointerException::new);
+        List<Dairy> list = dairyRepository.findByMemberMemberIdAndIsDeleteOrderByDairyId(CommonTestCode.MEMBER_ID, BooleanYN.N).orElseThrow(NullPointerException::new);
         //then
         for (Dairy dairy : list) {
             if (Objects.equals(dairy.getDairyId(), CommonTestCode.DAIRY_ID1)) {

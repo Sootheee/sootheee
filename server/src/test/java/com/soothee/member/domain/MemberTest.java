@@ -54,10 +54,10 @@ class MemberTest {
         //given
         BooleanYN isDark = BooleanYN.Y;
         Member savedMember = commonTestCode.getSavedMember();
-        try {
-            //when
-            savedMember.updateDarkModeYN(isDark);
-            //then
+        //when
+        savedMember.updateDarkModeYN(isDark);
+        //then
+        Assertions.assertThat(savedMember.getIsDark()).isEqualTo(BooleanYN.Y);
             Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDark.toString());
         } catch (IncorrectValueException | NullValueException e) {
             log.error(e.getMessage());
@@ -72,6 +72,6 @@ class MemberTest {
         //when
         savedMember.deleteMember();
         //then
-        Assertions.assertThat(savedMember.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
+        Assertions.assertThat(savedMember.getIsDelete()).isEqualTo(BooleanYN.Y);
     }
 }

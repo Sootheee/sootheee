@@ -9,10 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 
 @RequiredArgsConstructor
 public enum BooleanYN implements CustomType {
-    Y("Y", "예"), N("N", "아니오");
+    Y("Y"), N("N");
 
     private final String type;
-    private final String korean;
 
     @Override
     public String toString() {
@@ -21,10 +20,10 @@ public enum BooleanYN implements CustomType {
 
     @Override
     public String toKorean() {
-        return korean;
+        return type;
     }
 
-    public static BooleanYN fromString(String yn) throws IncorrectParameterException, NullValueException, IncorrectValueException {
+    public static BooleanYN fromString(String yn) throws IncorrectParameterException {
         SootheeValidation.checkBoolean(yn, BooleanType.DARK_MODE);
         if (StringUtils.equals(BooleanYN.Y.toString(), yn)) {
             return BooleanYN.Y;

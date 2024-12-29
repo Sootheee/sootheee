@@ -34,6 +34,6 @@ class DairyConditionTest {
         //when
         savedDairyCondition.deleteDairyCondition();
         //then
-        Assertions.assertThat(savedDairyCondition.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
+        Assertions.assertThat(savedDairyCondition.getIsDelete()).isEqualTo(BooleanYN.Y);
     }
 }
