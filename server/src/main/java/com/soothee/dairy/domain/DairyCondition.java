@@ -2,7 +2,6 @@ package com.soothee.dairy.domain;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.soothee.common.constants.*;
-import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
 import com.soothee.reference.domain.Condition;
 import jakarta.persistence.*;
@@ -13,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(onConstructor = @__(@QueryProjection))
 @Table(name = "dairy_condition")
-public class DairyCondition extends TimeEntity implements Domain {
+public class DairyCondition extends TimeEntity {
     /** 일기-콘텐츠 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,10 +48,5 @@ public class DairyCondition extends TimeEntity implements Domain {
     /** 일기 컨디션 변경 시, 소프트 삭제 된 후, 새로 생성 */
     public void deleteDairyCondition () {
         this.isDelete = BooleanYN.Y;
-    }
-
-    @Override
-    public Long getId() {
-        return dairyCondId;
     }
 }

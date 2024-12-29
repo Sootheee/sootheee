@@ -2,7 +2,6 @@ package com.soothee.dairy.domain;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.soothee.common.constants.*;
-import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
 import com.soothee.dairy.service.command.DairyModify;
 import com.soothee.member.domain.Member;
@@ -17,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(onConstructor = @__(@QueryProjection))
 @Table(name = "dairy")
-public class Dairy extends TimeEntity implements Domain {
+public class Dairy extends TimeEntity {
     /** 일기 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -93,10 +92,5 @@ public class Dairy extends TimeEntity implements Domain {
     /** 일기 삭제 */
     public void deleteDairy() {
         this.isDelete = BooleanYN.Y;
-    }
-
-    @Override
-    public Long getId() {
-        return dairyId;
     }
 }

@@ -1,6 +1,5 @@
 package com.soothee.member.domain;
 
-import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
 import com.soothee.reference.domain.DelReason;
 import jakarta.persistence.*;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member_del_reason")
-public class MemberDelReason extends TimeEntity implements Domain {
+public class MemberDelReason extends TimeEntity {
     /** 회원 탈퇴 사유 일련번호 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,10 +32,5 @@ public class MemberDelReason extends TimeEntity implements Domain {
     public MemberDelReason(Member member, DelReason delReason) {
         this.member = member;
         this.delReason = delReason;
-    }
-
-    @Override
-    public Long getId() {
-        return memberDelReasonId;
     }
 }
