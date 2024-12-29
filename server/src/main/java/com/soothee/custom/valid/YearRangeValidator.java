@@ -16,13 +16,22 @@ public class YearRangeValidator implements ConstraintValidator<YearRange, LocalD
         this.maxYear = constraintAnnotation.maxYear();
     }
 
+    /**
+     * 날짜 범위 검증
+     * 입력된 날짜가
+     * 1. null 이 아니고
+     * 2. 2024년 이전이 아니고
+     * 3. 2100년 이후가 아닌지 확인
+     * 검증
+     *
+     * @param value 입력된 날짜
+     * @param constraintValidatorContext ConstraintValidatorContext
+     * @return 맞으면 true / 아니면 false
+     */
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext constraintValidatorContext) {
-                /* 입력 값이 null 이 아니고 */
         return Objects.nonNull(value)
-                /* 입력 값이 2024년 이전이 아니고*/
                 && !value.isBefore(LocalDate.of(minYear, 1, 1))
-                /* 입력 값이 2100년 이후가 아닌지 확인 */
                 && !value.isAfter(LocalDate.of(maxYear, 12, 31));
     }
 }
