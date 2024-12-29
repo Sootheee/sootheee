@@ -111,16 +111,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Long getLoginMemberId(AuthenticatedUser loginInfo) throws NotExistMemberException, IncorrectValueException, NullValueException {
-        /* OAuth2 인증 받은 계정의 인증 일련번호로 회원 일련번호 조회 */
-        String oauth2Id = loginInfo.getName();
-        Long result = memberRepository.findByOauth2ClientIdAndIsDelete(oauth2Id, BooleanYN.N.toString())
-                /* 로그인한 인증 일련번호로 조회된 회원 일련번호가 없는 경우 Exception 발생  */
-                .orElseThrow(() -> new NotExistMemberException(loginInfo)).getMemberId();
-        SootheeValidation.checkDomainId(result, DomainType.MEMBER);
-        return result;
-    }
-
+    public Member getMemberById(Long memberId) throws NotExistMemberException {
+        return memberRepository.findByMemberIdAndIsDelete(memberId, BooleanYN.N)
     @Override
     public Member getMemberById(Long memberId) throws NotExistMemberException, IncorrectValueException, NullValueException {
         /* 회원 일련번호로 회원 정보 조회 */

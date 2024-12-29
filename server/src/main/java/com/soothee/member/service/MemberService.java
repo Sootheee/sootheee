@@ -90,17 +90,7 @@ public interface MemberService {
      * @param memberId 현재 로그인한 계정의 일련번호
      * @return 회원 일련번호와 닉네임 정보
      */
-    MemberNameDTO getNicknameInfo(Long memberId) throws IncorrectValueException, NullValueException, NotExistMemberException;
-
-    /**
-     * 현재 로그인한 회원의 인증 일련번호로 회원 일련번호 조회
-     * - 삭제한 회원 제외
-     * 1. 로그인한 인증 일련번호로 조회된 회원 일련번호가 없는 경우 Exception 발생
-     *
-     * @param loginInfo 현재 로그인 계정 정보
-     * @return 로그인한 회원의 일련번호
-     */
-    Long getLoginMemberId(AuthenticatedUser loginInfo) throws NotExistMemberException, IncorrectValueException, NullValueException;
+    Optional<Member> getMemberForOAuth2(String oauth2ClientId, SnsType snsType);
 
     /**
      * 회원 일련번호로 회원 정보 조회
