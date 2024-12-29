@@ -49,31 +49,25 @@ public interface DairyService {
     /**
      * 새로운 일기 등록
      * - 삭제된 일기 제외
-     * 1. 입력한 새 일기의 작성 날짜에 이미 등록된 일기가 있는 경우 Exception 발생
-     * 2. 해당 회원 일련번호로 조회된 회원 정보가 없는 경우 Exception 발생
-     * 3. 해당 날씨 일련번호로 조회된 날씨가 없는 경우
-     * 4. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
      *
-     * @param memberId 현재 로그인한 계정의 일련번호
-     * @param inputInfo 등록할 일기 정보
+     * @param dairyInfo 등록할 일기 정보
      */
-    void registerDairy(Long memberId, DairyRegisterDTO inputInfo) throws DuplicatedResultException, NullValueException, IncorrectValueException, NotExistMemberException;
+    void registerDairy(DairyRegister dairyInfo) throws DuplicatedResultException, NullValueException, NotExistMemberException;
 
     /**
      * 기존 일기 수정
      * - 삭제된 일기 제외
-     * 1. 지정한 일기 일련번호를 가진 일기가 없는 경우
+     * 1. 조회할 일기 일련번호를 가진 일기가 없는 경우
      * 2. 기존 일기 일련번호와 입력한 일기 일련번호가 다른 경우
      * 3. 기존 일기 작성 날짜와 입력한 일기 작성 날짜가 다른 경우
      * 4. 기존 일기 작성 회원 일련번호와 현재 로그인한 계정의 회원 일련번호가 다른 경우
      * 5. 해당 날씨 일련번호로 조회된 날씨가 없는 경우
      * 6. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우
      *
-     * @param memberId 현재 로그인한 계정의 일련번호
-     * @param dairyId 수정할 일기 일련번호
-     * @param inputInfo 수정할 일기 정보
+     * @param curDairyId 수정할 일기 일련번호
+     * @param dairyInfo 수정할 일기 정보
      */
-    void modifyDairy(Long memberId, Long dairyId, DairyDTO inputInfo) throws NotExistDairyException, NotMatchedException, NullValueException, IncorrectValueException, NotFoundDetailInfoException;
+    void modifyDairy(Long curDairyId, DairyModify dairyInfo) throws NoDairyResultException, NotMatchedException, NoAuthorizeException, NullValueException, NotFoundDairyConditionsException;
 
     /**
      * 작성된 일기 삭제

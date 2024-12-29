@@ -10,7 +10,8 @@ import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.dairy.dto.DairyRegisterDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.dairy.service.DairyService;
-import com.soothee.member.service.MemberService;
+import com.soothee.dairy.service.command.DairyModify;
+import com.soothee.dairy.service.command.DairyRegister;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -217,7 +218,7 @@ public class DairyController {
             @ApiResponse(responseCode = "401", description = "로그인한 인증된 계정의 정보 조회 실패", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "409", description = "입력한 새 일기의 작성 날짜로 작성된 일기가 이미 존재함", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> registerDairy(@ModelAttribute @Valid DairyRegisterDTO inputInfo, BindingResult bindingResult,
+    public ResponseEntity<?> registerDairy(@ModelAttribute @Valid DairyRegisterRequest param, BindingResult bindingResult,
                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         /* diary register dto query parameter validation */
         if (bindingResult.hasErrors()) {
@@ -227,11 +228,11 @@ public class DairyController {
         }
 
         try {
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
-
-            /* 새로운 일기 등록 */
-            dairyService.registerDairy(memberId, inputInfo);
+            Long loginId = loginInfo.getMemberId();
+            DairyRegister dairyInfo = DairyRegister.fromParam(loginId, param);
+            dairyService.registerDairy(dairyInfo);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NullValueException e) {
 
             /* 성공 - 200 */
             return new ResponseEntity<>("성공", HttpStatus.OK);
@@ -274,7 +275,7 @@ public class DairyController {
             @ApiResponse(responseCode = "500", description = "선택한 컨디션 상세 정보 조회 실패", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> modifyDairy(@PathVariable("dairy_id") Long dairyId,
-                                         @ModelAttribute @Valid DairyDTO inputInfo, BindingResult bindingResult,
+                                         @ModelAttribute @Valid DairyModifyRequest param, BindingResult bindingResult,
                                          @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         /* dairy modify dto parameter validation */
         if (bindingResult.hasErrors()) {
@@ -285,10 +286,10 @@ public class DairyController {
 
         try {
             /* path parameter validation */
-            SootheeValidation.checkDomainId(dairyId, DomainType.DAIRY);
-
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
+            Long loginId = loginInfo.getMemberId();
+            DairyModify dairyInfo = DairyModify.fromParam(loginId, param);
+            dairyService.modifyDairy(dairyId, dairyInfo);
+            return new ResponseEntity<>(HttpStatus.OK);
 
             /* 기존 일기 수정 */
             dairyService.modifyDairy(memberId, dairyId, inputInfo);

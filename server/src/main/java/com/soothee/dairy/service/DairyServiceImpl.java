@@ -11,6 +11,9 @@ import com.soothee.dairy.dto.DairyRegisterDTO;
 import com.soothee.dairy.dto.DairyScoresDTO;
 import com.soothee.dairy.dto.InputDairyDTO;
 import com.soothee.dairy.repository.DairyRepository;
+import com.soothee.dairy.service.command.DairyInputInfo;
+import com.soothee.dairy.service.command.DairyModify;
+import com.soothee.dairy.service.command.DairyRegister;
 import com.soothee.member.domain.Member;
 import com.soothee.member.service.MemberService;
 import com.soothee.reference.domain.Weather;
@@ -75,7 +78,7 @@ public class DairyServiceImpl implements DairyService {
     }
 
     @Override
-    public void registerDairy(Long memberId, DairyRegisterDTO inputInfo) throws DuplicatedResultException, NullValueException, IncorrectValueException, NotExistMemberException {
+    public void registerDairy(DairyRegister dairyInfo) throws DuplicatedResultException, NullValueException, NotExistMemberException {
         /* 현재 로그인한 회원이 해당 일자에 써놓은 일기가 있는지 중복 체크
          * 입력한 새 일기의 작성 날짜에 이미 등록된 일기가 있는 경우 Exception 발생 */
         checkDuplicateDairy(memberId, inputInfo.getDate());
@@ -99,7 +102,7 @@ public class DairyServiceImpl implements DairyService {
     }
 
     @Override
-    public void modifyDairy(Long memberId, Long dairyId, DairyDTO inputInfo) throws NotExistDairyException, NotMatchedException, NullValueException, IncorrectValueException, NotFoundDetailInfoException {
+    public void modifyDairy(Long curDairyId, DairyModify dairyInfo) throws NoDairyResultException, NotMatchedException, NoAuthorizeException, NullValueException, NotFoundDairyConditionsException {
         /* 해당 일련번호로 기존 일기 조회
          * - 지정한 일기 일련번호를 가진 일기가 없는 경우 Exception 발생
          * - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
@@ -174,7 +177,7 @@ public class DairyServiceImpl implements DairyService {
      * @param inputInfo 입력 값
      * @return 있으면 true / 없으면 false
      */
-    private static boolean isExistInputCondList(InputDairyDTO inputInfo) {
+    private static boolean isExistSelectedConditions(DairyInputInfo inputInfo) {
         return Objects.nonNull(inputInfo.getCondIdList());
     }
 }

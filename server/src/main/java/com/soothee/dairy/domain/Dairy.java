@@ -115,29 +115,6 @@ public class Dairy extends TimeEntity implements Domain {
         this.isDelete = BooleanYN.Y;
     }
 
-    /**
-     * 일기 생성
-     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
-     *
-     * @param inputInfo 입력된 등록할 일기 정보
-     * @param member 로그인한 계정 정보
-     * @param weather 해당 일기 날씨 정보
-     * @return Dairy entity
-     */
-    public static Dairy of(DairyRegisterDTO inputInfo, Member member, Weather weather) throws IncorrectValueException, NullValueException {
-        checkDiaryOfDiaryRegisterDTO(inputInfo, member, weather);
-        return Dairy.builder()
-                    .date(inputInfo.getDate())
-                    .member(member)
-                    .weather(weather)
-                    .score(inputInfo.getScore())
-                    .content(inputInfo.getContent())
-                    .hope(inputInfo.getHope())
-                    .thank(inputInfo.getThank())
-                    .learn(inputInfo.getLearn())
-                    .build();
-    }
-
     @Override
     public Long getId() {
         return dairyId;

@@ -10,6 +10,7 @@ import com.soothee.member.dto.MemberDelDTO;
 import com.soothee.member.dto.MemberInfoDTO;
 import com.soothee.member.dto.MemberNameDTO;
 import com.soothee.member.service.MemberService;
+import com.soothee.member.service.command.MemberDelete;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -181,7 +182,7 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "필수 요청 파라미터 값이나 필수 응답값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "401", description = "로그인한 인증된 계정의 정보 조회 실패", content = @Content(mediaType = "text/plain"))
     })
-    public ResponseEntity<?> deleteMember(@ModelAttribute @Valid MemberDelDTO memberDelDTO, BindingResult bindingResult,
+    public ResponseEntity<?> deleteMember(@ModelAttribute @Valid MemberDeleteRequest param, BindingResult bindingResult,
                                           @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         /* member_id || del_reason_list query parameter validation */
         if (bindingResult.hasErrors()) {
@@ -191,9 +192,9 @@ public class MemberController {
         }
 
         try {
-            /* 로그인한 계정 일련번호 조회 */
-            Long loginMemberId = memberService.getLoginMemberId(loginInfo);
-
+            Long loginId = loginInfo.getMemberId();
+            MemberDelete deleteInfo = MemberDelete.fromParam(param);
+            memberService.deleteMember(loginId, deleteInfo);
             /* 회원 소프트 삭제 */
             memberService.deleteMember(loginMemberId, memberDelDTO);
 
