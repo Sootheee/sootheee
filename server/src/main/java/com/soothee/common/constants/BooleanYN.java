@@ -1,9 +1,6 @@
 package com.soothee.common.constants;
 
 import com.soothee.custom.exception.IncorrectParameterException;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
-import com.soothee.custom.valid.SootheeValidation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,7 +21,6 @@ public enum BooleanYN implements CustomType {
     }
 
     public static BooleanYN fromString(String yn) throws IncorrectParameterException {
-        SootheeValidation.checkBoolean(yn, BooleanType.DARK_MODE);
         if (StringUtils.equals(BooleanYN.Y.toString(), yn)) {
             return BooleanYN.Y;
         }
