@@ -1,12 +1,6 @@
-package com.soothee.dairy.dto;
+package com.soothee.dairy.controller.request;
 
-import com.soothee.common.constants.ContentType;
-import com.soothee.common.constants.DoubleType;
-import com.soothee.common.constants.ReferenceType;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
 import com.soothee.custom.valid.ExistReferenceId;
-import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
@@ -15,18 +9,17 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 일기 등록
  * 1. 작성 날짜 2. 날씨 일련번호 3. 오늘의 점수 4. 선택한 컨디션 일련번호 리스트
  * 5. 오늘의 요약 6. 바랐던 방향성 7. 감사한 일 8. 배운 일
  */
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
-@Schema(description = "일기 등록에 사용되는 DTO")
-public class DairyRegisterDTO implements InputDairyDTO{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "일기 등록 요청 파라미터")
+public class DairyRegisterRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotEmpty(message = "일기의 날짜가 없습니다.")
     @YearRange(message = "날짜는 2024년부터, 2100년까지 입력 가능 합니다.")
@@ -63,7 +56,7 @@ public class DairyRegisterDTO implements InputDairyDTO{
     private String learn;
 
     @Builder
-    public DairyRegisterDTO(LocalDate date, String weatherId, Double score, List<String> condIdList, String content, String hope, String thank, String learn) {
+    public DairyRegisterRequest(LocalDate date, String weatherId, Double score, List<String> condIdList, String content, String hope, String thank, String learn) {
         this.date = date;
         this.weatherId = weatherId;
         this.score = score;
@@ -72,21 +65,5 @@ public class DairyRegisterDTO implements InputDairyDTO{
         this.hope = hope;
         this.thank = thank;
         this.learn = learn;
-    }
-
-    /** validation */
-    public void valid () throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDate(getDate());
-        SootheeValidation.checkReferenceId(getWeatherId(), ReferenceType.WEATHER);
-        SootheeValidation.checkDouble(getScore(), DoubleType.SCORE);
-        if (Objects.nonNull(getCondIdList())) {
-            for (String condId : getCondIdList()) {
-                SootheeValidation.checkReferenceId(condId, ReferenceType.CONDITION);
-            }
-        }
-        SootheeValidation.checkContent(getContent());
-        SootheeValidation.checkOptionalContent(getHope(), ContentType.HOPE);
-        SootheeValidation.checkOptionalContent(getThank(), ContentType.THANKS);
-        SootheeValidation.checkOptionalContent(getLearn(), ContentType.LEARN);
     }
 }

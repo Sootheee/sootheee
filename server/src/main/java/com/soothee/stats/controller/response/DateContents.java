@@ -1,12 +1,6 @@
-package com.soothee.stats.dto;
+package com.soothee.stats.controller.response;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.soothee.common.constants.ContentType;
-import com.soothee.common.constants.DomainType;
-import com.soothee.common.constants.DoubleType;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
-import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.custom.valid.YearRange;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
@@ -18,9 +12,10 @@ import java.time.LocalDate;
  * 감사한/배운 일 조회
  * 1. 일기 일련번호 2. 작성 날짜 3. 오늘의 점수 4. 감사한/배운 일
  */
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(onConstructor = @__(@QueryProjection))
 @Schema(description = "해당 날짜의 감사한/배운 일 조회")
 public class DateContents {
     @NotEmpty(message = "일기의 일련번호가 없습니다.")
@@ -42,25 +37,4 @@ public class DateContents {
     @Size(max = 200, message = "바랐던 방향성은 최대 200자까지 입력 가능합니다.")
     @Schema(description = "감사한/배운 일 내용")
     private String content;
-
-    @QueryProjection
-    public DateContents(Long dairyId, LocalDate date, Double score, String content) {
-        this.dairyId = dairyId;
-        this.date = date;
-        this.score = score;
-        this.content = content;
-    }
-
-    /**
-     * valid
-     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
-     *
-     * @param type 감사한/배운 일 종류
-     */
-    public void valid(ContentType type) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomainId(getDairyId(), DomainType.DAIRY);
-        SootheeValidation.checkDate(getDate());
-        SootheeValidation.checkDouble(getScore(), DoubleType.SCORE);
-        SootheeValidation.checkOptionalContent(getContent(), type);
-    }
 }
