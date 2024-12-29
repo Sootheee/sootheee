@@ -1,7 +1,6 @@
 package com.soothee.member.service;
 
 import com.soothee.config.TestConfig;
-import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
 import com.soothee.util.CommonTestCode;
 import com.soothee.member.domain.Member;
@@ -45,8 +44,8 @@ class MemberDelReasonServiceTest {
             //then
             List<MemberDelReason> savedMDR = commonTestCode.getSavedMemberDelReasons();
             Assertions.assertThat(savedMDR.size()).isEqualTo(3);
-        } catch (NullValueException | IncorrectValueException e) {
-            log.error(e.getMessage());
+        } catch (NullValueException e) {
+            log.error("\n", e);
         }
     }
 
@@ -59,8 +58,8 @@ class MemberDelReasonServiceTest {
             List<MemberDelReason> savedMDR = memberDelReasonService.getMemberDelReasonByMemberId(newMember.getMemberId());
             //then
             Assertions.assertThat(savedMDR.size()).isEqualTo(3);
-        } catch (IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
+        } catch (NullValueException e) {
+            log.error("\n", e);
         }
     }
 }

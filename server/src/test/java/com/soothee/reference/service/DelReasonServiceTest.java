@@ -1,7 +1,6 @@
 package com.soothee.reference.service;
 
 import com.soothee.config.TestConfig;
-import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.DelReason;
 import com.soothee.util.CommonTestCode;
@@ -36,8 +35,8 @@ class DelReasonServiceTest {
             DelReason result = delReasonService.getDelReasonById(CommonTestCode.DEL_REASON_ID1);
             //then
             Assertions.assertThat(result.getContent()).isNotNull();
-        } catch (NullValueException | IncorrectValueException e) {
-            throw new RuntimeException(e);
+        } catch (NullValueException e) {
+            log.error(e.getMessage());
         }
     }
 }

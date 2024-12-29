@@ -2,11 +2,9 @@ package com.soothee.member.service;
 
 import com.soothee.common.constants.BooleanYN;
 import com.soothee.config.TestConfig;
-import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NotExistMemberException;
-import com.soothee.custom.exception.NullValueException;
-import com.soothee.member.dto.MemberInfoDTO;
-import com.soothee.member.dto.MemberNameDTO;
+import com.soothee.member.controller.response.MemberAllInfoResponse;
+import com.soothee.member.controller.response.MemberNameResponse;
 import com.soothee.util.CommonTestCode;
 import com.soothee.member.domain.Member;
 import lombok.extern.slf4j.Slf4j;
@@ -49,36 +47,24 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원 가입")
     void saveMember() {
-        try {
-            //given
-            Member newMember = commonTestCode.getNewMember();
-            //when
-            memberService.saveMember(newMember);
-            //then
-            Assertions.assertThat(newMember.getOauth2ClientId()).isEqualTo("222222");
-        } catch (IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
-        }
+        //given
+        Member newMember = commonTestCode.getNewMember();
+        //when
+        memberService.saveMember(newMember);
+        //then
+        Assertions.assertThat(newMember.getOauth2ClientId()).isEqualTo("222222");
     }
 
     @Test
     @DisplayName("회원 닉네임 수정")
     void updateName() {
-        try {
-            //given
-            String newName = "새 이름";
-            Member newMember = commonTestCode.saveNewMember();
-            //when
-            try {
-                newMember.updateName(newName);
-            } catch (IncorrectValueException | NullValueException e) {
-                log.error(e.getMessage());
-            }
-            //then
-            Assertions.assertThat(newMember.getName()).isEqualTo(newName);
-        } catch (IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
-        }
+        //given
+        String newName = "새 이름";
+        Member newMember = commonTestCode.saveNewMember();
+        //when
+            newMember.updateName(newName);
+        //then
+        Assertions.assertThat(newMember.getName()).isEqualTo(newName);
     }
 
     @Test
@@ -91,10 +77,6 @@ class MemberServiceTest {
         savedMember.updateDarkModeYN(isDark);
         //then
         Assertions.assertThat(savedMember.getIsDark()).isEqualTo(BooleanYN.Y);
-            Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDark.toString());
-        } catch (IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
-        }
     }
 
     @Test
@@ -106,10 +88,6 @@ class MemberServiceTest {
         newMember.deleteMember();
         //then
         Assertions.assertThat(newMember.getIsDelete()).isEqualTo(BooleanYN.Y);
-            Assertions.assertThat(newMember.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
-        } catch (IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
-        }
     }
 
     @Test
@@ -118,11 +96,11 @@ class MemberServiceTest {
         try {
             //given
             //when
-            MemberInfoDTO savedMember = memberService.getAllMemberInfo(CommonTestCode.MEMBER_ID);
+            MemberAllInfoResponse savedMember = memberService.getAllMemberInfo(CommonTestCode.MEMBER_ID);
             //then
             Assertions.assertThat(savedMember.getEmail()).isEqualTo("abc@def.com");
-        } catch (NotExistMemberException | IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
+        } catch (NotExistMemberException e) {
+            log.error("\n", e);
         }
     }
 
@@ -132,27 +110,12 @@ class MemberServiceTest {
         try {
             //given
             //when
-            MemberNameDTO savedMember = memberService.getNicknameInfo(CommonTestCode.MEMBER_ID);
+            MemberNameResponse savedMember = memberService.getNicknameInfo(CommonTestCode.MEMBER_ID);
             //then
             Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
-        } catch (NotExistMemberException | IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
+        } catch (NotExistMemberException e) {
+            log.error("\n", e);
         }
-        //then
-    }
-
-    @Test
-    void getLoginMemberId() {
-        //given
-        //when
-        //then
-    }
-
-    @Test
-    void getLoginMember() {
-        //given
-        //when
-        //then
     }
 
     @Test
@@ -163,8 +126,8 @@ class MemberServiceTest {
             Member savedMember = memberService.getMemberById(CommonTestCode.MEMBER_ID);
             //then
             Assertions.assertThat(savedMember.getName()).isEqualTo("사용자0");
-        } catch (NotExistMemberException | IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
+        } catch (NotExistMemberException e) {
+            log.error("\n", e);
         }
     }
 

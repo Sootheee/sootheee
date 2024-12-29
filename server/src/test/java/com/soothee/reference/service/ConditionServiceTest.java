@@ -1,7 +1,6 @@
 package com.soothee.reference.service;
 
 import com.soothee.config.TestConfig;
-import com.soothee.custom.exception.IncorrectValueException;
 import com.soothee.custom.exception.NullValueException;
 import com.soothee.reference.domain.Condition;
 import com.soothee.util.CommonTestCode;
@@ -37,8 +36,8 @@ class ConditionServiceTest {
             Condition condition = conditionService.getConditionById(CommonTestCode.COND_ID1);
             //then
             Assertions.assertThat(condition.getCondValue()).isEqualTo(15);
-        } catch (NullValueException | IncorrectValueException e) {
-            log.error(e.getMessage());
+        } catch (NullValueException e) {
+            log.error("\n", e);
         }
     }
 }

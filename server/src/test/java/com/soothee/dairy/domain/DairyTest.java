@@ -2,10 +2,8 @@ package com.soothee.dairy.domain;
 
 import com.soothee.common.constants.BooleanYN;
 import com.soothee.config.TestConfig;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
+import com.soothee.dairy.service.command.DairyModify;
 import com.soothee.util.CommonTestCode;
-import com.soothee.dairy.dto.DairyDTO;
 import com.soothee.reference.domain.Weather;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -33,25 +31,21 @@ class DairyTest {
 
     @Test
     void updateDairy() {
-        try {
-            //given
-            String changeThank = "thanks";
-            Dairy savedNewDairy = commonTestCode.saveNewDairy();
-            Weather weather = commonTestCode.getWeather();
-            DairyDTO changedInfo = DairyDTO.builder()
-                    .dairyId(savedNewDairy.getDairyId())
-                    .date(savedNewDairy.getDate())
-                    .weatherId(weather.getWeatherId())
-                    .score(savedNewDairy.getScore())
-                    .thank(changeThank)
-                    .build();
-            //when
-            savedNewDairy.updateDairy(changedInfo, weather);
-            //then
-            Assertions.assertThat(savedNewDairy.getThank()).isEqualTo(changeThank);
-        } catch (IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
-        }
+        //given
+        String changeThank = "thanks";
+        Dairy savedNewDairy = commonTestCode.saveNewDairy();
+        Weather weather = commonTestCode.getWeather();
+        DairyModify changedInfo = DairyModify.builder()
+                                                .dairyId(savedNewDairy.getDairyId())
+                                                .date(savedNewDairy.getDate())
+                                                .weatherId(weather.getWeatherId())
+                                                .score(savedNewDairy.getScore())
+                                                .thank(changeThank)
+                                                .build();
+        //when
+        savedNewDairy.updateDairy(changedInfo, weather);
+        //then
+        Assertions.assertThat(savedNewDairy.getThank()).isEqualTo(changeThank);
     }
 
     @Test
@@ -61,6 +55,6 @@ class DairyTest {
         //when
         savedDairy.deleteDairy();
         //then
-        Assertions.assertThat(savedDairy.getIsDelete()).isEqualTo(BooleanYN.Y.toString());
+        Assertions.assertThat(savedDairy.getIsDelete()).isEqualTo(BooleanYN.Y);
     }
 }

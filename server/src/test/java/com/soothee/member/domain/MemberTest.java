@@ -38,14 +38,10 @@ class MemberTest {
         //given
         String newName = "수정할이름";
         Member savedMember = commonTestCode.getSavedMember();
-        try {
-            //when
-            savedMember.updateName(newName);
-            //then
-            Assertions.assertThat(savedMember.getName()).isEqualTo(newName);
-        } catch (IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
-        }
+        //when
+        savedMember.updateName(newName);
+        //then
+        Assertions.assertThat(savedMember.getName()).isEqualTo(newName);
     }
 
     @Test
@@ -58,10 +54,6 @@ class MemberTest {
         savedMember.updateDarkModeYN(isDark);
         //then
         Assertions.assertThat(savedMember.getIsDark()).isEqualTo(BooleanYN.Y);
-            Assertions.assertThat(savedMember.getIsDark()).isEqualTo(isDark.toString());
-        } catch (IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
-        }
     }
 
     @Test

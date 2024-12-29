@@ -48,8 +48,8 @@ class DairyConditionServiceTest {
             //then
             List<DairyCondition> afterDcList = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "after");
             Assertions.assertThat(afterDcList.size()).isEqualTo(3);
-        } catch (IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
+        } catch (NullValueException e) {
+            log.error("\n", e);
         }
     }
 
@@ -63,8 +63,8 @@ class DairyConditionServiceTest {
             Assertions.assertThat(conditionIdList.get(0)).isEqualTo(CommonTestCode.COND_ID1);
             Assertions.assertThat(conditionIdList.get(1)).isEqualTo(CommonTestCode.COND_ID2);
             Assertions.assertThat(conditionIdList.get(2)).isEqualTo(CommonTestCode.COND_ID3);
-        } catch (NotFoundDetailInfoException | IncorrectValueException | NullValueException e) {
-            log.error(e.getMessage());
+        } catch (NotFoundDairyConditionsException e) {
+            log.error("\n", e);
         }
     }
 
@@ -86,9 +86,8 @@ class DairyConditionServiceTest {
             Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo("COND004");
             Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo("COND002");
             Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo("COND001");
-        } catch (NullValueException | NotMatchedException | IncorrectValueException |
-                 NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (NullValueException | NotFoundDairyConditionsException e) {
+            log.error("\n", e);
         }
     }
 
@@ -114,9 +113,8 @@ class DairyConditionServiceTest {
             Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo("COND001");
             Assertions.assertThat(afterDcList.get(3).getCondition().getCondId()).isEqualTo("COND005");
             Assertions.assertThat(afterDcList.get(4).getCondition().getCondId()).isEqualTo("COND006");
-        } catch (NullValueException | NotMatchedException | IncorrectValueException |
-                 NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (NullValueException | NotFoundDairyConditionsException e) {
+            log.error("\n", e);
         }
     }
 
@@ -138,9 +136,8 @@ class DairyConditionServiceTest {
             Assertions.assertThat(afterDcList.get(0).getCondition().getCondId()).isEqualTo("COND004");
             Assertions.assertThat(afterDcList.get(1).getCondition().getCondId()).isEqualTo("COND002");
             Assertions.assertThat(afterDcList.get(2).getCondition().getCondId()).isEqualTo("COND001");
-        } catch (NullValueException | NotMatchedException | IncorrectValueException |
-                 NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (NullValueException | NotFoundDairyConditionsException e) {
+            log.error("\n", e);
         }
     }
 
@@ -154,8 +151,8 @@ class DairyConditionServiceTest {
             //then
             int cnt = commonTestCode.getNewDairyConditions(savedNewDairy.getDairyId(), "after").size();
             Assertions.assertThat(cnt).isEqualTo(0);
-        } catch (IncorrectValueException | NullValueException | NotFoundDetailInfoException e) {
-            log.error(e.getMessage());
+        } catch (NotFoundDairyConditionsException e) {
+            log.error("\n", e);
         }
     }
 }
