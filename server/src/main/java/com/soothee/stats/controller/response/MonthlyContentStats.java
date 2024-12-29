@@ -17,7 +17,7 @@ public class MonthlyContentStats implements StatsResponse {
     @Schema(description = "한 달 중 가장 낮은 점수를 준 날의 감사한/배운 일")
     private DateContents lowest;
 
-    public MonthlyContentStats(int count) {
+    public MonthlyContentStats(Integer count) {
         this.count = count;
     }
 }

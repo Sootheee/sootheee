@@ -108,7 +108,7 @@ class DairyRepositoryTest {
     void findDiaryContentCntInMonth() {
         //given
         //when
-        int result = dairyRepository.getMonthlyContentsCount(CommonTestCode.MEMBER_ID, ContentType.THANKS, CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow(NullPointerException::new);
+        Integer result = dairyRepository.getMonthlyContentsCount(CommonTestCode.MEMBER_ID, ContentType.THANKS, CommonTestCode.YEAR, CommonTestCode.MONTH).orElseThrow(NullPointerException::new);
         //then
         Assertions.assertThat(result).isEqualTo(3);
     }
