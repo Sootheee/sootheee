@@ -43,7 +43,6 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/dairy")
 public class DairyController {
-    private final MemberService memberService;
     private final DairyService dairyService;
     private final BindingErrorUtil bindingErrorUtil;
 
@@ -64,14 +63,12 @@ public class DairyController {
                                                  @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         /* year || month query parameter validation */
         if (bindingResult.hasErrors()) {
-            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
-            /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
+            Long loginId = loginInfo.getMemberId();
+            List<DairyScoresResponse> result = dairyService.getAllDairyMonthly(loginId, year, month);
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
 
         try {
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
 
             /* 현재 로그인한 계정이 지정된 년도/월에 작성한 모든 일기의 작성 날짜와 오늘의 점수 리스트 조회 */
             List<DairyScoresDTO> result = dairyService.getAllDairyMonthly(memberId, monthParam);
@@ -113,10 +110,8 @@ public class DairyController {
                                              @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         try {
             /* date query parameter validation */
-            SootheeValidation.checkDate(date);
-
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
+            Long loginId = loginInfo.getMemberId();
+            DairyAllResponse findDairy = dairyService.getDairyByDate(loginId, date);
 
             /* 현재 로그인한 계정이 지정한 날짜에 작성한 고유한 하나의 일기 조회 */
             DairyDTO findDairy = dairyService.getDairyByDate(memberId, date);
@@ -165,10 +160,8 @@ public class DairyController {
                                                 @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         try {
             /* dairy_id path parameter validation */
-            SootheeValidation.checkDomainId(dairyId, DomainType.DAIRY);
-
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
+            Long loginId = loginInfo.getMemberId();
+            DairyAllResponse findDairy = dairyService.getDairyByDairyId(loginId, dairyId);
 
             /* 현재 로그인한 계정이 작성한 지정한 일기 일련번호를 가진 고유한 하나의 일기 조회 */
             DairyDTO findDairy = dairyService.getDairyByDairyId(memberId, dairyId);
@@ -333,10 +326,10 @@ public class DairyController {
                                          @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         try {
             /* path parameter validation */
-            SootheeValidation.checkDomainId(dairyId, DomainType.DAIRY);
-
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
+            Long loginId = loginInfo.getMemberId();
+            dairyService.deleteDairy(loginId, dairyId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IncorrectParameterException e) {
 
             /* 작성된 일기 삭제 */
             dairyService.deleteDairy(memberId, dairyId);

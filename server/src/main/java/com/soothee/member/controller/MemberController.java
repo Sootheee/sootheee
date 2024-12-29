@@ -36,9 +36,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequiredArgsConstructor
 @Tag(name = "Member API", description = "회원 관련 처리")
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
@@ -60,10 +60,9 @@ public class MemberController {
                                             @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         try {
             /* query parameter validation - null->true */
-            SootheeValidation.checkTypeQueryParameter(type);
+            Long loginId = loginInfo.getMemberId();
 
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
+                MemberAllInfoResponse result = memberService.getAllMemberInfo(loginId);
 
             /* type Query Parameter 없으면 로그인한 계정의 모든 정보를 조회 */
             if (StringUtils.isBlank(type)) {
@@ -109,9 +108,9 @@ public class MemberController {
             SootheeValidation.checkDomainId(memberId, DomainType.MEMBER);
             /* query parameter validation || String to Enum */
             BooleanYN isDarkYN = BooleanYN.fromString(isDark);
-
-            /* 로그인한 계정 일련번호 조회 */
-            Long loginMemberId = memberService.getLoginMemberId(loginInfo);
+            Long loginId = loginInfo.getMemberId();
+            memberService.updateDarkMode(loginId, memberId, isDarkYN);
+            return new ResponseEntity<>(HttpStatus.OK);
 
             /* 다크모드 변경 */
             memberService.updateDarkMode(loginMemberId, memberId, isDarkYN);
@@ -148,10 +147,10 @@ public class MemberController {
         try {
             /* query parameter validation */
             SootheeValidation.checkDomainId(memberId, DomainType.MEMBER);
-            SootheeValidation.checkQueryParameter(name);
+            Long loginId = loginInfo.getMemberId();
 
-            /* 로그인한 계정 일련번호 조회 */
-            Long loginMemberId = memberService.getLoginMemberId(loginInfo);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IncorrectParameterException e) {
 
             /* 회원 닉네임 수정 */
             memberService.updateName(loginMemberId, memberId, name);

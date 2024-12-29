@@ -7,7 +7,6 @@ import com.soothee.custom.error.BindingErrorUtil;
 import com.soothee.custom.exception.*;
 import com.soothee.common.requestParam.MonthParam;
 import com.soothee.common.requestParam.WeekParam;
-import com.soothee.member.service.MemberService;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import com.soothee.stats.dto.*;
 import com.soothee.stats.service.StatsService;
@@ -39,7 +38,6 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/stats")
 public class StatsController {
-    private final MemberService memberService;
     private final StatsService statsService;
     private final BindingErrorUtil bindingErrorUtil;
 
@@ -63,17 +61,10 @@ public class StatsController {
                                                 @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         /* year || month query parameter validation */
         if (bindingResult.hasErrors()) {
-            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
-            /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
+            Long loginId = loginInfo.getMemberId();
+            MonthlyDairyStats result = statsService.getMonthlyDairyStats(loginId, year, month);
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-
-        try {
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
-
-            /* 월간 일기 요약 통계 조회 */
-            MonthlyStatsDTO result = statsService.getMonthlyStatsInfo(memberId, monthParam);
 
             if (result.getCount() < 3) {
                 /* 작성한 일기가 통계 가능 최소 일기 작성 개수 보다 적은 경우 통계 불가 - 204 : 오류는 아님 */
@@ -135,8 +126,8 @@ public class StatsController {
         try {
             /* type Path Parameter String to Enum and validation */
             ContentType conType = ContentType.fromType(type);
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
+            Long loginId = loginInfo.getMemberId();
+            MonthlyContentStats result = statsService.getMonthlyContentStats(loginId, conType, year, month);
             /* 월간 감사한/배운 일 요약 통계 조회 */
             MonthlyContentsDTO result = statsService.getMonthlyContents(memberId, conType, monthParam);
 
@@ -191,21 +182,10 @@ public class StatsController {
                                              @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         /* year || week query parameter validation */
         if (bindingResult.hasErrors()) {
-            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
-            /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
+            Long loginId = loginInfo.getMemberId();
+            WeeklyDairyStats result = statsService.getWeeklyDairyStats(loginId, year, week);
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
-
-        try {
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
-
-            /* 주간 일기 요약 통계 조회 */
-            WeeklyStatsDTO result = statsService.getWeeklyStatsInfo(memberId, weekParam);
-
-            if (result.getCount() < 1) {
-                /* 작성한 일기가 일기가 없는 경우 - 204 : 오류는 아님 */
-                return new ResponseEntity<>("해당 년도/주차에 작성한 일기 없음", HttpStatus.NO_CONTENT);
             }
 
             /* 성공 - 200 */
@@ -253,17 +233,13 @@ public class StatsController {
                                                            @AuthenticationPrincipal AuthenticatedUser loginInfo) {
         /* year || month query parameter validation */
         if (bindingResult.hasErrors()) {
-            List<BindingErrorResult> errorResults = bindingErrorUtil.getErrorResponse(bindingResult);
+            Long loginId = loginInfo.getMemberId();
             /* 필수 요청 파라미터의 값이 없거나 올바르지 않은 경우 - 400 */
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
 
         try {
-            /* 로그인한 계정 일련번호 조회 */
-            Long memberId = memberService.getLoginMemberId(loginInfo);
 
-            /* 한 달 동안 선택 횟수 상위 최대 3개 컨디션 리스트 조회 */
-            MonthlyConditionsDTO result = statsService.getMonthlyConditionList(memberId, monthParam);
             if (result.getCount() < 1) {
                 /* 선택한 컨디션이 없는 경우 - 204 : 오류는 아님 */
                 return new ResponseEntity<>("해당 년도/월에 선택한 컨디션 없음", HttpStatus.NO_CONTENT);
@@ -319,13 +295,10 @@ public class StatsController {
             return new ResponseEntity<>(errorResults, HttpStatus.BAD_REQUEST);
         }
 
-        try {
-            /* type Path Parameter String to ContentType and validation */
             ContentType conType = ContentType.fromType(type);
-            /* orderBy Query Parameter String to SortType and validation */
             SortType sortType = SortType.fromType(orderBy);
-
-            /* 로그인한 계정 일련번호 조회 */
+            Long loginId = loginInfo.getMemberId();
+            MonthlyContentDetail result = statsService.getMonthlyContentDetail(loginId, conType, year, month, sortType);
             Long memberId = memberService.getLoginMemberId(loginInfo);
 
             /* 한 달 동안 작성한 모든 감사한/배운 일 리스트 Sorting 조회 */
