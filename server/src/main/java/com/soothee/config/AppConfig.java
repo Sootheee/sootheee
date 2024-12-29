@@ -81,10 +81,11 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
-                    .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher("/swagger-ui/**"),
-                                                                                    new AntPathRequestMatcher("/api"),
-                                                                                    new AntPathRequestMatcher("/v3/**"),
-                                                                                    new AntPathRequestMatcher("/docs")).permitAll()
+                    .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher("/swagger-ui.html"),
+                                                                                    new AntPathRequestMatcher("/swagger-ui/**"),
+                                                                                    new AntPathRequestMatcher("/api/**"),
+                                                                                    new AntPathRequestMatcher("/v3/api-docs/**"),
+                                                                                    new AntPathRequestMatcher("/docs/**")).permitAll()
                                                                     .anyRequest().authenticated())
                     .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login?error=session-expired")))
                     .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(user -> user.userService(delegatingOAuth2Service))
@@ -118,7 +119,7 @@ public class AppConfig implements WebMvcConfigurer {
                             .group("member")
                             .pathsToMatch("/member/**")
                             .addOpenApiCustomizer(openApi -> {
-                                openApi.setInfo(new io.swagger.v3.oas.models.info.Info().title("Member API")
+                                openApi.info(new io.swagger.v3.oas.models.info.Info().title("Member API")
                                                                                             .description("회원 관련 처리")
                                                                                             .version("1.0.0"));
                                 openApi.addSecurityItem(
@@ -135,7 +136,7 @@ public class AppConfig implements WebMvcConfigurer {
                             .group("dairy")
                             .pathsToMatch("/dairy/**")
                             .addOpenApiCustomizer(openApi -> {
-                                openApi.setInfo(new io.swagger.v3.oas.models.info.Info().title("Dairy API")
+                                openApi.info(new io.swagger.v3.oas.models.info.Info().title("Dairy API")
                                                                                         .description("일기 관련 처리")
                                                                                         .version("1.0.0"));
                                 openApi.addSecurityItem(
@@ -152,9 +153,9 @@ public class AppConfig implements WebMvcConfigurer {
                 .group("stats")
                 .pathsToMatch("/stats/**")
                 .addOpenApiCustomizer(openApi -> {
-                    openApi.setInfo(new io.swagger.v3.oas.models.info.Info().title("Stats API")
-                            .description("통계 관련 처리")
-                            .version("1.0.0"));
+                    openApi.info(new io.swagger.v3.oas.models.info.Info().title("Stats API")
+                                                                            .description("통계 관련 처리")
+                                                                            .version("1.0.0"));
                     openApi.addSecurityItem(
                             new io.swagger.v3.oas.models.security.SecurityRequirement().addList("oauth2_auth")
                     );
