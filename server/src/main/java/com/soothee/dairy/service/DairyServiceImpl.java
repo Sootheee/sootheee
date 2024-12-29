@@ -1,15 +1,9 @@
 package com.soothee.dairy.service;
 
-import com.soothee.common.constants.BooleanYN;
-import com.soothee.common.constants.DomainType;
 import com.soothee.custom.exception.*;
-import com.soothee.common.requestParam.MonthParam;
-import com.soothee.custom.valid.SootheeValidation;
+import com.soothee.dairy.controller.response.DairyAllResponse;
 import com.soothee.dairy.domain.Dairy;
-import com.soothee.dairy.dto.DairyDTO;
-import com.soothee.dairy.dto.DairyRegisterDTO;
-import com.soothee.dairy.dto.DairyScoresDTO;
-import com.soothee.dairy.dto.InputDairyDTO;
+import com.soothee.dairy.controller.response.DairyScoresResponse;
 import com.soothee.dairy.repository.DairyRepository;
 import com.soothee.dairy.service.command.DairyInputInfo;
 import com.soothee.dairy.service.command.DairyModify;
@@ -27,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.soothee.custom.valid.SootheeValidation.*;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -43,104 +39,58 @@ public class DairyServiceImpl implements DairyService {
     }
 
     @Override
-    public DairyDTO getDairyByDate(Long memberId, LocalDate date) throws NotExistDairyException, DuplicatedResultException, NotFoundDetailInfoException, IncorrectValueException, NullValueException {
-        /* 현재 로그인한 계정이 지정한 날짜에 작성한 고유한 하나의 일기 조회 */
-        List<DairyDTO> dairyDTO = dairyRepository.findByDate(memberId, date)
-                /* 지정한 날짜에 작성된 일기가 없는 경우 Exception 발생 */
-                .orElseThrow(() -> new NotExistDairyException(memberId, date));
-
-        /* 같은 작성 일자의 일기가 1개 초과 중복 등록된 경우 Exception 발생 */
-        SootheeValidation.checkDairyDuplicate(dairyDTO.size());
+    public DairyAllResponse getDairyByDate(Long memberId, LocalDate date) throws NoDairyResultException, DuplicatedResultException, NotFoundDairyConditionsException {
+        List<DairyAllResponse> dairyAllResponse = dairyRepository.findAllDairyInfoByDate(memberId, date)
+                .orElseThrow(() -> new NoDairyResultException(memberId, date));
+        checkOnlyOneResult(dairyAllResponse.size());
+        return getDairyInfoWithCondIdListIfExist(dairyAllResponse);
     }
 
     @Override
-    public DairyDTO getDairyByDairyId(Long memberId, Long dairyId) throws NotExistDairyException, DuplicatedResultException, NotFoundDetailInfoException, IncorrectValueException, NullValueException {
-        /* 현재 로그인한 계정이 작성한 지정한 일기 일련번호를 가진 고유한 하나의 일기 조회 */
-        List<DairyDTO> dairyDTO = dairyRepository.findByMemberDiaryId(memberId, dairyId)
-                /* 지정한 일기 일련번호를 가진 일기가 없는 경우 Exception 발생 */
-                .orElseThrow(() -> new NotExistDairyException(memberId, dairyId));
-
-        /* 같은 일기 일련번호의 일기가 1개 초과 중복 등록된 경우 Exception 발생 */
-        SootheeValidation.checkDairyDuplicate(dairyDTO.size());
-    }
-
-    private DairyDTO getDairyDTO(List<DairyDTO> dairyDTO) throws NotFoundDetailInfoException, IncorrectValueException, NullValueException {
-        DairyDTO result = dairyDTO.get(0);
-        /* 해당 일기에 선택된 컨디션이 있는지 확인 */
-        if (dairyConditionService.isConditionExistInDairy(result.getDairyId())) {
-            /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 Exception 발생
-             * 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-            result.setCondIdList(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
-        }
-        /* 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        result.valid();
-        return result;
+    public DairyAllResponse getDairyByDairyId(Long memberId, Long dairyId) throws NoDairyResultException, DuplicatedResultException, NotFoundDairyConditionsException {
+        List<DairyAllResponse> dairyAllResponse = dairyRepository.findAllDairyInfoByDiaryId(memberId, dairyId)
+                .orElseThrow(() -> new NoDairyResultException(memberId, dairyId));
+        checkOnlyOneResult(dairyAllResponse.size());
+        return getDairyInfoWithCondIdListIfExist(dairyAllResponse);
     }
 
     @Override
     public void registerDairy(DairyRegister dairyInfo) throws DuplicatedResultException, NullValueException, NotExistMemberException {
-        /* 현재 로그인한 회원이 해당 일자에 써놓은 일기가 있는지 중복 체크
-         * 입력한 새 일기의 작성 날짜에 이미 등록된 일기가 있는 경우 Exception 발생 */
-        checkDuplicateDairy(memberId, inputInfo.getDate());
+        checkDuplicateDairy(dairyInfo.getMemberId(), dairyInfo.getDate());
 
-        /* 해당 회원 일련번호로 조회된 회원 정보가 없는 경우 Exception 발생
-         * 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        Member member = memberService.getMemberById(memberId);
-        /* 해당 날씨 일련번호로 조회된 날씨가 없는 경우 Exception 발생 */
-        Weather weather = weatherService.getWeatherById(inputInfo.getWeatherId());
+        Member member = memberService.getMemberById(dairyInfo.getMemberId());
+        Weather weather = weatherService.getWeatherById(dairyInfo.getWeatherId());
+        Dairy newDairy = dairyInfo.toDairy(member, weather);
 
-        Dairy newDairy = Dairy.of(inputInfo, member, weather);
-
-        /* 일기 등록 */
         dairyRepository.save(newDairy);
-        /* 일기에 선택한 컨디션이 있는 경우 */
-        if (isExistInputCondList(inputInfo)) {
-            /* 해당 일기의 선택한 컨디션을 등록
-             * - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-            dairyConditionService.saveConditions(inputInfo.getCondIdList(), newDairy);
+        if (isExistSelectedConditions(dairyInfo)) {
+            dairyConditionService.saveConditions(dairyInfo.getCondIdList(), newDairy);
         }
     }
 
     @Override
     public void modifyDairy(Long curDairyId, DairyModify dairyInfo) throws NoDairyResultException, NotMatchedException, NoAuthorizeException, NullValueException, NotFoundDairyConditionsException {
-        /* 해당 일련번호로 기존 일기 조회
-         * - 지정한 일기 일련번호를 가진 일기가 없는 경우 Exception 발생
-         * - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생 */
-        Dairy dairy = getDairyByDairyId(inputInfo.getDairyId());
+        Dairy dairy = getDairyByDairyId(dairyInfo.getDairyId());
+        checkSameDairy(curDairyId, dairy.getDairyId());
+        checkSameDate(dairy.getDate(), dairyInfo.getDate());
+        checkAuthorizedMember(dairy.getMember().getMemberId(), dairyInfo.getMemberId());
 
-        /* 기존 일기 일련번호와 입력한 일기 일련번호가 다른 경우 Exception 발생 */
-        SootheeValidation.checkMatchedId(dairyId, dairy.getDairyId(), DomainType.DAIRY);
-        /* 기존 일기 작성 날짜와 입력한 일기 작성 날짜가 다른 경우 Exception 발생 */
-        SootheeValidation.checkMatchedDate(dairy.getDate(), inputInfo.getDate());
-        /* 기존 일기 작성 회원 일련번호와 현재 로그인한 계정의 회원 일련번호가 다른 경우 Exception 발생 */
-        SootheeValidation.checkMatchedId(dairy.getMember().getMemberId(), memberId, DomainType.MEMBER);
-        /* 해당 날씨 일련번호로 조회된 날씨가 없는 경우 Exception 발생 */
-        Weather weather = weatherService.getWeatherById(inputInfo.getWeatherId());
+        Weather weather = weatherService.getWeatherById(dairyInfo.getWeatherId());
+        dairy.updateDairy(dairyInfo, weather);
 
-        /* 기존 일기 수정 - 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 */
-        dairy.updateDairy(inputInfo, weather);
-        /* 수정된 일기 정보에 선택한 컨디션이 있는 경우 */
-        if (isExistInputCondList(inputInfo)) {
-            dairyConditionService.updateConditions(dairy, inputInfo.getCondIdList());
+        if (isExistSelectedConditions(dairyInfo)) {
+            dairyConditionService.updateConditions(dairy, dairyInfo.getCondIdList());
         }
     }
 
     @Override
-    public void deleteDairy(Long memberId, Long dairyId) throws NotExistDairyException, NotMatchedException, NotFoundDetailInfoException, IncorrectValueException, NullValueException {
-        /* 해당 일련번호로 기존 일기 조회
-         * - 지정한 일기 일련번호를 가진 일기가 없는 경우 Exception 발생 */
+    public void deleteDairy(Long memberId, Long dairyId) throws NoDairyResultException, NoAuthorizeException, NotFoundDairyConditionsException {
         Dairy dairy = getDairyByDairyId(dairyId);
+        checkAuthorizedMember(dairy.getMember().getMemberId(), memberId);
 
-        /* 기존 일기 작성 회원 일련번호와 현재 로그인한 계정의 회원 일련번호가 다른 경우 Exception 발생 */
-        SootheeValidation.checkMatchedId(dairy.getMember().getMemberId(), memberId, DomainType.MEMBER);
-
-        /* 해당 일기에 선택된 컨디션이 있는지 확인 */
-        if (dairyConditionService.isConditionExistInDairy(dairyId)) {
-            /* 해당 일기의 선택돤 컨디션 삭제
-             * - 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 Exception 발생 */
+        if (isExistSelectedConditionInDairy(dairyId)) {
             dairyConditionService.deleteDairyConditionsOfDairy(dairy);
         }
-        /* 일기 삭제 */
         dairy.deleteDairy();
     }
 
@@ -151,23 +101,21 @@ public class DairyServiceImpl implements DairyService {
      * @param date 조회할 날짜
      */
     private void checkDuplicateDairy(Long memberId, LocalDate date) throws DuplicatedResultException {
-        if (dairyRepository.findByDate(memberId, date).isPresent()) {
-            throw new DuplicatedResultException(DomainType.DAIRY);
+        if (dairyRepository.findAllDairyInfoByDate(memberId, date).isPresent()) {
+            throw new DuplicatedResultException();
         }
     }
 
     /**
      * 일기 일련변호로 일기 가져오기
-     * 1. 지정한 일기 일련번호를 가진 일기가 없는 경우 Exception 발생
-     * 2. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
      *
      * @param dairyId 가져올 일기 일련번호
      * @return 가져온 일기
      */
-    private Dairy getDairyByDairyId(Long dairyId) throws NotExistDairyException, IncorrectValueException, NullValueException {
-        Dairy result = dairyRepository.findByDairyIdAndIsDelete(dairyId, BooleanYN.N.toString())
-                /* 지정한 일기 일련번호를 가진 일기가 없는 경우 Exception 발생 */
-                .orElseThrow(() -> new NotExistDairyException(dairyId));
+    private Dairy getDairyByDairyId(Long dairyId) throws NoDairyResultException {
+        List<Dairy> result = dairyRepository.findDairyByDairyId(dairyId)
+                .orElseThrow(() -> new NoDairyResultException(dairyId));
+        checkOnlyOneResult(result.size());
         return result.get(0);
     }
 
@@ -179,5 +127,17 @@ public class DairyServiceImpl implements DairyService {
      */
     private static boolean isExistSelectedConditions(DairyInputInfo inputInfo) {
         return Objects.nonNull(inputInfo.getCondIdList());
+    }
+
+    private DairyAllResponse getDairyInfoWithCondIdListIfExist(List<DairyAllResponse> dairyAllResponse) throws NotFoundDairyConditionsException {
+        DairyAllResponse result = dairyAllResponse.get(0);
+        if (isExistSelectedConditionInDairy(result.getDairyId())) {
+            result.setCondIdList(dairyConditionService.getConditionsIdListByDairy(result.getDairyId()));
+        }
+        return result;
+    }
+
+    private boolean isExistSelectedConditionInDairy(Long dairyId) {
+        return dairyConditionService.isExistSelectedConditionsInDairy(dairyId);
     }
 }

@@ -97,20 +97,14 @@ public class DairyController {
         } catch (IncorrectParameterException e) {
             log.error("요청 파라미터 값이 올바르지 않거나 없음 - 400\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (NotExistMemberException e) {
-            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
-            log.error(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        } catch (NotExistDairyException e) {
-            /* 해당 작성 날짜로 조회한 로그인한 계정의 작성 일기가 없는 경우 - 404 */
-            log.error(e.getMessage());
+        } catch (NoDairyResultException e) {
+            log.error("해당 작성 날짜로 조회한 로그인한 계정의 작성 일기가 없는 경우 - 404\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (DuplicatedResultException e) {
             log.error("로그인한 계정이 해당 작성 날짜에 등록된 일기가 2개 이상인 경우 - 409\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        } catch (NotFoundDetailInfoException e) {
-            /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 - 500 */
-            log.error(e.getMessage());
+        } catch (NotFoundDairyConditionsException e) {
+            log.error("일기의 선택한 컨디션 세부 정보를 불러오지 못한 경우 - 500\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -122,10 +116,10 @@ public class DairyController {
             @Parameter(name = "dairy_id", description = "조회할 날", example = "/dairy/calendar/111111", required = true, in = ParameterIn.PATH)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "일기 일련번호에 해당하는 일기 정보 조회 성공", content = @Content(schema = @Schema(implementation = DairyDTO.class))),
-            @ApiResponse(responseCode = "400", description = "필수 요청 파라미터 값이나 필수 응답값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "200", description = "일기 일련번호로 일기 조회 성공", content = @Content(schema = @Schema(implementation = DairyAllResponse.class))),
+            @ApiResponse(responseCode = "400", description = "요청 파라미터 값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "404", description = "조회한 일기 일련번호로 작성된 일기 조회 실패", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "409", description = "조회한 작성 날짜에 등록한 일기가 1개 초과임", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "409", description = "조회한 작성 날짜에 등록한 일기가 2개 이상임", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "500", description = "선택한 컨디션 상세 정보 조회 실패", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> sendDairyByDairyId(@PathVariable("dairy_id") Long dairyId,
@@ -138,21 +132,14 @@ public class DairyController {
         } catch (IncorrectParameterException e) {
             log.error("요청 파라미터 값이 올바르지 않거나 없음 - 400\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (NotExistMemberException e) {
-            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
-            log.error(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        } catch (NotExistDairyException e) {
-            /* 해당 일기 일련번호로 조회한 로그인한 계정의 작성 일기가 없는 경우 - 404 */
-            log.error(e.getMessage());
+        } catch (NoDairyResultException e) {
+            log.error("해당 일기 일련번호로 조회한 로그인한 계정의 작성 일기가 없는 경우 - 404\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (DuplicatedResultException e) {
-            /* 로그인한 계정의 해당 일기 일련번호로 등록한 일기가 1개 초과인 경우 - 409 */
-            log.error(e.getMessage());
+            log.error("로그인한 계정의 해당 일기 일련번호로 등록한 일기가 2개 이상인 경우 - 409\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        } catch (NotFoundDetailInfoException e) {
-            /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 - 500 */
-            log.error(e.getMessage());
+        } catch (NotFoundDairyConditionsException e) {
+            log.error("일기의 선택한 컨디션 세부 정보를 불러오지 못한 경우 - 500\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -215,10 +202,10 @@ public class DairyController {
             @Parameter(name = "learn", description = "배운 일", example = "learn=사회는액팅이다", in = ParameterIn.QUERY)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "기존 일기 수정 성공", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "400", description = "필수 요청 파라미터 값이나 필수 응답값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "200", description = "일기 수정 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "요청 파라미터 값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "일기 수정 권한 없음", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "404", description = "조회한 일기 일련번호로 작성된 일기 조회 실패", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "404", description = "수정할 일기 조회 실패", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "500", description = "선택한 컨디션 상세 정보 조회 실패", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> modifyDairy(@PathVariable("dairy_id") Long dairyId,
@@ -243,17 +230,14 @@ public class DairyController {
         } catch (NotMatchedException e) {
             log.error("수정 요청 일기 일련번호/작성 일자가 기존 일기의 정보와 일치하지 않는 경우 - 400\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (NotExistMemberException e) {
-            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
-            log.error(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        } catch (NotExistDairyException e) {
-            /* 해당 일기 일련번호로 조회한 로그인한 계정의 작성 일기가 없는 경우 - 404 */
-            log.error(e.getMessage());
+        } catch (NoAuthorizeException e) {
+            log.error("현재 로그인한 회원에게 해당 일기의 수정 권한이 없는 경우 - 403\n", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (NoDairyResultException e) {
+            log.error("수정할 일기 조회 실패한 경우 - 404\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (NotFoundDetailInfoException e) {
-            /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 - 500 */
-            log.error(e.getMessage());
+        } catch (NotFoundDairyConditionsException e) {
+            log.error("기존/수정 일기의 선택한 컨디션 정보를 불러오지 못한 경우 - 500\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -265,10 +249,10 @@ public class DairyController {
             @Parameter(name = "dairy_id", description = "삭제할 일기 일련번호", example = "/dairy/1111", required = true, in = ParameterIn.PATH)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "기존 일기 삭제 성공", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "400", description = "필수 요청 파라미터 값이나 필수 응답값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "200", description = "일기 삭제 성공", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "요청 파라미터 값이 올바르지 않거나 없음", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "403", description = "일기 수정 권한 없음", content = @Content(mediaType = "text/plain")),
-            @ApiResponse(responseCode = "404", description = "조회한 일기 일련번호로 작성된 일기 조회 실패", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "404", description = "삭제할 일기 조회 실패", content = @Content(mediaType = "text/plain")),
             @ApiResponse(responseCode = "500", description = "선택한 컨디션 상세 정보 조회 실패", content = @Content(mediaType = "text/plain"))
     })
     public ResponseEntity<?> deleteDairy(@PathVariable("dairy_id") Long dairyId,
@@ -281,17 +265,14 @@ public class DairyController {
         } catch (IncorrectParameterException e) {
             log.error("요청 파라미터 값이 올바르지 않거나 없음 - 400\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (NotExistMemberException e) {
-            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
-            log.error(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        } catch (NotExistDairyException e) {
-            /* 해당 일기 일련번호의 일기가 없는 경우 - 404 : 오류 */
-            log.error(e.getMessage());
+        } catch (NoAuthorizeException e) {
+            log.error("현재 로그인한 회원에게 해당 일기의 수정 권한이 없는 경우 - 403\n", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (NoDairyResultException e) {
+            log.error("삭제할 일기 조회 실패한 경우 - 404 : 오류\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (NotFoundDetailInfoException e) {
-            /* 해당 일기에 선택한 컨디션이 있지만 정보를 불러오지 못한 경우 - 500 */
-            log.error(e.getMessage());
+        } catch (NotFoundDairyConditionsException e) {
+            log.error("일기의 선택한 컨디션 세부 정보를 불러오지 못한 경우 - 500\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

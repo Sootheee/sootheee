@@ -100,9 +100,9 @@ public class MemberController {
         } catch (IncorrectParameterException e) {
             log.error("요청 파라미터 값이 올바르지 않거나 없음 - 400\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (NotExistMemberException e) {
-            /* 로그인한 인증된 계정의 정보를 조회하지 못한 경우 - 401 */
-            log.error(e.getMessage());
+        } catch (NoAuthorizeException e) {
+            log.error("회원 다크모드 수정 권한 없음 - 403\n", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         } catch (NotExistMemberException e){
             log.error("로그인한 회원 정보 조회 실패 - 404\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -134,6 +134,9 @@ public class MemberController {
         } catch (IncorrectParameterException e) {
             log.error("요청 파라미터 값이 올바르지 않거나 없음 - 400\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NoAuthorizeException e) {
+            log.error("회원 다크모드 수정 권한 없음 - 403\n", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         } catch (NotExistMemberException e) {
             log.error("로그인한 회원 정보 조회 실패 - 404\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -167,6 +170,9 @@ public class MemberController {
         } catch (NullValueException e) {
             log.error("요청한 탈퇴 사유 일련번호로 조회 실패 - 400\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NoAuthorizeException e) {
+            log.error("회원 탈퇴 권한 없음 - 403\n", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         } catch (NotExistMemberException e) {
             log.error("로그인한 회원 정보 조회 실패 - 404\n", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
