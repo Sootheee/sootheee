@@ -3,9 +3,6 @@ package com.soothee.member.domain;
 import com.soothee.common.constants.*;
 import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
-import com.soothee.custom.valid.SootheeValidation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -67,12 +64,10 @@ public class Member extends TimeEntity implements Domain {
 
     /**
      * 회원 정보 수정
-     * 1. 입력된 수정할 닉네임이 없거나 올바르지 않는 경우 Exception 발생
      *
      * @param updateName 바꿀 회원 닉네임
      */
-    public void updateName(String updateName) throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkName(updateName);
+    public void updateName(String updateName) {
         this.name = updateName;
     }
 
@@ -93,28 +88,5 @@ public class Member extends TimeEntity implements Domain {
     @Override
     public Long getId() {
         return memberId;
-    }
-
-    /**
-     * valid
-     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
-     */
-    public void valid() throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomainId(getMemberId(), DomainType.MEMBER);
-        validNew();
-    }
-
-    /**
-     * valid
-     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
-     */
-    public void validNew() throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkEmail(getEmail());
-        SootheeValidation.checkName(getName());
-        SootheeValidation.checkBoolean(getIsDark(), BooleanType.DARK_MODE);
-        SootheeValidation.checkBoolean(getIsDelete(), BooleanType.DELETE);
-        SootheeValidation.checkSnsType(getSnsType());
-        SootheeValidation.checkNullForNecessaryString(getOauth2ClientId(), StringType.OAUTH2);
-        SootheeValidation.checkRole(getRole());
     }
 }

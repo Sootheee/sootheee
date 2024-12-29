@@ -1,12 +1,7 @@
 package com.soothee.member.domain;
 
-import com.soothee.common.constants.DomainType;
-import com.soothee.common.constants.ReferenceType;
 import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
-import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.reference.domain.DelReason;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -43,15 +38,5 @@ public class MemberDelReason extends TimeEntity implements Domain {
     @Override
     public Long getId() {
         return memberDelReasonId;
-    }
-
-    /**
-     * valid
-     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
-     */
-    public void valid() throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomainId(getMemberDelReasonId(), DomainType.MEMBER_DEL_REASON);
-        SootheeValidation.checkDomain(getMember(), DomainType.MEMBER);
-        SootheeValidation.checkReference(getDelReason(), ReferenceType.DEL_REASON);
     }
 }

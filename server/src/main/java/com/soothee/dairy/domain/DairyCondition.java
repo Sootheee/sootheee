@@ -1,21 +1,17 @@
 package com.soothee.dairy.domain;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.soothee.common.constants.*;
 import com.soothee.common.domain.Domain;
 import com.soothee.common.domain.TimeEntity;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
-import com.soothee.custom.valid.SootheeValidation;
 import com.soothee.reference.domain.Condition;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(onConstructor = @__(@QueryProjection))
 @Table(name = "dairy_condition")
 public class DairyCondition extends TimeEntity implements Domain {
     /** 일기-콘텐츠 일련번호 */
@@ -58,25 +54,5 @@ public class DairyCondition extends TimeEntity implements Domain {
     @Override
     public Long getId() {
         return dairyCondId;
-    }
-
-    /**
-     * valid
-     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
-     */
-    public void validNew() throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomain(getDairy(), DomainType.DAIRY);
-        SootheeValidation.checkReference(getCondition(), ReferenceType.CONDITION);
-        SootheeValidation.checkInteger(getOrderNo(), StringType.ORDER_NO);
-    }
-
-    /**
-     * valid
-     * 1. 입력된 필수 값 중에 없거나 올바르지 않는 값이 있는 경우 Exception 발생
-     */
-    public void valid() throws IncorrectValueException, NullValueException {
-        SootheeValidation.checkDomainId(getDairyCondId(), DomainType.DAIRY_CONDITION);
-        validNew();
-        SootheeValidation.checkBoolean(getIsDelete(), BooleanType.DELETE);
     }
 }
