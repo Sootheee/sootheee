@@ -93,7 +93,6 @@ const CalendarContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: #fffcf1;
 `;
 
 const DaysHeader = styled.div`
@@ -105,7 +104,9 @@ const DaysHeader = styled.div`
 `;
 
 const DayLabel = styled.span<{ $isSunday?: boolean }>`
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 14px;
   text-align: center;
   color: ${(props) => (props.$isSunday ? '#ff5959' : '#333')};
 `;
@@ -124,7 +125,9 @@ const DayButton = styled.button<{ $isToday: boolean; $isSunday?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 20px;
   border: none;
   border-radius: 50%;
   background-color: transparent;
@@ -132,12 +135,12 @@ const DayButton = styled.button<{ $isToday: boolean; $isSunday?: boolean }>`
   cursor: pointer;
   text-align: center;
   &:hover {
-    background-color: #f0f0f0;
+    /* background-color: #f0f0f0; */
   }
   ${(props) =>
     props.$isToday &&
     `
-    background-color: #f0f0f0;
+    // background-color: #f0f0f0;
     position:relative;
     &::after {
       content: '';
