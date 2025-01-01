@@ -2,26 +2,36 @@ package com.soothee.config;
 
 import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.soothee.common.constants.ConstUrl;
+import com.soothee.common.constants.SnsType;
 import com.soothee.oauth2.filter.JwtAuthenticationFilter;
 import com.soothee.oauth2.provider.JwtTokenProvider;
 import com.soothee.oauth2.service.DelegatingOAuth2Service;
+import com.soothee.oauth2.token.repository.RefreshTokenRepository;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.models.GroupedOpenApi;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -59,6 +69,13 @@ public class AppConfig implements WebMvcConfigurer {
     private final DelegatingOAuth2Service delegatingOAuth2Service;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RefreshTokenRepository refreshTokenRepository;
+    @Value("${spring.data.redis.host}")
+    private String redisHost;
+
+    @Value("${spring.data.redis.port}")
+    private int redisPort;
+
 
     /** QueryDSL 설정 */
     @PersistenceContext
@@ -77,6 +94,22 @@ public class AppConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 
+    /** redis connect */
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory(redisHost, redisPort);
+    }
+
+    /** refresh Token redis setting */
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return redisTemplate;
+    }
+
     /** Spring-Security 설정 */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -90,12 +123,28 @@ public class AppConfig implements WebMvcConfigurer {
                     .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login?error=session-expired")))
                     .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(user -> user.userService(delegatingOAuth2Service))
                                                                             .defaultSuccessUrl("/home", true)
-                                                    .successHandler((request, response, authentication) -> {
-                                                        OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
-                                                        String jwt = jwtTokenProvider.generateToken(token.getName());
-                                                        response.setContentType("application/json");
-                                                        response.getWriter().write("{\"accessToken\": \"" + jwt + "\"}");
-                                                    })
+                                                                            .successHandler((request, response, authentication) -> {
+                                                                                OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
+                                                                                String accessToken = jwtTokenProvider.generateToken(token.getName());
+                                                                                String refreshToken = jwtTokenProvider.generateRefreshToken(token.getName());
+                                                                                Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+                                                                                accessTokenCookie.setHttpOnly(true);
+                                                                                accessTokenCookie.setSecure(true);
+                                                                                accessTokenCookie.setPath("/");
+                                                                                accessTokenCookie.setMaxAge(3600);
+
+                                                                                Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+                                                                                refreshTokenCookie.setHttpOnly(true);
+                                                                                refreshTokenCookie.setSecure(true);
+                                                                                refreshTokenCookie.setPath("/");
+                                                                                refreshTokenCookie.setMaxAge((int) JwtTokenProvider.REFRESH_EXPIRATION_TIME / 1000);
+
+                                                                                response.addCookie(accessTokenCookie);
+                                                                                response.addCookie(refreshTokenCookie);
+
+                                                                                response.setContentType("application/json");
+                                                                                response.getWriter().write("{\"message\": \"Login successful\"}");
+                                                                            })
                                 )
                     .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
