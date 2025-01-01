@@ -35,8 +35,11 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -65,7 +68,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class AppConfig implements WebMvcConfigurer {
-    private final ConstUrl constUrl;
     private final DelegatingOAuth2Service delegatingOAuth2Service;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -76,6 +78,14 @@ public class AppConfig implements WebMvcConfigurer {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
+    @Value("${oauth2.kakao.logout.url}")
+    private String kakaoLogoutUrl;
+
+    @Value("${oauth2.kakao.bearer.auth}")
+    private String bearerAuth;
+
+    @Value("${oauth2.google.logout.url}")
+    private String googleLogoutUrl;
 
     /** QueryDSL 설정 */
     @PersistenceContext
@@ -116,13 +126,18 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
+                    .formLogin(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests((requests) -> requests.requestMatchers(new AntPathRequestMatcher("/swagger-ui.html"),
                                                                                     new AntPathRequestMatcher("/swagger-ui/**"),
                                                                                     new AntPathRequestMatcher("/api/**"),
                                                                                     new AntPathRequestMatcher("/v3/api-docs/**"),
-                                                                                    new AntPathRequestMatcher("/docs/**")).permitAll()
+                                                                                    new AntPathRequestMatcher("/docs/**"),
+                                                                                    new AntPathRequestMatcher("/auth/refresh")).permitAll()
                                                                     .anyRequest().authenticated())
-                    .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login?error=session-expired")))
+                    .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> {response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                                                                                                                response.setContentType("application/json");
+                                                                                                                                response.getWriter().write("{\"error\": \"Session expired. Please log in again.\"}");
+                                    }))
                     .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(user -> user.userService(delegatingOAuth2Service))
                                                                             .defaultSuccessUrl("/home", true)
                                                                             .successHandler((request, response, authentication) -> {
@@ -148,19 +163,58 @@ public class AppConfig implements WebMvcConfigurer {
                                                                                 response.getWriter().write("{\"message\": \"Login successful\"}");
                                                                             })
                                 )
-                    .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+                    .logout(logout -> logout
+                            .logoutUrl("/auth/logout")
+                            .logoutSuccessHandler((request, response, authentication) -> {
+                                if (authentication != null) {
+                                    String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
+                                    String oauth2ClientId = authentication.getName();
+
+                                    // Refresh Token 삭제
+                                    refreshTokenRepository.deleteRefreshToken(oauth2ClientId);
+
+                                    // SNS 로그아웃 처리
+                                    if (StringUtils.equals(SnsType.KAKAOTALK.toString(),registrationId)) {
+                                        handleKakaoLogout();
+                                    }
+                                    if (StringUtils.equals(SnsType.GOOGLE.toString(), registrationId)) {
+                                        handleGoogleLogout(response);
+                                    }
+                                }
+
+                                Cookie accessTokenCookie = new Cookie("accessToken", null);
+                                accessTokenCookie.setHttpOnly(true);
+                                accessTokenCookie.setSecure(true);
+                                accessTokenCookie.setPath("/");
+                                accessTokenCookie.setMaxAge(0);
+
+                                Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+                                refreshTokenCookie.setHttpOnly(true);
+                                refreshTokenCookie.setSecure(true);
+                                refreshTokenCookie.setPath("/");
+                                refreshTokenCookie.setMaxAge(0);
+
+                                response.addCookie(accessTokenCookie);
+                                response.addCookie(refreshTokenCookie);
+
+                                response.setStatus(HttpServletResponse.SC_OK);
+                                response.getWriter().write("{\"message\": \"Logout successful\"}");
+                            }))
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
 
-    private JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        authoritiesConverter.setAuthorityPrefix("ROLE_");
-        authoritiesConverter.setAuthoritiesClaimName("roles");
+    private void handleKakaoLogout() {
+        RestTemplate restTemplate = new RestTemplate();
 
-        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
-        authenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(bearerAuth);
 
-        return authenticationConverter;
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        restTemplate.postForEntity(kakaoLogoutUrl, request, String.class);
+    }
+
+    private void handleGoogleLogout(HttpServletResponse response) throws IOException {
+        response.sendRedirect(googleLogoutUrl);
     }
 
     /** Swagger 회원 API 명세서 */
