@@ -1,4 +1,4 @@
-package com.soothee.oauth2.domain;
+package com.soothee.oauth2.userDomain;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.member.domain.Member;
@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Map;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class GoogleUser {
@@ -32,11 +33,19 @@ public class GoogleUser {
 
     /** 인증 회원 정보 중 닉네임 가져오기 */
     private String getNickName() {
-        return String.valueOf(getAttributes().get("name"));
+        String nickname = String.valueOf(getAttributes().get("name"));
+        if (nickname.isBlank()) {
+            throw new IllegalStateException("Nickname is missing in Google OAuth2 response");
+        }
+        return nickname;
     }
 
     /** 인증 회원 정보 중 아이디(이메일) 가져오기 */
     private String getEmail() {
-        return String.valueOf(getAttributes().get("email"));
+        String email = String.valueOf(getAttributes().get("email"));
+        if (email.isBlank()) {
+            throw new IllegalStateException("Email is missing in Google OAuth2 response");
+        }
+        return email;
     }
 }

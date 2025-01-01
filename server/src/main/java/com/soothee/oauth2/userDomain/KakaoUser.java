@@ -1,4 +1,4 @@
-package com.soothee.oauth2.domain;
+package com.soothee.oauth2.userDomain;
 
 import com.soothee.common.constants.SnsType;
 import com.soothee.member.domain.Member;
@@ -42,6 +42,10 @@ public class KakaoUser {
 
     /** 인증 회원 계정 정보 중 아이디(이메일) 가져오기 */
     private String getEmail() {
-        return String.valueOf(getAccount().get("email"));
+        String email = String.valueOf(getAccount().get("email"));
+        if (email == null || email.isBlank()) {
+            throw new IllegalStateException("Email is required but not provided");
+        }
+        return email;
     }
 }

@@ -1,6 +1,6 @@
 package com.soothee.oauth2.service;
 
-import com.soothee.oauth2.domain.AuthenticatedUser;
+import com.soothee.oauth2.userDomain.AuthenticatedUser;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 

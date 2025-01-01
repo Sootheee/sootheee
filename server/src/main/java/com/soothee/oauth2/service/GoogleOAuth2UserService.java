@@ -3,6 +3,8 @@ package com.soothee.oauth2.service;
 import com.soothee.common.constants.SnsType;
 import com.soothee.oauth2.domain.AuthenticatedUser;
 import com.soothee.oauth2.domain.GoogleUser;
+import com.soothee.oauth2.userDomain.AuthenticatedUser;
+import com.soothee.oauth2.userDomain.GoogleUser;
 import com.soothee.member.domain.Member;
 import com.soothee.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +26,6 @@ public class GoogleOAuth2UserService implements CustomOAuth2UserService {
     /**
      * 해당 SNS OAuth2을 지원하는지 확인
      * "google"인 경우에만 true
-     *
-     * @param request OAuth2 로그인 요청
-     * @return 맞으면 true / 아니면 false
      */
     @Override
     public boolean supports(OAuth2UserRequest request) {
