@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Map;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 public class GoogleUser {

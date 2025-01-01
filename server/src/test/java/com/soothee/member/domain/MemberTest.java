@@ -2,8 +2,6 @@ package com.soothee.member.domain;
 
 import com.soothee.common.constants.BooleanYN;
 import com.soothee.config.TestConfig;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
 import com.soothee.util.CommonTestCode;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
