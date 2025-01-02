@@ -2,21 +2,16 @@ package com.soothee.config;
 
 import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.soothee.common.constants.SnsType;
 import com.soothee.oauth2.filter.JwtAuthenticationFilter;
-import com.soothee.oauth2.provider.JwtTokenProvider;
 import com.soothee.oauth2.service.DelegatingOAuth2Service;
-import com.soothee.oauth2.token.repository.RefreshTokenRepository;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,20 +21,14 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -69,23 +58,12 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AppConfig implements WebMvcConfigurer {
     private final DelegatingOAuth2Service delegatingOAuth2Service;
-    private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final RefreshTokenRepository refreshTokenRepository;
     @Value("${spring.data.redis.host}")
     private String redisHost;
 
     @Value("${spring.data.redis.port}")
     private int redisPort;
-
-    @Value("${oauth2.kakao.logout.url}")
-    private String kakaoLogoutUrl;
-
-    @Value("${oauth2.kakao.bearer.auth}")
-    private String bearerAuth;
-
-    @Value("${oauth2.google.logout.url}")
-    private String googleLogoutUrl;
 
     /** QueryDSL 설정 */
     @PersistenceContext
@@ -139,82 +117,9 @@ public class AppConfig implements WebMvcConfigurer {
                                                                                                                                 response.getWriter().write("{\"error\": \"Session expired. Please log in again.\"}");
                                     }))
                     .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(user -> user.userService(delegatingOAuth2Service))
-                                                                            .defaultSuccessUrl("/home", true)
-                                                                            .successHandler((request, response, authentication) -> {
-                                                                                OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
-                                                                                String accessToken = jwtTokenProvider.generateToken(token.getName());
-                                                                                String refreshToken = jwtTokenProvider.generateRefreshToken(token.getName());
-                                                                                Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-                                                                                accessTokenCookie.setHttpOnly(true);
-                                                                                accessTokenCookie.setSecure(true);
-                                                                                accessTokenCookie.setPath("/");
-                                                                                accessTokenCookie.setMaxAge(3600);
-
-                                                                                Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-                                                                                refreshTokenCookie.setHttpOnly(true);
-                                                                                refreshTokenCookie.setSecure(true);
-                                                                                refreshTokenCookie.setPath("/");
-                                                                                refreshTokenCookie.setMaxAge((int) JwtTokenProvider.REFRESH_EXPIRATION_TIME / 1000);
-
-                                                                                response.addCookie(accessTokenCookie);
-                                                                                response.addCookie(refreshTokenCookie);
-
-                                                                                response.setContentType("application/json");
-                                                                                response.getWriter().write("{\"message\": \"Login successful\"}");
-                                                                            })
-                                )
-                    .logout(logout -> logout
-                            .logoutUrl("/auth/logout")
-                            .logoutSuccessHandler((request, response, authentication) -> {
-                                if (authentication != null) {
-                                    String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
-                                    String oauth2ClientId = authentication.getName();
-
-                                    // Refresh Token 삭제
-                                    refreshTokenRepository.deleteRefreshToken(oauth2ClientId);
-
-                                    // SNS 로그아웃 처리
-                                    if (StringUtils.equals(SnsType.KAKAOTALK.toString(),registrationId)) {
-                                        handleKakaoLogout();
-                                    }
-                                    if (StringUtils.equals(SnsType.GOOGLE.toString(), registrationId)) {
-                                        handleGoogleLogout(response);
-                                    }
-                                }
-
-                                Cookie accessTokenCookie = new Cookie("accessToken", null);
-                                accessTokenCookie.setHttpOnly(true);
-                                accessTokenCookie.setSecure(true);
-                                accessTokenCookie.setPath("/");
-                                accessTokenCookie.setMaxAge(0);
-
-                                Cookie refreshTokenCookie = new Cookie("refreshToken", null);
-                                refreshTokenCookie.setHttpOnly(true);
-                                refreshTokenCookie.setSecure(true);
-                                refreshTokenCookie.setPath("/");
-                                refreshTokenCookie.setMaxAge(0);
-
-                                response.addCookie(accessTokenCookie);
-                                response.addCookie(refreshTokenCookie);
-
-                                response.setStatus(HttpServletResponse.SC_OK);
-                                response.getWriter().write("{\"message\": \"Logout successful\"}");
-                            }))
+                                    .defaultSuccessUrl("/auth/login"))
+                    .logout(AbstractHttpConfigurer::disable)
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
-    }
-
-    private void handleKakaoLogout() {
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(bearerAuth);
-
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        restTemplate.postForEntity(kakaoLogoutUrl, request, String.class);
-    }
-
-    private void handleGoogleLogout(HttpServletResponse response) throws IOException {
-        response.sendRedirect(googleLogoutUrl);
     }
 
     /** Swagger 회원 API 명세서 */
