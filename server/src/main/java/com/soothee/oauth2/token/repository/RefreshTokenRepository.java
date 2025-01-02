@@ -1,4 +1,4 @@
-﻿package com.soothee.oauth2.token.repository;
+package com.soothee.oauth2.token.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

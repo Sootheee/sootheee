@@ -1,4 +1,4 @@
-﻿package com.soothee.oauth2.token.domain;
+package com.soothee.oauth2.token.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

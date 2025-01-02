@@ -1,8 +1,6 @@
 package com.soothee.oauth2.service;
 
 import com.soothee.common.constants.SnsType;
-import com.soothee.oauth2.provider.JwtTokenProvider;
-import com.soothee.oauth2.token.repository.RefreshTokenRepository;
 import com.soothee.oauth2.userDomain.AuthenticatedUser;
 import com.soothee.oauth2.userDomain.GoogleUser;
 import com.soothee.member.domain.Member;
@@ -22,8 +20,6 @@ import java.util.Optional;
 public class GoogleOAuth2UserService implements CustomOAuth2UserService {
     private static final String REGISTRATION_ID = SnsType.GOOGLE.toString();
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     /**
      * 해당 SNS OAuth2을 지원하는지 확인
@@ -55,9 +51,6 @@ public class GoogleOAuth2UserService implements CustomOAuth2UserService {
             member = new GoogleUser(authenticatedUser).toMember();
             memberService.saveMember(member);
         }
-
-        String refreshToken = jwtTokenProvider.generateRefreshToken(oauth2ClientId);
-        refreshTokenRepository.saveRefreshToken(oauth2ClientId, refreshToken, JwtTokenProvider.REFRESH_EXPIRATION_TIME);
 
         return AuthenticatedUser.of(member, authenticatedUser);
     }
