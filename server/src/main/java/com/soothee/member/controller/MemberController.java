@@ -9,7 +9,7 @@ import com.soothee.member.controller.response.MemberAllInfoResponse;
 import com.soothee.member.controller.response.MemberNameResponse;
 import com.soothee.member.service.MemberService;
 import com.soothee.member.service.command.MemberDelete;
-import com.soothee.oauth2.domain.AuthenticatedUser;
+import com.soothee.oauth2.userDomain.AuthenticatedUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import io.swagger.v3.oas.annotations.Operation;

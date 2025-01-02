@@ -1,4 +1,4 @@
-package com.soothee.oauth2.domain;
+package com.soothee.oauth2.userDomain;
 
 import com.soothee.member.domain.Member;
 import lombok.*;

@@ -1,10 +1,6 @@
 package com.soothee.reference.domain;
 
-import com.soothee.common.constants.ReferenceType;
 import com.soothee.common.domain.Reference;
-import com.soothee.custom.exception.IncorrectValueException;
-import com.soothee.custom.exception.NullValueException;
-import com.soothee.custom.valid.SootheeValidation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

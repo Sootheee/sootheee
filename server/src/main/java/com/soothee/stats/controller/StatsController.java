@@ -3,7 +3,7 @@ package com.soothee.stats.controller;
 import com.soothee.common.constants.ContentType;
 import com.soothee.common.constants.SortType;
 import com.soothee.custom.exception.*;
-import com.soothee.oauth2.domain.AuthenticatedUser;
+import com.soothee.oauth2.userDomain.AuthenticatedUser;
 import com.soothee.stats.controller.response.*;
 import com.soothee.stats.service.StatsService;
 import io.swagger.v3.oas.annotations.Operation;

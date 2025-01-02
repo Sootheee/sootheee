@@ -10,7 +10,7 @@ import com.soothee.dairy.controller.response.DairyScoresResponse;
 import com.soothee.dairy.service.DairyService;
 import com.soothee.dairy.service.command.DairyModify;
 import com.soothee.dairy.service.command.DairyRegister;
-import com.soothee.oauth2.domain.AuthenticatedUser;
+import com.soothee.oauth2.userDomain.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
