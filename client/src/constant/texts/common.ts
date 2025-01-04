@@ -1,3 +1,6 @@
 const METADATA = { TITLE: 'Soothee', DESCRIPTION: 'Sootheeeeee description' };
 
-export { METADATA };
+const BUTTON = {
+  confirm: '확인',
+};
+export { METADATA, BUTTON };
