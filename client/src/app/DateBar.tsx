@@ -1,11 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
 
 export default function DateBar() {
-  return <Container>DateBar</Container>;
+  return <div className="py-20 text-center">DateBar</div>;
 }
-
-const Container = styled.div`
-  padding: 80px 0;
-  text-align: center;
-`;
