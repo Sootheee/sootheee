@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { getDaysInMonth, format, startOfMonth } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { DAYS } from '../constant/texts/home';
 
 interface CalendarProps {
   initialDate?: Date;
@@ -21,7 +22,6 @@ const Calendar: React.FC<CalendarProps> = ({ initialDate }) => {
 
   const firstDayOfWeek = firstDayOfMonth.getDay();
 
-  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   const allDays = Array.from({ length: firstDayOfWeek }, () => null).concat(
     Array.from({ length: daysInMonth }, (_, i) => i + 1)
   );
@@ -55,7 +55,7 @@ const Calendar: React.FC<CalendarProps> = ({ initialDate }) => {
   return (
     <CalendarContainer>
       <DaysHeader>
-        {days.map((day, index) => (
+        {DAYS.map((day, index) => (
           <DayLabel key={index} $isSunday={index === 0}>
             {day}
           </DayLabel>
