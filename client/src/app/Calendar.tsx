@@ -1,15 +1,15 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
-import styled from 'styled-components';
 import { getDaysInMonth, format, startOfMonth } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { DAYS } from '../constant/texts/home';
+import clsx from 'clsx';
 
 interface CalendarProps {
   initialDate?: Date;
 }
 
-const Calendar: React.FC<CalendarProps> = ({ initialDate }) => {
+export default function Calendar({ initialDate }: CalendarProps) {
   const [today, setToday] = useState<Date | null>(initialDate || null);
   const [currentDate, setCurrentDate] = useState(initialDate || new Date());
 
@@ -53,15 +53,20 @@ const Calendar: React.FC<CalendarProps> = ({ initialDate }) => {
   );
 
   return (
-    <CalendarContainer>
-      <DaysHeader>
+    <div className="w-full flex flex-col items-center p-5">
+      <div className="w-full grid grid-cols-7 gap-1 mb-2">
         {DAYS.map((day, index) => (
-          <DayLabel key={index} $isSunday={index === 0}>
+          <span
+            key={index}
+            className={`font-bold text-xs text-center ${
+              index === 0 ? 'text-[#ff5959]' : 'text-[#333]'
+            }`}
+          >
             {day}
-          </DayLabel>
+          </span>
         ))}
-      </DaysHeader>
-      <DaysGrid>
+      </div>
+      <div className="w-full grid grid-cols-7 gap-1">
         {allDays.map((day, index) => {
           const dayDate = new Date(
             currentDate.getFullYear(),
@@ -70,88 +75,22 @@ const Calendar: React.FC<CalendarProps> = ({ initialDate }) => {
           );
           const isSunday = dayDate.getDay() === 0;
           return (
-            <DayButton
+            <button
               key={index}
               onClick={() => handleDayClick(day)}
-              $isToday={getIsToday(day)}
-              $isSunday={isSunday}
+              className={clsx(
+                'min-w-[40px] w-full min-h-[68px] flex items-center justify-center font-medium text-sm border-none rounded-full bg-transparent cursor-pointer text-center',
+                isSunday ? 'text-[#ff5959]' : 'text-[#333]',
+                getIsToday(day) &&
+                  'relative after:content-[""] after:absolute after:w-[5px] after:h-[5px] after:rounded-full after:bg-[#333] after:bottom-[5px] after:left-1/2 after:-translate-x-1/2',
+                'hover:bg-[#f0f0f0]'
+              )}
             >
               {day}
-            </DayButton>
+            </button>
           );
         })}
-      </DaysGrid>
-    </CalendarContainer>
+      </div>
+    </div>
   );
-};
-
-export default Calendar;
-
-const CalendarContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-`;
-
-const DaysHeader = styled.div`
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-  margin-bottom: 10px;
-`;
-
-const DayLabel = styled.span<{ $isSunday?: boolean }>`
-  font-weight: 700;
-  font-size: 11px;
-  line-height: 14px;
-  text-align: center;
-  color: ${(props) => (props.$isSunday ? '#ff5959' : '#333')};
-`;
-
-const DaysGrid = styled.div`
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-`;
-
-const DayButton = styled.button<{ $isToday: boolean; $isSunday?: boolean }>`
-  min-width: 40px;
-  width: 100%;
-  min-height: 68px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 20px;
-  border: none;
-  border-radius: 50%;
-  background-color: transparent;
-  color: ${(props) => (props.$isSunday ? '#ff5959' : '#333')};
-  cursor: pointer;
-  text-align: center;
-  &:hover {
-    /* background-color: #f0f0f0; */
-  }
-  ${(props) =>
-    props.$isToday &&
-    `
-    // background-color: #f0f0f0;
-    position:relative;
-    &::after {
-      content: '';
-      position: absolute;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background-color: #333;
-      bottom:5px;
-      left:50%;
-      transform: translateX(-50%);
-    }
-`}
-`;
+}

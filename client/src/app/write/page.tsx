@@ -1,6 +1,5 @@
 'use client';
 
-import styled from 'styled-components';
 import ImageButton from '@/component/ImageButton';
 import ImageTextButton from '@/component/ImageTextButton';
 
@@ -11,24 +10,30 @@ import TextArea from '@/component/TextArea';
 
 export default function Home() {
   return (
-    <DiaryWrapper>
-      <Header>
-        <Date>date</Date>
-        <SaveButton>저장</SaveButton>
-      </Header>
+    <div className="w-full h-full">
+      <div className="flex justify-between items-center h-[64px] px-5">
+        <div className="text-base font-bold">date</div>
+        <button className="bg-none border-none text-[#333] text-sm cursor-pointer">
+          저장
+        </button>
+      </div>
 
-      <ScoreSection>
-        <Text>
+      <div className="text-center p-8 bg-[#fcf8e499] flex flex-col gap-12">
+        <div className="font-light text-[22px] leading-[30px]">
           <em>이름</em> 멘트 멘트
-        </Text>
+        </div>
         <ScoreSlider />
-      </ScoreSection>
+      </div>
 
-      <Wrapper>
-        <SectionTitle>오늘 날씨랑 컨디션은 어땠나요?</SectionTitle>
-        <WeatherWrapper>
-          <SectionText>날씨</SectionText>
-          <div>
+      <div className="flex flex-col p-10 gap-6">
+        <h2 className="text-[19px] leading-[28px] mt-5 mb-2 font-light">
+          오늘 날씨랑 컨디션은 어땠나요?
+        </h2>
+        <div className="flex flex-col gap-3">
+          <div className="text-[#333] font-bold text-base leading-[22px]">
+            날씨
+          </div>
+          <div className="flex gap-2 items-center">
             {weatherImages.map((weather) => (
               <ImageButton
                 key={weather.id}
@@ -38,13 +43,16 @@ export default function Home() {
               />
             ))}
           </div>
-        </WeatherWrapper>
+        </div>
 
-        <ConditionSection>
-          <SectionText>
-            컨디션 <div>(중복 선택 가능)</div>
-          </SectionText>
-          <div>
+        <div className="flex flex-col gap-3">
+          <div className="text-[#333] font-bold text-base leading-[22px] flex gap-1">
+            컨디션
+            <div className="opacity-40 font-light text-sm leading-[22px]">
+              (중복 선택 가능)
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {conditionImages.map((condition) => (
               <ImageTextButton
                 key={condition.id}
@@ -54,10 +62,10 @@ export default function Home() {
               />
             ))}
           </div>
-        </ConditionSection>
-      </Wrapper>
+        </div>
+      </div>
 
-      <Wrapper>
+      <div className="flex flex-col p-10 gap-6">
         <TextArea
           title="오늘 어떤 일들이 있었는지 요약해주세요."
           placeholder="최대 500자까지 작성 가능"
@@ -87,103 +95,7 @@ export default function Home() {
           value=""
           onChangeValue={() => {}}
         />
-      </Wrapper>
-    </DiaryWrapper>
+      </div>
+    </div>
   );
 }
-
-const DiaryWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 64px;
-  padding: 0 20px;
-`;
-
-const Text = styled.div`
-  font-weight: 300;
-  font-size: 22px;
-  line-height: 30px;
-  > em {
-    font-style: normal;
-    font-weight: 700;
-  }
-`;
-
-const SectionText = styled.div`
-  color: #333333;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 22px;
-  > div {
-    opacity: 0.4;
-    font-weight: 300;
-    font-size: 14px;
-    line-height: 22px;
-  }
-`;
-
-const Date = styled.div`
-  font-size: 16px;
-  font-weight: bold;
-`;
-
-const SaveButton = styled.button`
-  background: none;
-  border: none;
-  color: #333;
-  font-size: 14px;
-  cursor: pointer;
-`;
-
-const SectionTitle = styled.h2`
-  font-size: 19px;
-  line-height: 28px;
-  margin: 20px 0 10px;
-  font-weight: 300;
-`;
-
-const ScoreSection = styled.div`
-  text-align: center;
-  padding: 32px 24px;
-  background-color: #fcf8e499;
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  padding: 40px 24px;
-  gap: 24px;
-`;
-
-const WeatherWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  > div {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-`;
-
-const ConditionSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  > div {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-`;
