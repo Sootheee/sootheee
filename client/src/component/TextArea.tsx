@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import clsx from 'clsx';
 
 type Size = 's' | 'm' | 'l';
 type Props = {
@@ -16,51 +16,23 @@ export default function TextArea({
   value,
   onChangeValue,
 }: Props) {
+  const textAreaHeight = clsx({
+    'h-[54px]': size === 's',
+    'h-[76px]': size === 'm',
+    'h-[200px]': size === 'l',
+  });
+
   return (
-    <Container>
-      <Title>{title}</Title>
-      <TextWrapper $size={size}>
-        <Textarea
+    <div className="flex flex-col gap-3">
+      <p className="font-light text-[20px] leading-[28px]">{title}</p>
+      <div className={`p-4 w-full bg-[#f6f6f6] rounded-md ${textAreaHeight}`}>
+        <textarea
+          className="resize-none w-full h-full bg-none border-none text-sm placeholder:text-[#33333366]"
           placeholder={placeholder}
           value={value}
           onChange={onChangeValue}
         />
-      </TextWrapper>
-    </Container>
+      </div>
+    </div>
   );
 }
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-
-const Title = styled.p`
-  font-weight: 300;
-  font-size: 20px;
-  line-height: 28px;
-`;
-
-const TextWrapper = styled.div<{ $size: Size }>`
-  padding: 16px;
-  width: 100%;
-  height: ${({ $size }) =>
-    `${
-      $size === 's' ? 54 : $size === 'm' ? 76 : $size === 'l' ? 200 : 150
-    }px`}; // 기본값 설정  padding: 10px;
-  background-color: #f6f6f6;
-  border-radius: 8px;
-`;
-
-const Textarea = styled.textarea`
-  resize: none;
-  width: 100%;
-  height: 100%;
-  background: none;
-  border: none;
-  font-size: 14px;
-  &::placeholder {
-    color: #33333366;
-  }
-`;

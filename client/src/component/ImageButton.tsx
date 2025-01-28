@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import clsx from 'clsx';
 
 type Props = {
   id: number;
@@ -8,17 +8,13 @@ type Props = {
 };
 
 export default function ImageButton({ id, imagePath, onClick }: Props) {
-  return <Button $src={imagePath} onClick={onClick} />;
+  return (
+    <button
+      className={clsx(
+        'w-10 h-10 bg-custom-gray rounded-md bg-center bg-no-repeat bg-contain'
+      )}
+      onClick={onClick}
+      style={{ backgroundImage: `url(${imagePath})` }}
+    />
+  );
 }
-
-const Button = styled.button<{ $src: string }>`
-  width: 40px;
-  height: 40px;
-  background-color: #f6f6f6;
-  border-radius: 8px;
-
-  background-image: url(${({ $src }) => $src});
-  background-size: 24px 24px;
-  background-repeat: no-repeat;
-  background-position: center;
-`;
