@@ -1,14 +1,16 @@
 'use client';
 
-import ImageButton from '@/component/ImageButton';
-import ImageTextButton from '@/component/ImageTextButton';
-
-import { weatherImages } from '@/data/weather';
+import ImageButton from '@/app/diary/ImageButton';
+import ImageTextButton from '@/app/diary/ImageTextButton';
+import TextArea from '@/app/diary/TextArea';
 import { conditionImages } from '@/data/condition';
-import ScoreSlider from './ScoreSlider';
-import TextArea from '@/component/TextArea';
+import { weatherImages } from '@/data/weather';
+import { useSearchParams } from 'next/navigation';
 
-export default function Home() {
+export default function DiaryWritePage() {
+  const searchParams = useSearchParams();
+  const date = searchParams.get('date');
+
   return (
     <div className="w-full h-full">
       <div className="flex justify-between items-center h-[64px] px-5">
@@ -22,7 +24,7 @@ export default function Home() {
         <div className="font-light text-[22px] leading-[30px]">
           <em>이름</em> 멘트 멘트
         </div>
-        <ScoreSlider />
+        {/* <ScoreSlider /> */}
       </div>
 
       <div className="flex flex-col p-10 gap-6">
