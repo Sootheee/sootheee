@@ -11,9 +11,6 @@ export const metadata: Metadata = {
   description: METADATA_TEXT.DESCRIPTION,
 };
 
-// TODO
-// nav가 포함된 헤더 만들기
-// 골격부터 반응형이 가능하도록 만들기
 export default function RootLayout({
   children,
 }: Readonly<{
