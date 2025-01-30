@@ -2,27 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+body {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+:root {
+  --soft-black: #333333;
+  --soft-black-weak: #33333366;
+  --white: #ffffff;
+  --white-weak: #ffffff66;
+  --sunday-red: #ff6666;
+  --gray: #f6f6f6;
+  --forest-green: #02825b;
+  --line-gray: #eeeeee;
+  --warm-gray: #dfded3;
+
+  /* Only used in dark mode */
+  --deep-gray: #444444;
+  --white-weakest: #ffffff26;
+  --medium-gray: #515151;
+
+  /* Light Mode Colors */
+  --background: #fcf8e4;
+  --background-light: #fcf8e499;
+  --foreground: #ffffff;
+
+  --text-primary: var(--soft-black);
+  --text-secondary: var(--soft-black-light);
+
+  --button-bg: var(--soft-black);
+}
+
+/* Dark Mode Colors */
+.dark {
+  --background: #222222;
+  --background-light: #333333;
+  --foreground: #222222;
+
+  --text-primary: var(--white);
+  --text-secondary: var(--white-light);
+
+  --button-bg: var(--soft-black);
 }
 
 body {
-}
-
-button {
-}
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  color: var(--soft-black);
+  background-color: var(--background);
 }

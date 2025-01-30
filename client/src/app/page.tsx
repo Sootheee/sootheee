@@ -1,12 +1,12 @@
-import React from 'react';
-import Calendar from './Calendar';
-import DateBar from '../component/DateBar';
+import Calendar from '@/app/Calendar';
+import Image from 'next/image';
+import DateBar from './DateBar';
 
-export default function page() {
+export default function Home() {
   return (
-    <div className="w-full h-full bg-[#FCF8E4]">
+    <section className="">
       <DateBar />
       <Calendar />
-    </div>
+    </section>
   );
 }
