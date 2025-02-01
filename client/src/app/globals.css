@@ -5,7 +5,7 @@
 @font-face {
   font-family: 'SUIT';
   src: url('../app/fonts/SUIT-Variable.woff2') format('woff2');
-  font-weight: 200 900; /* 사용할 font-weight 범위를 지정합니다. */
+  font-weight: 200 900;
   font-display: swap;
 }
 
