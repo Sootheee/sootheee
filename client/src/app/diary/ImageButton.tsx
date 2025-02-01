@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 
 type Props = {
   id: number;
@@ -10,9 +9,7 @@ type Props = {
 export default function ImageButton({ id, imagePath, onClick }: Props) {
   return (
     <button
-      className={clsx(
-        'w-10 h-10 bg-custom-gray rounded-md bg-center bg-no-repeat bg-contain'
-      )}
+      className={'w-10 h-10 bg-gray rounded-md bg-center bg-no-repeat bg-auto'}
       onClick={onClick}
       style={{ backgroundImage: `url(${imagePath})` }}
     />

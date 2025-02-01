@@ -1,10 +1,7 @@
 import type { Metadata } from 'next';
-import { Open_Sans } from 'next/font/google';
 import './globals.css';
 import { METADATA_TEXT } from '@/constant/texts/common';
 import Nav from '@/app/Nav';
-
-const sans = Open_Sans({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: METADATA_TEXT.TITLE,
@@ -17,9 +14,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={sans.className}>
+    <html lang="en">
       <body className="flex flex-col h-svh w-full max-w-screen-md mx-auto">
-        <main className="grow w-full h-full overflow-auto">{children}</main>
+        <main className="grow w-full h-full">{children}</main>
         <Nav />
       </body>
     </html>

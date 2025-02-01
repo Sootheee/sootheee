@@ -27,7 +27,7 @@ export default function TextArea({
       <p className="font-light text-[20px] leading-[28px]">{title}</p>
       <div className={`p-4 w-full bg-[#f6f6f6] rounded-md ${textAreaHeight}`}>
         <textarea
-          className="resize-none w-full h-full bg-none border-none text-sm placeholder:text-[#33333366]"
+          className="resize-none w-full h-full bg-none border-none text-sm bg-transparent placeholder:text-soft-black-weak"
           placeholder={placeholder}
           value={value}
           onChange={onChangeValue}
