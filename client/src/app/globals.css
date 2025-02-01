@@ -2,8 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'SUIT';
+  src: url('../app/fonts/SUIT-Variable.woff2') format('woff2');
+  font-weight: 200 900; /* 사용할 font-weight 범위를 지정합니다. */
+  font-display: swap;
+}
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'SUIT', sans-serif;
 }
 
 :root {
@@ -31,6 +38,19 @@ body {
   --text-secondary: var(--soft-black-light);
 
   --button-bg: var(--soft-black);
+
+  /* Score colors */
+  --score-00: #879bff;
+  --score-01: #96c0ff;
+  --score-02: #b8daf8;
+  --score-03: #bfefee;
+  --score-04: #cff0d7;
+  --score-05: #fff19f;
+  --score-06: #ffeb7c;
+  --score-07: #ffd57a;
+  --score-08: #ffa97a;
+  --score-09: #ff786b;
+  --score-10: #ff4766;
 }
 
 /* Dark Mode Colors */
@@ -48,4 +68,19 @@ body {
 body {
   color: var(--soft-black);
   background-color: var(--background);
+}
+
+input,
+textarea {
+  outline: none;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+}
+
+em {
+  font-style: normal;
+  font-weight: bold;
 }
