@@ -16,21 +16,21 @@ pipeline {
                     if (BRANCH_NAME == "main") {
                         if (PR_AUTHOR == "ejaman" || CHANGED_FILES =~ /client\//) {
                             echo "Deploying Frontend Production Server"
-                            load "/var/lib/jenkins/jobs/deploy-client-prod.Jenkinsfile"
+                            load "jenkins/deploy-client-prod.Jenkinsfile"
                         }
                         if (PR_AUTHOR == "oocho0" || CHANGED_FILES =~ /server\//) {
                             echo "Deploying Backend Production Server"
-                            load "/var/lib/jenkins/jobs/deploy-server-prod.Jenkinsfile"
+                            load "jenkins/deploy-server-prod.Jenkinsfile"
                         }
                     }
                     if (BRANCH_NAME == "qa") {
                         if (PR_AUTHOR == "ejaman" || CHANGED_FILES =~ /client\//) {
                             echo "Deploying Frontend dev Server"
-                            load "/var/lib/jenkins/jobs/deploy-client-dev.Jenkinsfile"
+                            load "jenkins/deploy-client-dev.Jenkinsfile"
                         }
                         if (PR_AUTHOR == "oocho0" || CHANGED_FILES =~ /server\//) {
                             echo "Deploying Backend dev Server"
-                            load "/var/lib/jenkins/jobs/deploy-server-dev.Jenkinsfile"
+                            load "jenkins/deploy-server-dev.Jenkinsfile"
                         }
                     }
                 }
