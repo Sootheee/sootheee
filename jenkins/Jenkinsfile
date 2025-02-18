@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    environment {
+        BRANCH_NAME = env.BRANCH_NAME
+        PR_AUTHOR = sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()
+        CHANGED_FILES = sh(script: "git diff --name-only HEAD^ HEAD", returnStdout: true).trim()
+    }
+    stages {
+	    stage('Detect Changes') {
+            steps {
+                script {
+                    echo "Branch: ${BRANCH_NAME}"
+                    echo "PR Author: ${PR_AUTHOR}"
+                    echo "Changed Files: ${CHANGED_FILES}"
+
+                    if (BRANCH_NAME == "main") {
+                        if (PR_AUTHOR == "ejaman" || CHANGED_FILES =~ /client\//) {
+                            echo "Deploying Frontend Production Server"
+                            load "/var/lib/jenkins/jobs/deploy-client-prod.Jenkinsfile"
+                        }
+                        if (PR_AUTHOR == "oocho0" || CHANGED_FILES =~ /server\//) {
+                            echo "Deploying Backend Production Server"
+                            load "/var/lib/jenkins/jobs/deploy-server-prod.Jenkinsfile"
+                        }
+                    }
+                    if (BRANCH_NAME == "qa") {
+                        if (PR_AUTHOR == "ejaman" || CHANGED_FILES =~ /client\//) {
+                            echo "Deploying Frontend dev Server"
+                            load "/var/lib/jenkins/jobs/deploy-client-dev.Jenkinsfile"
+                        }
+                        if (PR_AUTHOR == "oocho0" || CHANGED_FILES =~ /server\//) {
+                            echo "Deploying Backend dev Server"
+                            load "/var/lib/jenkins/jobs/deploy-server-dev.Jenkinsfile"
+                        }
+                    }
+                }
+            }
+	    }
+    }
+}

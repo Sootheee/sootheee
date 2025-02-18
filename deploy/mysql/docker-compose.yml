@@ -1,0 +1,36 @@
+services:
+  mysql-prod:
+    image: mysql:8.0
+    container_name: mysql-prod
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: soothee_prod
+      MYSQL_USER: soothee
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - /home/opc/mysql_data_prod:/var/lib/mysql
+    networks:
+      - soothee_network
+
+  mysql-dev:
+    image: mysql:8.0
+    container_name: mysql-dev
+    restart: always
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: soothee_dev
+      MYSQL_USER: soothee
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - /home/opc/mysql_data_dev:/var/lib/mysql
+    networks:
+      - soothee_network
+
+networks:
+  soothee_network:
+    driver: bridge
