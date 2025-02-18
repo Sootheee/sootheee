@@ -1,9 +1,9 @@
 pipeline {
     agent any
     environment {
-        BRANCH_NAME = env.BRANCH_NAME
-        PR_AUTHOR = sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()
-        CHANGED_FILES = sh(script: "git diff --name-only HEAD^ HEAD", returnStdout: true).trim()
+        BRANCH_NAME = "${env.BRANCH_NAME}"
+        PR_AUTHOR = "${sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()}"
+        CHANGED_FILES = "${sh(script: "git diff --name-only HEAD^ HEAD", returnStdout: true).trim()}"
     }
     stages {
 	    stage('Detect Changes') {
