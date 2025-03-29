@@ -39,6 +39,9 @@ pipeline {
                     // ▶️ Push 이벤트일 때 (Jenkins 설정 변경 반영 목적)
                     if (!IS_PR && CHANGED_FILES =~ /jenkins\//) {
                         echo "🔄 Jenkins 구성 파일 변경 - 내부 Jenkinsfile 재반영됨"
+                        dir("jenkins") {
+                            load (BRANCH_NAME == "main") ? "deploy-server-prod.Jenkinsfile" : "deploy-server-dev.Jenkinsfile"
+                        }
                         deployed = true
                     }
 
