@@ -3,7 +3,6 @@ pipeline {
     environment {
         TARGET_HOST = "opc@138.2.116.214"
         DEPLOY_PATH = "/home/opc/deploy/backend"
-        RES_PATH = "/home/opc/deploy/sootheee/server/src/main/resources/"
         JAR_NAME = "backend-prod.jar"
         CONTAINER_1 = "backend-prod-1"
         CONTAINER_2 = "backend-prod-2"
@@ -20,16 +19,6 @@ pipeline {
 	    stage('Build Backend') {
             steps {
                 sh 'cd server && ./gradlew clean build -x test'
-            }
-        }
-        stage('Deploy Configuration') {
-            steps {
-                sshagent(['soothee-linux-vm-ssh']) {
-                    sh '''
-                    scp /var/lib/jenkins/config/application-prod.properties $TARGET_HOST:$RES_PATH
-                    scp /var/lib/jenkins/config/application-oauth2.properties $TARGET_HOST:$RES_PATH
-                    '''
-                }
             }
         }
         stage('Deploy to Production') {

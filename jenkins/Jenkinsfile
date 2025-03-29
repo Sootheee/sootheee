@@ -1,40 +1,54 @@
 pipeline {
     agent any
     environment {
-        BRANCH_NAME = "${env.BRANCH_NAME}"
-        PR_AUTHOR = "${sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()}"
-        CHANGED_FILES = "${sh(script: "git diff --name-only HEAD^ HEAD", returnStdout: true).trim()}"
+        BRANCH_NAME = env.BRANCH_NAME
+        COMMIT_AUTHOR = sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()
+        CHANGED_FILES = sh(script: "git diff --name-only origin/${env.BRANCH_NAME}...HEAD", returnStdout: true).trim()
+        IS_PR = env.CHANGE_ID != null
     }
     stages {
-	    stage('Detect Changes') {
+        stage('Detect & Dispatch') {
             steps {
                 script {
-                    echo "Branch: ${BRANCH_NAME}"
-                    echo "PR Author: ${PR_AUTHOR}"
-                    echo "Changed Files: ${CHANGED_FILES}"
+                    echo "=============================="
+                    echo "📍 브랜치: ${BRANCH_NAME}"
+                    echo "✍️  커밋 작성자: ${COMMIT_AUTHOR}"
+                    echo "🔁 트리거 방식: ${IS_PR ? 'PR' : 'Push'}"
+                    echo "📝 변경된 파일 목록:\n${CHANGED_FILES}"
+                    echo "=============================="
 
-                    if (BRANCH_NAME == "main") {
-                        if (PR_AUTHOR == "ejaman" || CHANGED_FILES =~ /client\//) {
-                            echo "Deploying Frontend Production Server"
-                            load "jenkins/deploy-client-prod.Jenkinsfile"
+                    def deployed = false
+
+                    // ▶️ PR 이벤트일 때
+                    if (IS_PR) {
+                        if (CHANGED_FILES =~ /client\// || COMMIT_AUTHOR == "ejaman") {
+                            echo "🚀 [PR] Front 배포 트리거"
+                            dir("jenkins") {
+                                load (BRANCH_NAME == "main") ? "deploy-client-prod.Jenkinsfile" : "deploy-client-dev.Jenkinsfile"
+                            }
+                            deployed = true
                         }
-                        if (PR_AUTHOR == "oocho0" || CHANGED_FILES =~ /server\//) {
-                            echo "Deploying Backend Production Server"
-                            load "jenkins/deploy-server-prod.Jenkinsfile"
+                        if (CHANGED_FILES =~ /server\// || COMMIT_AUTHOR == "oocho0") {
+                            echo "🚀 [PR] Back 배포 트리거"
+                            dir("jenkins") {
+                                load (BRANCH_NAME == "main") ? "deploy-server-prod.Jenkinsfile" : "deploy-server-dev.Jenkinsfile"
+                            }
+                            deployed = true
                         }
                     }
-                    if (BRANCH_NAME == "qa") {
-                        if (PR_AUTHOR == "ejaman" || CHANGED_FILES =~ /client\//) {
-                            echo "Deploying Frontend dev Server"
-                            load "jenkins/deploy-client-dev.Jenkinsfile"
-                        }
-                        if (PR_AUTHOR == "oocho0" || CHANGED_FILES =~ /server\//) {
-                            echo "Deploying Backend dev Server"
-                            load "jenkins/deploy-server-dev.Jenkinsfile"
-                        }
+
+                    // ▶️ Push 이벤트일 때 (Jenkins 설정 변경 반영 목적)
+                    if (!IS_PR && CHANGED_FILES =~ /jenkins\//) {
+                        echo "🔄 Jenkins 구성 파일 변경 - 내부 Jenkinsfile 재반영됨"
+                        deployed = true
+                    }
+
+                    if (!deployed) {
+                        echo "⚠️ 조건에 맞는 배포 트리거가 없습니다"
+                        error("🚫 빌드 종료: 분기 조건과 일치하지 않음")
                     }
                 }
             }
-	    }
+        }
     }
 }
