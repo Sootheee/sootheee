@@ -1,15 +1,14 @@
 pipeline {
     agent any
-    environment {
-        BRANCH_NAME = env.BRANCH_NAME
-        COMMIT_AUTHOR = sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()
-        CHANGED_FILES = sh(script: "git diff --name-only origin/${env.BRANCH_NAME}...HEAD", returnStdout: true).trim()
-        IS_PR = env.CHANGE_ID != null
-    }
     stages {
         stage('Detect & Dispatch') {
             steps {
                 script {
+                    def BRANCH_NAME = env.BRANCH_NAME
+                    def IS_PR = env.CHANGE_ID != null
+                    def COMMIT_AUTHOR = sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()
+                    def CHANGED_FILES = sh(script: "git diff --name-only origin/${BRANCH_NAME}...HEAD", returnStdout: true).trim()
+
                     echo "=============================="
                     echo "📍 브랜치: ${BRANCH_NAME}"
                     echo "✍️  커밋 작성자: ${COMMIT_AUTHOR}"
