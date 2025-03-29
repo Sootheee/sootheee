@@ -1,5 +1,5 @@
 echo "📦 Build Front-end"
-sh 'cd client && npm install && npm run build'
+sh 'cd ../client && npm install && npm run build'
 
 
 echo "🚀 Deploy Front-end Prod"

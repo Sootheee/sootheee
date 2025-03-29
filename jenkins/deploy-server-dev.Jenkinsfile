@@ -1,5 +1,5 @@
 echo "📦 Build Backend"
-sh 'cd server && ./gradlew clean build -x test'
+sh 'cd ../server && ./gradlew clean build -x test'
 
 echo "🚀 Deploy Backend Dev"
 sshagent(['soothee-linux-vm-ssh']) {
