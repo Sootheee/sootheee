@@ -1,0 +1,102 @@
+package com.soothee.stats.service;
+
+import com.soothee.common.constants.ContentType;
+import com.soothee.common.constants.SortType;
+import com.soothee.custom.exception.DuplicatedResultException;
+import com.soothee.custom.exception.ErrorToSearchStatsException;
+import com.soothee.custom.exception.NotFoundDetailInfoException;
+import com.soothee.stats.controller.response.*;
+
+public interface StatsService {
+    /**
+     * 로그인한 계정이 조회할 년도/달의 요약 정보 조회
+     * [1] 한 달 동안 작성한 일기 갯수
+     * [2] 한 달 동안 오늘의 점수 평균값
+     * [3] 한 달 동안 가장 많이 선택한 1개의 컨디션의 일련번호
+     * [4] 한 달 동안 가장 많이 선택한 1개의 컨디션의 비율
+     * [컨디션 선택 횟수가 같은 경우]
+     * (1) 먼저 선택한 순
+     * (2) 긍정 > 보통 > 부정 카테고리 순
+     * (3) 카테고리별 먼저 등록된 순
+     * - 삭제된 일기 제외
+     * - 삭제된 일기-컨디션 제외
+     *
+     * @param memberId 현재 로그인한 계정의 일련번호
+     * @param year 조회할 년도
+     * @param month 조회할 월
+     * @return 한 달 동안 요약 정보
+     */
+    MonthlyDairyStats getMonthlyDairyStats(Long memberId, int year, int month) throws ErrorToSearchStatsException, DuplicatedResultException, NotFoundDetailInfoException;
+
+    /**
+     * 로그인한 계정이 조회할 년도/달의 감사한/배운 일 통계 조회
+     * [1] 한 달 동안 작성한 감사한/배운 일 횟수
+     * [2] 한 달 동안 작성한 감사한/배운 일 중 가장 높은 점수 날의 감사한/배운 일
+     * [2-1] 가장 높은 점수 날의 일기 일련번호
+     * [2-2] 가장 높은 점수 날짜
+     * [2-3] 가장 높은 점수
+     * [2-4] 가장 높은 점수 날의 감사한/배운 일 내용
+     * [3] 한 달 동안 작성한 감사한/배운 일 중 가장 낮은 점수 날의 감사한/배운 일
+     * [3-1] 가장 낮은 점수 날의 일기 일련번호
+     * [3-2] 가장 낮은 점수 날짜
+     * [3-3] 가장 낮은 점수
+     * [3-4] 가장 낮은 점수 날의 감사한/배운 일 내용
+     * - 삭제된 일기 제외
+     *
+     * @param memberId 현재 로그인한 계정의 일련번호
+     * @param type 감사한/배운 일 타입
+     * @param year 조회할 년도
+     * @param month 조회할 월
+     * @return 한 달 동안 감사한/배운 일 정보
+     */
+    MonthlyContentStats getMonthlyContentStats(Long memberId, ContentType type, int year, int month) throws DuplicatedResultException, NotFoundDetailInfoException, ErrorToSearchStatsException;
+
+    /**
+     * 로그인한 계정이 조회할 년도/주차의 요약 정보 조회
+     * [1] 한 주 동안 작성한 일기 갯수
+     * [2] 한 주 동안 오늘의 점수 평균값
+     * [3] 한 주 동안 작성한 일기의 날짜와 오늘의 점수
+     * - 삭제된 일기 제외
+     *
+     * @param memberId 현재 로그인한 계정의 일련번호
+     * @param year 조회할 년도
+     * @param week 조회할 주차
+     * @return 한 주 동안 요약 정보
+     */
+    WeeklyDairyStats getWeeklyDairyStats(Long memberId, int year, int week) throws DuplicatedResultException, NotFoundDetailInfoException, ErrorToSearchStatsException;
+
+    /**
+     * 한 달 동안 선택 횟수 상위 최대 3개 컨디션 리스트 조회
+     * [1] 한 달 동안 기록한 컨디션 갯수
+     * [2] 한 달 동안 기록한 컨디션 중 상위 최대 3개의 컨디션 정보
+     * [2-1] 컨디션의 일련번호
+     * [2-2] 전체 선택한 컨디션 중 해당 컨디션의 비율
+     * - 삭제된 일기 제외
+     * - 삭제된 일기-컨디션 제외
+     *
+     * @param memberId 현재 로그인한 계정의 일련번호
+     * @param year 조회할 년도
+     * @param month 조회할 월
+     * @return 한 달 동안 선택 횟수 상위 최대 3개 컨디션 리스트
+     */
+    MonthlyConditionsStats getMonthlyConditionStats(Long memberId, int year, int month) throws ErrorToSearchStatsException, NotFoundDetailInfoException;
+
+    /**
+     * 로그인한 계정이 조회할 년도/달에 작성한 모든 감사한/배운 일 리스트 조회
+     * [1] 한 달 동안 작성한 감사한/배운 일 횟수
+     * [2] 한 달 동안 작성한 감사한/배운 일 리스트
+     * [2-1] 일기 일련번호
+     * [2-2] 일기 날짜
+     * [2-3] 일기 오늘의 점수
+     * [2-4] 해당 감사한/배운 일 내용
+     * - 삭제된 일기 제외
+     *
+     * @param memberId 현재 로그인한 계정의 일련번호
+     * @param type 감사한/배운 일 타입
+     * @param year 조회할 년도
+     * @param month 조회할 월
+     * @param orderBy 조회 순서
+     * @return 한 달 동안 작성한 모든 감사한/배운 일의 갯수와 정보 리스트
+     */
+    MonthlyContentDetail getMonthlyContentDetail(Long memberId, ContentType type, int year, int month, SortType orderBy) throws ErrorToSearchStatsException, NotFoundDetailInfoException;
+}

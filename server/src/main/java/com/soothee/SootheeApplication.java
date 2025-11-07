@@ -1,0 +1,13 @@
+package com.soothee;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SootheeApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SootheeApplication.class, args);
+	}
+
+}

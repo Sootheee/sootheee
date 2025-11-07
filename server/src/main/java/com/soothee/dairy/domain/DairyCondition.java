@@ -1,0 +1,52 @@
+package com.soothee.dairy.domain;
+
+import com.querydsl.core.annotations.QueryProjection;
+import com.soothee.common.constants.*;
+import com.soothee.common.domain.TimeEntity;
+import com.soothee.reference.domain.Condition;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Getter
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(onConstructor = @__(@QueryProjection))
+@Table(name = "dairy_condition")
+public class DairyCondition extends TimeEntity {
+    /** 일기-콘텐츠 일련번호 */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long dairyCondId;
+
+    /** 해당 일기 일련번호 */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dairy_id", nullable = false)
+    private Dairy dairy;
+
+    /** 해당 컨디션 일련번호 */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cond_id", nullable = false)
+    private Condition condition;
+
+    /** 선택 순서 */
+    @Column(name = "order_no", nullable = false)
+    private Integer orderNo;
+
+    /** 소프트 삭제 */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "is_delete", nullable = false, length = 1)
+    private BooleanYN isDelete;
+
+    @Builder
+    public DairyCondition(Dairy dairy, Condition condition, Integer orderNo) {
+        this.dairy = dairy;
+        this.condition = condition;
+        this.orderNo = orderNo;
+        this.isDelete = BooleanYN.N;
+    }
+
+    /** 일기 컨디션 변경 시, 소프트 삭제 된 후, 새로 생성 */
+    public void deleteDairyCondition () {
+        this.isDelete = BooleanYN.Y;
+    }
+}

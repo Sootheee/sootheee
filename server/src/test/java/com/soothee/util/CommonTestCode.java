@@ -1,0 +1,218 @@
+package com.soothee.util;
+
+import com.soothee.common.constants.BooleanYN;
+import com.soothee.common.constants.SnsType;
+import com.soothee.dairy.controller.response.DairyAllResponse;
+import com.soothee.dairy.domain.Dairy;
+import com.soothee.dairy.domain.DairyCondition;
+import com.soothee.dairy.repository.DairyConditionRepository;
+import com.soothee.dairy.repository.DairyRepository;
+import com.soothee.member.domain.Member;
+import com.soothee.member.domain.MemberDelReason;
+import com.soothee.member.repository.MemberDelReasonRepository;
+import com.soothee.member.repository.MemberRepository;
+import com.soothee.reference.domain.Condition;
+import com.soothee.reference.domain.DelReason;
+import com.soothee.reference.domain.Weather;
+import com.soothee.reference.repository.ConditionRepository;
+import com.soothee.reference.repository.DelReasonRepository;
+import com.soothee.reference.repository.WeatherRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class CommonTestCode {
+    @Autowired
+    private final WeatherRepository weatherRepository;
+    @Autowired
+    private final ConditionRepository conditionRepository;
+    @Autowired
+    private final DelReasonRepository delReasonRepository;
+    @Autowired
+    private final DairyRepository dairyRepository;
+    @Autowired
+    private final MemberRepository memberRepository;
+    @Autowired
+    private final DairyConditionRepository dairyConditionRepository;
+    @Autowired
+    private final MemberDelReasonRepository memberDelReasonRepository;
+
+    public static final Long MEMBER_ID = 11L;
+    public static final String EMAIL = "abc@def.com";
+    public static final String NAME = "사용자0";
+    public static final String OAUTH2 = "111111";
+    public static final SnsType SNS_TYPE = SnsType.KAKAOTALK;
+    public static final String NEW_EMAIL = "def@abc.com";
+    public static final String NEW_NAME = "사용자1";
+    public static final String NEW_AUTH2 = "222222";
+    public static final SnsType NEW_SNS_TYPE = SnsType.GOOGLE;
+    public static final Long DAIRY_ID1 = 11L;
+    public static final Long DAIRY_ID2 = 12L;
+    public static final Long DAIRY_ID3 = 13L;
+    public static final Long DAIRY_ID4 = 14L;
+    public static final Long DAIRY_ID5 = 15L;
+    public static final Long NEW_DAIRY_ID = 1L;
+    public static final Double SCORE1 = 2.0;
+    public static final Double SCORE2 = 5.5;
+    public static final Double SCORE3 = 1.0;
+    public static final Double SCORE4 = 9.5;
+    public static final Double SCORE5 =4.5;
+    public static final Double NEW_SCORE = 3.0;
+    public static final int YEAR = 2024;
+    public static final int MONTH = 10;
+    public static final int WEEK = 40;
+    public static final int NEW_DAY = 10;
+    public static final LocalDate DATE1 = LocalDate.of(YEAR, MONTH, 1);
+    public static final LocalDate DATE2 = LocalDate.of(YEAR, MONTH, 2);
+    public static final LocalDate DATE3 = LocalDate.of(YEAR, MONTH, 3);
+    public static final LocalDate DATE4 = LocalDate.of(YEAR, MONTH, 4);
+    public static final LocalDate DATE5 = LocalDate.of(YEAR, MONTH, 5);
+    public static final LocalDate NEW_DATE = LocalDate.of(YEAR, MONTH + 1, NEW_DAY);
+    public static final String WEATHER_ID = "WEAT001";
+    public static final String COND_ID1 = "COND001";
+    public static final String COND_ID2 = "COND007";
+    public static final String COND_ID3 = "COND002";
+    public static final String COND_ID4 = "COND010";
+    public static final String NEW_COND_ID1 = "COND011";
+    public static final String NEW_COND_ID2 = "COND012";
+    public static final String NEW_COND_ID3 = "COND013";
+    public static final String DEL_REASON_ID1 = "DERE001";
+    public static final String DEL_REASON_ID2 = "DERE002";
+    public static final String DEL_REASON_ID3 = "DERE003";
+
+    public List<Condition> getConditions() {
+        List<Condition> conditions = new ArrayList<>();
+        conditions.add(conditionRepository.findByCondId(COND_ID1).orElseThrow(NullPointerException::new));
+        conditions.add(conditionRepository.findByCondId(COND_ID2).orElseThrow(NullPointerException::new));
+        conditions.add(conditionRepository.findByCondId(COND_ID3).orElseThrow(NullPointerException::new));
+        conditions.add(conditionRepository.findByCondId(COND_ID4).orElseThrow(NullPointerException::new));
+        return conditions;
+    }
+
+    public Weather getWeather() {
+        return weatherRepository.findByWeatherId(WEATHER_ID).orElseThrow(NullPointerException::new);
+    }
+
+    public List<String> getDelReasonIds() {
+        List<String> delReasonIds = new ArrayList<>();
+        delReasonIds.add(DEL_REASON_ID1);
+        delReasonIds.add(DEL_REASON_ID2);
+        delReasonIds.add(DEL_REASON_ID3);
+        return delReasonIds;
+    }
+
+    public List<DelReason> getDelReasons() {
+        List<DelReason> delReasons = new ArrayList<>();
+        delReasons.add(delReasonRepository.findByReasonId(DEL_REASON_ID1).orElseThrow(NullPointerException::new));
+        delReasons.add(delReasonRepository.findByReasonId(DEL_REASON_ID2).orElseThrow(NullPointerException::new));
+        delReasons.add(delReasonRepository.findByReasonId(DEL_REASON_ID3).orElseThrow(NullPointerException::new));
+        return delReasons;
+    }
+
+    public Member getSavedMember() {
+        return memberRepository.findByMemberIdAndIsDelete(MEMBER_ID, BooleanYN.N).orElseThrow(NullPointerException::new);
+    }
+
+    public Dairy getSavedDairy(Long dairyId) {
+        return dairyRepository.findDairyByDairyId(dairyId).orElseThrow(NullPointerException::new).get(0);
+    }
+
+    public Dairy getSavedNewDairy(Long newDairyId) {
+        return dairyRepository.findDairyByDairyId(newDairyId).orElseThrow(NullPointerException::new).get(0);
+    }
+
+    public Dairy getSavedNewDairy(LocalDate newDairyDate) {
+        List<DairyAllResponse> list = dairyRepository.findAllDairyInfoByDate(CommonTestCode.MEMBER_ID, newDairyDate).orElseThrow(NullPointerException::new);
+        DairyAllResponse result = list.get(0);
+        return getSavedNewDairy(result.getDairyId());
+    }
+
+    public List<DairyCondition> getSavedDairyConditions() {
+        return dairyConditionRepository.findDairyConditionListByDairyId(DAIRY_ID1).orElseThrow(NullPointerException::new);
+    }
+
+    public List<MemberDelReason> getSavedMemberDelReasons() {
+        return memberDelReasonRepository.findByMemberMemberId(MEMBER_ID).orElseThrow(NullPointerException::new);
+    }
+
+    public List<Condition> getNewConditions() {
+        List<Condition> newConditions = new ArrayList<>();
+        newConditions.add(conditionRepository.findByCondId(NEW_COND_ID1).orElseThrow(NullPointerException::new));
+        newConditions.add(conditionRepository.findByCondId(NEW_COND_ID2).orElseThrow(NullPointerException::new));
+        newConditions.add(conditionRepository.findByCondId(NEW_COND_ID3).orElseThrow(NullPointerException::new));
+        return newConditions;
+    }
+
+    public List<DairyCondition> getNewDairyConditions(Long newDairyId, String type) {
+        List<DairyCondition> newDairyConditions = dairyConditionRepository.findDairyConditionListByDairyId(newDairyId)
+                                                        .orElseThrow(NullPointerException::new);
+        for (int i = 0; i < newDairyConditions.size(); i++) {
+            log.info("{} {} : {}, {}", type, i + 1, newDairyConditions.get(i).getDairyCondId(), newDairyConditions.get(i).getOrderNo());
+        }
+        return newDairyConditions;
+    }
+
+    public Dairy getNewDairy() {
+        return Dairy.builder()
+                    .date(NEW_DATE)
+                    .member(getSavedMember())
+                    .weather(getWeather())
+                    .score(NEW_SCORE)
+                    .build();
+    }
+
+    public Member getNewMember() {
+        return Member.builder()
+                        .email(NEW_EMAIL)
+                        .name(NEW_NAME)
+                        .snsType(NEW_SNS_TYPE)
+                        .oauth2ClientId(NEW_AUTH2)
+                        .build();
+    }
+
+    public Member deleteMember() {
+        Member newMember = saveNewMember();
+        for (DelReason reasonId : getDelReasons()) {
+            memberDelReasonRepository.save(MemberDelReason.builder()
+                                                            .member(newMember)
+                                                            .delReason(reasonId)
+                                                            .build());
+        }
+        newMember.deleteMember();
+        return newMember;
+    }
+
+    public Member saveNewMember() {
+        Member newMember = getNewMember();
+        memberRepository.save(newMember);
+        return newMember;
+    }
+
+    public Dairy saveNewDairy() {
+        Dairy newDairy = getNewDairy();
+        dairyRepository.save(newDairy);
+        return newDairy;
+    }
+
+    public Dairy saveNewDairyCondition() {
+        int index = 0;
+        Dairy newDairy = saveNewDairy();
+        for (Condition condition : getNewConditions()) {
+            DairyCondition newDC = DairyCondition.builder()
+                                                .dairy(newDairy)
+                                                .condition(condition)
+                                                .orderNo(index++)
+                                                .build();
+            dairyConditionRepository.save(newDC);
+        }
+        return newDairy;
+    }
+}

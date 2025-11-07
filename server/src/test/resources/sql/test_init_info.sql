@@ -1,0 +1,68 @@
+INSERT INTO condition_type
+VALUES ('COTY001', 'positive', 10),
+       ('COTY002', 'normal', 5),
+       ('COTY003', 'negative', 1);
+
+INSERT INTO conditions
+VALUES ('COND001', '최상의', 'COTY001', 15),
+       ('COND002', '활기찬', 'COTY001', 14),
+       ('COND003', '상쾌한', 'COTY001', 13),
+       ('COND004', '가벼운', 'COTY001', 12),
+       ('COND005', '생기 있는', 'COTY001', 11),
+       ('COND006', '안정적인', 'COTY002', 10),
+       ('COND007', '괜찮은', 'COTY002', 9),
+       ('COND008', '무난한', 'COTY002', 8),
+       ('COND009', '차분한', 'COTY002', 7),
+       ('COND010', '나른한', 'COTY002', 6),
+       ('COND011', '무기력한', 'COTY003', 5),
+       ('COND012', '피곤한', 'COTY003', 4),
+       ('COND013', '어지러운', 'COTY003', 3),
+       ('COND014', '지친', 'COTY003', 2),
+       ('COND015', '아픈', 'COTY003', 1);
+
+INSERT INTO weather
+VALUES ('WEAT001', 'sunny'),
+       ('WEAT002', 'cloudy'),
+       ('WEAT003', 'overcast'),
+       ('WEAT004', 'rainy'),
+       ('WEAT005', 'thunder'),
+       ('WEAT006', 'snow');
+
+INSERT INTO del_reason
+VALUES ('DERE001', 'A'),
+       ('DERE002', 'B'),
+       ('DERE003', 'C'),
+       ('DERE004', 'D'),
+       ('DERE005', '기타');
+
+INSERT INTO member
+VALUES (11, 'abc@def.com', '사용자0', 'N', 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), 'KAKAOTALK', '111111', 'USER');
+
+INSERT INTO dairy
+VALUES (11, '2024-10-01', 11, 'WEAT001', 2.0, NULL, NULL, 'oh', 'no', 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (12, '2024-10-02', 11, 'WEAT001', 5.5, NULL, NULL, '땡큐', '배운', 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (13, '2024-10-03', 11, 'WEAT001', 1.0, NULL, NULL, '감사', '공부', 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (14, '2024-10-04', 11, 'WEAT001', 9.5, NULL, NULL, NULL, NULL, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (15, '2024-10-05', 11, 'WEAT001', 4.5, NULL, NULL, NULL, NULL, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+
+INSERT INTO dairy_condition
+VALUES (101, 11, 'COND001', 0, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (102, 11, 'COND007', 1, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (103, 11, 'COND002', 2, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (104, 11, 'COND010', 3, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (105, 12, 'COND008', 0, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (106, 12, 'COND001', 1, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (107, 12, 'COND002', 2, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (108, 12, 'COND007', 3, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (109, 13, 'COND013', 0, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (110, 13, 'COND001', 1, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (111, 13, 'COND007', 2, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (112, 13, 'COND002', 3, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (113, 14, 'COND002', 0, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (114, 14, 'COND001', 1, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (115, 14, 'COND007', 2, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (116, 14, 'COND006', 3, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (117, 15, 'COND009', 0, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (118, 15, 'COND001', 1, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (119, 15, 'COND007', 2, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+       (120, 15, 'COND002', 3, 'N', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
