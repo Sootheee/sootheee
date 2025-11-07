@@ -1,86 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@font-face {
-  font-family: 'SUIT';
-  src: url('../app/fonts/SUIT-Variable.woff2') format('woff2');
-  font-weight: 200 900;
-  font-display: swap;
-}
-
-body {
-  font-family: 'SUIT', sans-serif;
-}
+@import "tailwindcss";
 
 :root {
-  --soft-black: #333333;
-  --soft-black-weak: #33333366;
-  --white: #ffffff;
-  --white-weak: #ffffff66;
-  --sunday-red: #ff6666;
-  --gray: #f6f6f6;
-  --forest-green: #02825b;
-  --line-gray: #eeeeee;
-  --warm-gray: #dfded3;
-
-  /* Only used in dark mode */
-  --deep-gray: #444444;
-  --white-weakest: #ffffff26;
-  --medium-gray: #515151;
-
-  /* Light Mode Colors */
-  --background: #fcf8e4;
-  --background-light: #fcf8e499;
-  --foreground: #ffffff;
-
-  --text-primary: var(--soft-black);
-  --text-secondary: var(--soft-black-light);
-
-  --button-bg: var(--soft-black);
-
-  /* Score colors */
-  --score-00: #879bff;
-  --score-01: #96c0ff;
-  --score-02: #b8daf8;
-  --score-03: #bfefee;
-  --score-04: #cff0d7;
-  --score-05: #fff19f;
-  --score-06: #ffeb7c;
-  --score-07: #ffd57a;
-  --score-08: #ffa97a;
-  --score-09: #ff786b;
-  --score-10: #ff4766;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
-/* Dark Mode Colors */
-.dark {
-  --background: #222222;
-  --background-light: #333333;
-  --foreground: #222222;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
 
-  --text-primary: var(--white);
-  --text-secondary: var(--white-light);
-
-  --button-bg: var(--soft-black);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
 }
 
 body {
-  color: var(--soft-black);
-  background-color: var(--background);
-}
-
-input,
-textarea {
-  outline: none;
-}
-
-input:focus,
-textarea:focus {
-  outline: none;
-}
-
-em {
-  font-style: normal;
-  font-weight: bold;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
 }
